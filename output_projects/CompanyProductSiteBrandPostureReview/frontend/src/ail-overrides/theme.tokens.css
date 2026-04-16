@@ -1,0 +1,15 @@
+/* Unmanaged theme tokens: safe to edit. */
+:root {
+  --brand-ink: #11161c;
+  --brand-ink-soft: #23303d;
+  --brand-graphite: #2f3b49;
+  --brand-paper: #f6f0e7;
+  --brand-paper-strong: #efe5d4;
+  --brand-brass: #b88c47;
+  --brand-brass-soft: #d2b07a;
+  --brand-moss: #33594e;
+  --brand-line: rgba(80, 61, 33, 0.18);
+  --brand-shadow: 0 24px 60px rgba(17, 22, 28, 0.14);
+  --brand-display-font: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  --brand-ui-font: "Avenir Next", "Helvetica Neue", "Segoe UI", sans-serif;
+}

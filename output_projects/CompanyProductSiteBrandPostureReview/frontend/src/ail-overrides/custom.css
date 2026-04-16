@@ -1,0 +1,595 @@
+/* Unmanaged local overrides: safe to edit. */
+.landing-page:not(.personal-portfolio) {
+  font-family: var(--brand-ui-font);
+  color: var(--brand-ink);
+}
+
+.landing-page:not(.personal-portfolio) .landing-header,
+.landing-page:not(.personal-portfolio) .landing-section,
+.landing-page:not(.personal-portfolio) .landing-footer {
+  border-color: var(--brand-line);
+}
+
+.landing-page:not(.personal-portfolio) .brand {
+  color: var(--brand-ink);
+  font-family: var(--brand-display-font);
+  font-size: 24px;
+  letter-spacing: -0.03em;
+}
+
+.landing-page:not(.personal-portfolio) .company-header-note {
+  gap: 10px;
+}
+
+.landing-page:not(.personal-portfolio) .company-header-note span {
+  background: rgba(184, 140, 71, 0.08);
+  border: 1px solid rgba(184, 140, 71, 0.18);
+  color: #6c5229;
+}
+
+.landing-page:not(.personal-portfolio) .landing-hero {
+  background:
+    radial-gradient(circle at top left, rgba(210, 176, 122, 0.22), transparent 32%),
+    radial-gradient(circle at top right, rgba(51, 89, 78, 0.2), transparent 30%),
+    linear-gradient(145deg, #161d25 0%, #223243 45%, #14202b 100%);
+  box-shadow: 0 28px 70px rgba(17, 22, 28, 0.24);
+}
+
+.landing-page:not(.personal-portfolio) .hero-kicker,
+.landing-page:not(.personal-portfolio) .hero-brand-posture-label,
+.landing-page:not(.personal-portfolio) .hero-memory-label,
+.landing-page:not(.personal-portfolio) .section-proof-bridge-label,
+.landing-page:not(.personal-portfolio) .company-footer-signoff-label {
+  letter-spacing: 0.14em;
+}
+
+.landing-page:not(.personal-portfolio) .hero-brand-mark,
+.landing-page:not(.personal-portfolio) .landing-footer > strong {
+  font-family: var(--brand-display-font);
+  letter-spacing: -0.03em;
+}
+
+.landing-page:not(.personal-portfolio) .hero-brand-tag {
+  color: var(--brand-paper-strong);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(210, 176, 122, 0.2);
+}
+
+.landing-page:not(.personal-portfolio) .landing-hero h1,
+.landing-page:not(.personal-portfolio) .landing-section h2,
+.landing-page:not(.personal-portfolio) .brand-distinction-band h3,
+.landing-page:not(.personal-portfolio) .brand-closing-note__copy strong {
+  font-family: var(--brand-display-font);
+}
+
+.landing-page:not(.personal-portfolio) .landing-hero h1 {
+  font-size: clamp(56px, 7vw, 78px);
+  line-height: 0.94;
+  max-width: 10.6ch;
+}
+
+.landing-page:not(.personal-portfolio) .landing-hero h1::after {
+  width: 124px;
+  background: linear-gradient(90deg, var(--brand-brass-soft), var(--brand-brass));
+  box-shadow: 0 0 0 4px rgba(184, 140, 71, 0.14);
+}
+
+.landing-page:not(.personal-portfolio) .landing-hero p,
+.landing-page:not(.personal-portfolio) .hero-brand-posture strong,
+.landing-page:not(.personal-portfolio) .hero-brand-card em {
+  color: rgba(246, 240, 231, 0.88);
+}
+
+.landing-page:not(.personal-portfolio) .hero-brand-posture-card,
+.landing-page:not(.personal-portfolio) .hero-brand-card,
+.landing-page:not(.personal-portfolio) .hero-copy-block,
+.landing-page:not(.personal-portfolio) .hero-decision-block,
+.landing-page:not(.personal-portfolio) .hero-signal-card {
+  border-color: rgba(210, 176, 122, 0.2);
+}
+
+.landing-page:not(.personal-portfolio) .hero-brand-posture-card span,
+.landing-page:not(.personal-portfolio) .hero-brand-card span {
+  color: var(--brand-paper-strong);
+}
+
+.landing-page:not(.personal-portfolio) .hero-brand-posture-card {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(17, 22, 28, 0.14));
+}
+
+.landing-page:not(.personal-portfolio) .hero-brand-card {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(17, 22, 28, 0.14) 40%, rgba(53, 89, 78, 0.16));
+}
+
+.landing-page:not(.personal-portfolio) .hero-brand-card--fit {
+  background: linear-gradient(180deg, rgba(210, 176, 122, 0.18), rgba(17, 22, 28, 0.14) 40%, rgba(53, 89, 78, 0.16));
+}
+
+.landing-page:not(.personal-portfolio) .hero-copy-block {
+  border-left-color: rgba(184, 140, 71, 0.88);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(17, 22, 28, 0.04));
+}
+
+.landing-page:not(.personal-portfolio) .brand-cta-path {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(210, 176, 122, 0.2);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(17, 22, 28, 0.04));
+}
+
+.landing-page:not(.personal-portfolio) .brand-cta-path__label,
+.landing-page:not(.personal-portfolio) .brand-trust-bridge__label {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(210, 176, 122, 0.2);
+  background: rgba(210, 176, 122, 0.08);
+  color: var(--brand-paper-strong);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.landing-page:not(.personal-portfolio) .brand-cta-path__steps,
+.landing-page:not(.personal-portfolio) .brand-trust-bridge__steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.landing-page:not(.personal-portfolio) .brand-cta-path__steps span,
+.landing-page:not(.personal-portfolio) .brand-trust-bridge__steps span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(210, 176, 122, 0.18);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--brand-paper-strong);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.landing-page:not(.personal-portfolio) .brand-cta-path p {
+  margin: 0;
+  color: rgba(246, 240, 231, 0.82);
+  font-size: 13px;
+  line-height: 1.7;
+  max-width: 52ch;
+}
+
+.landing-page:not(.personal-portfolio) .hero-memory-strip span,
+.landing-page:not(.personal-portfolio) .section-path-strip span,
+.landing-page:not(.personal-portfolio) .section-proof-bridge-strip span,
+.landing-page:not(.personal-portfolio) .company-footer-signoff-grid span {
+  letter-spacing: 0.11em;
+}
+
+.landing-page:not(.personal-portfolio) .landing-section {
+  box-shadow: var(--brand-shadow);
+}
+
+.landing-page:not(.personal-portfolio) .about-section {
+  background: linear-gradient(155deg, rgba(255, 251, 245, 0.98), rgba(245, 239, 231, 0.98));
+}
+
+.landing-page:not(.personal-portfolio) #features {
+  background: linear-gradient(155deg, rgba(252, 248, 241, 0.98), rgba(242, 236, 226, 0.98));
+}
+
+.landing-page:not(.personal-portfolio) #testimonials {
+  background: linear-gradient(155deg, rgba(248, 244, 237, 0.98), rgba(236, 243, 239, 0.98));
+}
+
+.landing-page:not(.personal-portfolio) #faq {
+  background: linear-gradient(155deg, rgba(255, 250, 239, 0.98), rgba(248, 241, 226, 0.98));
+}
+
+.landing-page:not(.personal-portfolio) #contact,
+.landing-page:not(.personal-portfolio) #cta {
+  background: linear-gradient(155deg, rgba(250, 246, 239, 0.98), rgba(240, 236, 230, 0.98));
+}
+
+.landing-page:not(.personal-portfolio) .landing-section h2 {
+  color: var(--brand-ink);
+  font-size: clamp(32px, 4vw, 44px);
+  letter-spacing: -0.03em;
+}
+
+.landing-page:not(.personal-portfolio) .section-lead,
+.landing-page:not(.personal-portfolio) .about-copy p,
+.landing-page:not(.personal-portfolio) .quote-copy,
+.landing-page:not(.personal-portfolio) .contact-form-note {
+  color: var(--brand-ink-soft);
+}
+
+.landing-page:not(.personal-portfolio) .about-note,
+.landing-page:not(.personal-portfolio) .cta-note {
+  color: #6c5229;
+}
+
+.landing-page:not(.personal-portfolio) .quote-card,
+.landing-page:not(.personal-portfolio) .contact-handoff-card,
+.landing-page:not(.personal-portfolio) .faq-contact-bridge,
+.landing-page:not(.personal-portfolio) .contact-intake-bridge,
+.landing-page:not(.personal-portfolio) .intake-closure-bridge,
+.landing-page:not(.personal-portfolio) .cta-landing-bridge {
+  background: linear-gradient(180deg, rgba(255, 251, 245, 0.98), rgba(244, 238, 229, 0.96));
+}
+
+.landing-page:not(.personal-portfolio) .brand-distinction-band {
+  display: grid;
+  gap: 18px;
+  margin: -8px 0 28px;
+  padding: 22px 24px;
+  border-radius: 22px;
+  border: 1px solid rgba(184, 140, 71, 0.22);
+  background:
+    linear-gradient(135deg, rgba(246, 240, 231, 0.98), rgba(239, 229, 212, 0.96)),
+    linear-gradient(0deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.4));
+  box-shadow: var(--brand-shadow);
+}
+
+.landing-page:not(.personal-portfolio) .brand-distinction-band__lead {
+  display: grid;
+  gap: 10px;
+  max-width: 62ch;
+}
+
+.landing-page:not(.personal-portfolio) .brand-distinction-band__label,
+.landing-page:not(.personal-portfolio) .brand-closing-note__label {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(184, 140, 71, 0.22);
+  background: rgba(184, 140, 71, 0.09);
+  color: #6c5229;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.landing-page:not(.personal-portfolio) .brand-distinction-band h3 {
+  margin: 0;
+  color: var(--brand-ink);
+  font-size: clamp(28px, 3.8vw, 38px);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+}
+
+.landing-page:not(.personal-portfolio) .brand-distinction-band__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 12px;
+}
+
+.landing-page:not(.personal-portfolio) .brand-distinction-band__card {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(184, 140, 71, 0.16);
+  background: rgba(255, 255, 255, 0.52);
+}
+
+.landing-page:not(.personal-portfolio) .brand-distinction-band__card span {
+  color: #6c5229;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.landing-page:not(.personal-portfolio) .brand-distinction-band__card strong {
+  color: var(--brand-ink);
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.landing-page:not(.personal-portfolio) .brand-distinction-band__card p {
+  margin: 0;
+  color: var(--brand-ink-soft);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.landing-page:not(.personal-portfolio) .brand-trust-bridge {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(63, 129, 111, 0.18);
+  background: linear-gradient(135deg, rgba(245, 251, 247, 0.98), rgba(235, 245, 240, 0.96));
+  box-shadow: 0 14px 34px rgba(17, 22, 28, 0.06);
+}
+
+.landing-page:not(.personal-portfolio) .brand-trust-bridge__label {
+  color: #2f685a;
+  background: rgba(63, 129, 111, 0.08);
+  border-color: rgba(63, 129, 111, 0.18);
+}
+
+.landing-page:not(.personal-portfolio) .brand-trust-bridge strong {
+  color: var(--brand-ink);
+  font-family: var(--brand-display-font);
+  font-size: 22px;
+  line-height: 1.18;
+  letter-spacing: -0.02em;
+  max-width: 42ch;
+}
+
+.landing-page:not(.personal-portfolio) .brand-trust-bridge__steps span {
+  color: #2f685a;
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(63, 129, 111, 0.18);
+}
+
+.landing-page:not(.personal-portfolio) .qualified-demo-note,
+.landing-page:not(.personal-portfolio) .brand-demo-promise {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  box-shadow: 0 14px 34px rgba(17, 22, 28, 0.06);
+}
+
+.landing-page:not(.personal-portfolio) .qualified-demo-note {
+  border: 1px solid rgba(88, 101, 176, 0.18);
+  background: linear-gradient(135deg, rgba(247, 248, 255, 0.98), rgba(237, 239, 251, 0.96));
+}
+
+.landing-page:not(.personal-portfolio) .brand-demo-promise {
+  border: 1px solid rgba(110, 60, 54, 0.16);
+  background: linear-gradient(135deg, rgba(250, 245, 241, 0.98), rgba(242, 235, 229, 0.96));
+}
+
+.landing-page:not(.personal-portfolio) .qualified-demo-note__label,
+.landing-page:not(.personal-portfolio) .brand-demo-promise__label {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.landing-page:not(.personal-portfolio) .qualified-demo-note__label {
+  color: #4a56a0;
+  background: rgba(88, 101, 176, 0.08);
+  border: 1px solid rgba(88, 101, 176, 0.18);
+}
+
+.landing-page:not(.personal-portfolio) .brand-demo-promise__label {
+  color: #6c413a;
+  background: rgba(110, 60, 54, 0.08);
+  border: 1px solid rgba(110, 60, 54, 0.16);
+}
+
+.landing-page:not(.personal-portfolio) .qualified-demo-note strong,
+.landing-page:not(.personal-portfolio) .brand-demo-promise strong {
+  color: var(--brand-ink);
+  font-family: var(--brand-display-font);
+  font-size: 22px;
+  line-height: 1.18;
+  letter-spacing: -0.02em;
+  max-width: 44ch;
+}
+
+.landing-page:not(.personal-portfolio) .qualified-demo-note__steps,
+.landing-page:not(.personal-portfolio) .brand-demo-promise__steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.landing-page:not(.personal-portfolio) .qualified-demo-note__steps span,
+.landing-page:not(.personal-portfolio) .brand-demo-promise__steps span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.landing-page:not(.personal-portfolio) .qualified-demo-note__steps span {
+  color: #4a56a0;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(88, 101, 176, 0.18);
+}
+
+.landing-page:not(.personal-portfolio) .brand-demo-promise__steps span {
+  color: #6c413a;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(110, 60, 54, 0.16);
+}
+
+.landing-page:not(.personal-portfolio) .section-posture-note {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 14px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(184, 140, 71, 0.16);
+  background: linear-gradient(135deg, rgba(255, 251, 245, 0.98), rgba(244, 238, 229, 0.96));
+  box-shadow: 0 14px 34px rgba(17, 22, 28, 0.06);
+}
+
+.landing-page:not(.personal-portfolio) .section-posture-note__label {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(184, 140, 71, 0.2);
+  background: rgba(184, 140, 71, 0.08);
+  color: #6c5229;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.landing-page:not(.personal-portfolio) .section-posture-note strong {
+  color: var(--brand-ink);
+  font-family: var(--brand-display-font);
+  font-size: 22px;
+  line-height: 1.18;
+  letter-spacing: -0.02em;
+  max-width: 42ch;
+}
+
+.landing-page:not(.personal-portfolio) .section-posture-note--about {
+  border-color: rgba(58, 145, 128, 0.18);
+  background: linear-gradient(135deg, rgba(246, 252, 250, 0.98), rgba(235, 246, 242, 0.96));
+}
+
+.landing-page:not(.personal-portfolio) .section-posture-note--about .section-posture-note__label {
+  background: rgba(58, 145, 128, 0.08);
+  border-color: rgba(58, 145, 128, 0.18);
+  color: #2c6a5f;
+}
+
+.landing-page:not(.personal-portfolio) .section-posture-note--features {
+  border-color: rgba(66, 109, 186, 0.18);
+  background: linear-gradient(135deg, rgba(246, 249, 255, 0.98), rgba(236, 241, 252, 0.96));
+}
+
+.landing-page:not(.personal-portfolio) .section-posture-note--features .section-posture-note__label {
+  background: rgba(66, 109, 186, 0.08);
+  border-color: rgba(66, 109, 186, 0.18);
+  color: #35549d;
+}
+
+.landing-page:not(.personal-portfolio) .section-posture-note--trust {
+  border-color: rgba(63, 129, 111, 0.18);
+  background: linear-gradient(135deg, rgba(245, 251, 247, 0.98), rgba(235, 245, 240, 0.96));
+}
+
+.landing-page:not(.personal-portfolio) .section-posture-note--trust .section-posture-note__label {
+  background: rgba(63, 129, 111, 0.08);
+  border-color: rgba(63, 129, 111, 0.18);
+  color: #2f685a;
+}
+
+.landing-page:not(.personal-portfolio) .section-posture-note--faq {
+  border-color: rgba(178, 132, 55, 0.18);
+  background: linear-gradient(135deg, rgba(255, 251, 241, 0.98), rgba(248, 241, 224, 0.96));
+}
+
+.landing-page:not(.personal-portfolio) .section-posture-note--faq .section-posture-note__label {
+  background: rgba(178, 132, 55, 0.08);
+  border-color: rgba(178, 132, 55, 0.18);
+  color: #8c6223;
+}
+
+.landing-page:not(.personal-portfolio) .section-posture-note--contact {
+  border-color: rgba(88, 101, 176, 0.18);
+  background: linear-gradient(135deg, rgba(247, 248, 255, 0.98), rgba(237, 239, 251, 0.96));
+}
+
+.landing-page:not(.personal-portfolio) .section-posture-note--contact .section-posture-note__label {
+  background: rgba(88, 101, 176, 0.08);
+  border-color: rgba(88, 101, 176, 0.18);
+  color: #4a56a0;
+}
+
+.landing-page:not(.personal-portfolio) .section-posture-note--closure {
+  border-color: rgba(110, 60, 54, 0.16);
+  background: linear-gradient(135deg, rgba(250, 245, 241, 0.98), rgba(242, 235, 229, 0.96));
+}
+
+.landing-page:not(.personal-portfolio) .section-posture-note--closure .section-posture-note__label {
+  background: rgba(110, 60, 54, 0.08);
+  border-color: rgba(110, 60, 54, 0.16);
+  color: #6c413a;
+}
+
+.landing-page:not(.personal-portfolio) .brand-closing-note {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(184, 140, 71, 0.18);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(184, 140, 71, 0.08));
+}
+
+.landing-page:not(.personal-portfolio) .brand-closing-note__copy {
+  display: grid;
+  gap: 8px;
+  max-width: 58ch;
+}
+
+.landing-page:not(.personal-portfolio) .brand-closing-note__copy strong {
+  color: var(--brand-paper);
+  font-size: 24px;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+}
+
+.landing-page:not(.personal-portfolio) .brand-closing-note__strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.landing-page:not(.personal-portfolio) .brand-closing-note__strip span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(210, 176, 122, 0.22);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--brand-paper-strong);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.landing-page:not(.personal-portfolio) .landing-footer {
+  background: linear-gradient(145deg, #151a20 0%, #1e2b39 48%, #141d27 100%);
+}
+
+.landing-page:not(.personal-portfolio) .company-footer-signoff {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(184, 140, 71, 0.16);
+}
+
+@media (max-width: 900px) {
+  .landing-page:not(.personal-portfolio) .landing-hero h1 {
+    max-width: 11.5ch;
+  }
+
+  .landing-page:not(.personal-portfolio) .brand-distinction-band,
+  .landing-page:not(.personal-portfolio) .brand-closing-note {
+    padding: 18px;
+  }
+}

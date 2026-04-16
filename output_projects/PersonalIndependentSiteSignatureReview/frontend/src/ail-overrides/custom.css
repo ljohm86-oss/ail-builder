@@ -1,0 +1,452 @@
+/* Unmanaged local overrides: safe to edit. */
+.landing-page.personal-portfolio {
+  font-family: var(--author-ui-font);
+  color: var(--author-ink);
+}
+
+.landing-page.personal-portfolio .landing-header,
+.landing-page.personal-portfolio .landing-section,
+.landing-page.personal-portfolio .landing-footer {
+  border-color: var(--author-line);
+}
+
+.landing-page.personal-portfolio .brand {
+  color: var(--author-rosewood);
+  font-family: var(--author-display-font);
+  font-size: 25px;
+  letter-spacing: -0.03em;
+}
+
+.landing-page.personal-portfolio .personal-header-note span {
+  background: rgba(184, 108, 84, 0.08);
+  border: 1px solid rgba(184, 108, 84, 0.16);
+  color: #7f4438;
+}
+
+.landing-page.personal-portfolio .landing-hero {
+  background:
+    radial-gradient(circle at top left, rgba(183, 139, 85, 0.18), transparent 34%),
+    radial-gradient(circle at top right, rgba(184, 108, 84, 0.16), transparent 28%),
+    linear-gradient(160deg, rgba(255, 249, 243, 0.98), rgba(249, 238, 226, 0.98) 46%, rgba(244, 232, 219, 0.98));
+  box-shadow: var(--author-shadow);
+}
+
+.landing-page.personal-portfolio .landing-hero h1,
+.landing-page.personal-portfolio .landing-section h2,
+.landing-page.personal-portfolio .authorial-note-band h3,
+.landing-page.personal-portfolio .author-signoff-note__copy strong {
+  font-family: var(--author-display-font);
+}
+
+.landing-page.personal-portfolio .landing-hero h1 {
+  color: var(--author-ink);
+  font-size: clamp(58px, 7vw, 82px);
+  line-height: 0.94;
+  letter-spacing: -0.05em;
+  max-width: 9.4ch;
+}
+
+.landing-page.personal-portfolio .landing-hero h1::after {
+  width: 118px;
+  background: linear-gradient(90deg, var(--author-terracotta), var(--author-gold));
+  box-shadow: 0 0 0 4px rgba(184, 108, 84, 0.12);
+}
+
+.landing-page.personal-portfolio .landing-hero p,
+.landing-page.personal-portfolio .hero-signature-strip strong,
+.landing-page.personal-portfolio .hero-signature-card em {
+  color: var(--author-ink-soft);
+}
+
+.landing-page.personal-portfolio .hero-kicker,
+.landing-page.personal-portfolio .hero-signature-label,
+.landing-page.personal-portfolio .portfolio-curation-label,
+.landing-page.personal-portfolio .footer-signoff-label {
+  letter-spacing: 0.14em;
+}
+
+.landing-page.personal-portfolio .hero-kicker {
+  background: rgba(184, 108, 84, 0.08);
+  border-color: rgba(184, 108, 84, 0.16);
+  color: #7f4438;
+}
+
+.landing-page.personal-portfolio .hero-persona-chip {
+  background: rgba(255, 255, 255, 0.72);
+  border-color: rgba(183, 139, 85, 0.2);
+  color: #7f4438;
+}
+
+.landing-page.personal-portfolio .hero-signature-strip,
+.landing-page.personal-portfolio .hero-signature-card {
+  border-color: rgba(184, 108, 84, 0.16);
+}
+
+.landing-page.personal-portfolio .hero-signature-strip {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(250, 240, 230, 0.72));
+}
+
+.landing-page.personal-portfolio .hero-signature-label,
+.landing-page.personal-portfolio .portfolio-curation-label,
+.landing-page.personal-portfolio .authorial-note-band__label,
+.landing-page.personal-portfolio .author-signoff-note__label {
+  background: rgba(184, 108, 84, 0.08);
+  border: 1px solid rgba(184, 108, 84, 0.16);
+  color: #7f4438;
+}
+
+.landing-page.personal-portfolio .hero-signature-card {
+  background: rgba(255, 255, 255, 0.66);
+}
+
+.landing-page.personal-portfolio .hero-signature-card span,
+.landing-page.personal-portfolio .portfolio-curation-card span {
+  color: #7f4438;
+}
+
+.landing-page.personal-portfolio .hero-actions button,
+.landing-page.personal-portfolio .cta button {
+  background: linear-gradient(135deg, #8f4c3f, #6e3c36);
+  border-color: #6e3c36;
+  box-shadow: 0 16px 30px rgba(110, 60, 54, 0.18);
+}
+
+.landing-page.personal-portfolio .author-path-strip {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(184, 108, 84, 0.14);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(250, 240, 230, 0.72));
+}
+
+.landing-page.personal-portfolio .author-path-strip__label,
+.landing-page.personal-portfolio .author-trust-bridge__label,
+.landing-page.personal-portfolio .author-contact-note__label,
+.landing-page.personal-portfolio .author-closure-promise__label {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.landing-page.personal-portfolio .author-path-strip__label,
+.landing-page.personal-portfolio .author-contact-note__label {
+  color: #7f4438;
+  background: rgba(184, 108, 84, 0.08);
+  border: 1px solid rgba(184, 108, 84, 0.16);
+}
+
+.landing-page.personal-portfolio .author-trust-bridge__label {
+  color: #8c4b3c;
+  background: rgba(183, 139, 85, 0.1);
+  border: 1px solid rgba(183, 139, 85, 0.18);
+}
+
+.landing-page.personal-portfolio .author-closure-promise__label {
+  color: #6e3c36;
+  background: rgba(110, 60, 54, 0.08);
+  border: 1px solid rgba(110, 60, 54, 0.16);
+}
+
+.landing-page.personal-portfolio .author-path-strip__steps,
+.landing-page.personal-portfolio .author-trust-bridge__steps,
+.landing-page.personal-portfolio .author-contact-note__steps,
+.landing-page.personal-portfolio .author-closure-promise__steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.landing-page.personal-portfolio .author-path-strip__steps span,
+.landing-page.personal-portfolio .author-trust-bridge__steps span,
+.landing-page.personal-portfolio .author-contact-note__steps span,
+.landing-page.personal-portfolio .author-closure-promise__steps span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.landing-page.personal-portfolio .author-path-strip__steps span,
+.landing-page.personal-portfolio .author-contact-note__steps span {
+  color: #7f4438;
+  background: rgba(255, 255, 255, 0.74);
+  border: 1px solid rgba(184, 108, 84, 0.16);
+}
+
+.landing-page.personal-portfolio .author-trust-bridge__steps span {
+  color: #8c4b3c;
+  background: rgba(255, 249, 243, 0.92);
+  border: 1px solid rgba(183, 139, 85, 0.18);
+}
+
+.landing-page.personal-portfolio .author-closure-promise__steps span {
+  color: #6e3c36;
+  background: rgba(255, 249, 243, 0.92);
+  border: 1px solid rgba(110, 60, 54, 0.16);
+}
+
+.landing-page.personal-portfolio .hero-actions .ghost {
+  background: rgba(255, 255, 255, 0.9);
+  color: #6e3c36;
+  border-color: rgba(110, 60, 54, 0.18);
+}
+
+.landing-page.personal-portfolio .landing-section {
+  box-shadow: var(--author-shadow);
+}
+
+.landing-page.personal-portfolio .about-section {
+  background: linear-gradient(160deg, rgba(255, 249, 243, 0.98), rgba(247, 238, 230, 0.98));
+}
+
+.landing-page.personal-portfolio #features {
+  background: linear-gradient(160deg, rgba(252, 246, 239, 0.98), rgba(245, 236, 225, 0.98));
+}
+
+.landing-page.personal-portfolio #portfolio {
+  background: linear-gradient(160deg, rgba(251, 245, 238, 0.98), rgba(244, 236, 229, 0.98));
+}
+
+.landing-page.personal-portfolio #testimonials,
+.landing-page.personal-portfolio #contact,
+.landing-page.personal-portfolio #cta {
+  background: linear-gradient(160deg, rgba(250, 244, 237, 0.98), rgba(245, 236, 229, 0.98));
+}
+
+.landing-page.personal-portfolio .landing-section h2 {
+  color: var(--author-ink);
+  font-size: clamp(30px, 4vw, 42px);
+  letter-spacing: -0.03em;
+}
+
+.landing-page.personal-portfolio .section-lead,
+.landing-page.personal-portfolio .about-copy p,
+.landing-page.personal-portfolio .quote-copy,
+.landing-page.personal-portfolio .portfolio-card p,
+.landing-page.personal-portfolio .contact-field-hint {
+  color: var(--author-ink-soft);
+}
+
+.landing-page.personal-portfolio .about-note,
+.landing-page.personal-portfolio .cta-note {
+  color: #7f4438;
+}
+
+.landing-page.personal-portfolio .portfolio-curation-strip,
+.landing-page.personal-portfolio .quote-card,
+.landing-page.personal-portfolio .portfolio-card,
+.landing-page.personal-portfolio .contact-form-panel {
+  border-color: rgba(184, 108, 84, 0.14);
+}
+
+.landing-page.personal-portfolio .portfolio-curation-strip,
+.landing-page.personal-portfolio .quote-card,
+.landing-page.personal-portfolio .portfolio-card,
+.landing-page.personal-portfolio .contact-form-panel {
+  background: linear-gradient(180deg, rgba(255, 252, 248, 0.98), rgba(248, 240, 233, 0.96));
+}
+
+.landing-page.personal-portfolio .portfolio-meta,
+.landing-page.personal-portfolio .portfolio-sequence,
+.landing-page.personal-portfolio .portfolio-editor-note {
+  border-color: rgba(184, 108, 84, 0.18);
+}
+
+.landing-page.personal-portfolio .portfolio-meta {
+  background: rgba(255, 241, 228, 0.96);
+  color: #8c4b3c;
+}
+
+.landing-page.personal-portfolio .portfolio-sequence,
+.landing-page.personal-portfolio .portfolio-editor-note {
+  background: rgba(255, 249, 243, 0.92);
+  color: #7f4438;
+}
+
+.landing-page.personal-portfolio .authorial-note-band {
+  display: grid;
+  gap: 18px;
+  margin: -6px 0 28px;
+  padding: 22px 24px;
+  border-radius: 22px;
+  border: 1px solid rgba(184, 108, 84, 0.18);
+  background: linear-gradient(135deg, rgba(255, 249, 243, 0.98), rgba(242, 230, 215, 0.98));
+  box-shadow: var(--author-shadow);
+}
+
+.landing-page.personal-portfolio .authorial-note-band__lead {
+  display: grid;
+  gap: 10px;
+  max-width: 60ch;
+}
+
+.landing-page.personal-portfolio .authorial-note-band__label,
+.landing-page.personal-portfolio .author-signoff-note__label {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.landing-page.personal-portfolio .authorial-note-band h3 {
+  margin: 0;
+  color: var(--author-ink);
+  font-size: clamp(28px, 3.6vw, 38px);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+}
+
+.landing-page.personal-portfolio .authorial-note-band__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 12px;
+}
+
+.landing-page.personal-portfolio .authorial-note-band__card {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(184, 108, 84, 0.14);
+  background: rgba(255, 255, 255, 0.56);
+}
+
+.landing-page.personal-portfolio .authorial-note-band__card span {
+  color: #8c4b3c;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.landing-page.personal-portfolio .authorial-note-band__card strong {
+  color: var(--author-ink);
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.landing-page.personal-portfolio .authorial-note-band__card p {
+  margin: 0;
+  color: var(--author-ink-soft);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.landing-page.personal-portfolio .author-trust-bridge,
+.landing-page.personal-portfolio .author-contact-note,
+.landing-page.personal-portfolio .author-closure-promise {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  box-shadow: var(--author-shadow);
+}
+
+.landing-page.personal-portfolio .author-trust-bridge {
+  border: 1px solid rgba(183, 139, 85, 0.18);
+  background: linear-gradient(135deg, rgba(255, 249, 243, 0.98), rgba(242, 230, 215, 0.96));
+}
+
+.landing-page.personal-portfolio .author-contact-note {
+  border: 1px solid rgba(184, 108, 84, 0.16);
+  background: linear-gradient(135deg, rgba(255, 250, 246, 0.98), rgba(244, 234, 226, 0.96));
+}
+
+.landing-page.personal-portfolio .author-closure-promise {
+  border: 1px solid rgba(110, 60, 54, 0.16);
+  background: linear-gradient(135deg, rgba(250, 245, 241, 0.98), rgba(242, 235, 229, 0.96));
+}
+
+.landing-page.personal-portfolio .author-trust-bridge strong,
+.landing-page.personal-portfolio .author-contact-note strong,
+.landing-page.personal-portfolio .author-closure-promise strong {
+  color: var(--author-ink);
+  font-family: var(--author-display-font);
+  font-size: 22px;
+  line-height: 1.18;
+  letter-spacing: -0.02em;
+  max-width: 44ch;
+}
+
+.landing-page.personal-portfolio .author-signoff-note {
+  display: grid;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(184, 108, 84, 0.16);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(184, 108, 84, 0.08));
+}
+
+.landing-page.personal-portfolio .author-signoff-note__copy {
+  display: grid;
+  gap: 8px;
+  max-width: 56ch;
+}
+
+.landing-page.personal-portfolio .author-signoff-note__copy strong {
+  color: #f9ece0;
+  font-size: 24px;
+  line-height: 1.22;
+  letter-spacing: -0.03em;
+}
+
+.landing-page.personal-portfolio .author-signoff-note__strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.landing-page.personal-portfolio .author-signoff-note__strip span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(184, 108, 84, 0.16);
+  background: rgba(255, 255, 255, 0.06);
+  color: #f5e6d8;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.landing-page.personal-portfolio .landing-footer {
+  background: linear-gradient(145deg, #221c1a 0%, #342826 46%, #201b19 100%);
+}
+
+.landing-page.personal-portfolio .footer-signoff-strip {
+  border-color: rgba(184, 108, 84, 0.14);
+}
+
+@media (max-width: 900px) {
+  .landing-page.personal-portfolio .landing-hero h1 {
+    max-width: 10.8ch;
+  }
+
+  .landing-page.personal-portfolio .authorial-note-band,
+  .landing-page.personal-portfolio .author-signoff-note {
+    padding: 18px;
+  }
+}

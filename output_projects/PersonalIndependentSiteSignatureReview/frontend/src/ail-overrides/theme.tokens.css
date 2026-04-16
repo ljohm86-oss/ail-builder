@@ -1,0 +1,14 @@
+/* Unmanaged theme tokens: safe to edit. */
+:root {
+  --author-ink: #1f1b18;
+  --author-ink-soft: #564942;
+  --author-paper: #fbf4ec;
+  --author-paper-deep: #f2e6d7;
+  --author-rosewood: #6e3c36;
+  --author-terracotta: #b86c54;
+  --author-gold: #b78b55;
+  --author-line: rgba(110, 60, 54, 0.18);
+  --author-shadow: 0 24px 60px rgba(31, 27, 24, 0.12);
+  --author-display-font: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  --author-ui-font: "Avenir Next", "Helvetica Neue", "Segoe UI", sans-serif;
+}

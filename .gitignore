@@ -32,6 +32,15 @@ benchmark/results/latest/
 archive/generated_or_cache_20260316/ail_data.db
 archive/generated_or_cache_20260316/studio_web_generated/
 
+# Output projects: ignore by default, whitelist proof baselines
+output_projects/*
+!output_projects/CompanyProductSiteBrandPostureReview/
+!output_projects/CompanyProductSiteBrandPostureReview/**
+!output_projects/PersonalIndependentSiteSignatureReview/
+!output_projects/PersonalIndependentSiteSignatureReview/**
+output_projects/**/.ail/
+output_projects/**/backend/ail_data.db
+
 # Editor / IDE noise
 .idea/
 .vscode/
