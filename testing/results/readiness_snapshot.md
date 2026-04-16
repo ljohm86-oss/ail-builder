@@ -1,0 +1,126 @@
+# Readiness Snapshot
+
+## Status
+
+- overall_status: `ok`
+- stage: `frozen_profile_product_closure`
+- rc_gate_ok: `true`
+- project_workbench_ok: `true`
+- trial_batch_ok: `true`
+- trial_entry_ok: `true`
+
+## Product Surface
+
+- frozen_profiles: `landing, ecom_min, after_sales`
+- experimental_profiles: `app_min`
+
+## Signals
+
+- raw_total_samples: `50`
+- raw_final_compile_candidates: `50`
+- repair_success_rate: `100.0`
+- active_patch_pressure_count: `0`
+- active_suggested_tokens: `0`
+- website_check_smoke_ok: `True`
+- website_check_out_of_scope_smoke_ok: `True`
+- website_assets_smoke_ok: `None`
+- website_assets_pack_smoke_ok: `None`
+- website_open_asset_smoke_ok: `None`
+- website_open_asset_pack_smoke_ok: `None`
+- website_inspect_asset_smoke_ok: `None`
+- website_inspect_asset_pack_smoke_ok: `None`
+- website_preview_smoke_ok: `None`
+- website_preview_pack_smoke_ok: `None`
+- website_run_inspect_command_smoke_ok: `None`
+- website_run_inspect_command_pack_smoke_ok: `None`
+- website_export_handoff_smoke_ok: `None`
+- website_export_handoff_pack_smoke_ok: `None`
+- website_summary_smoke_ok: `None`
+- website_go_smoke_ok: `None`
+- project_check_smoke_ok: `True`
+- project_check_conflict_smoke_ok: `True`
+- project_doctor_smoke_ok: `True`
+- project_doctor_validation_smoke_ok: `True`
+- project_doctor_apply_safe_noop_smoke_ok: `True`
+- project_doctor_apply_safe_repair_smoke_ok: `True`
+- project_doctor_apply_safe_continue_noop_smoke_ok: `True`
+- project_doctor_apply_safe_continue_repair_smoke_ok: `True`
+- project_continue_auto_repair_smoke_ok: `True`
+- project_continue_auto_no_repair_smoke_ok: `True`
+- project_preview_smoke_ok: `True`
+- project_preview_conflict_smoke_ok: `True`
+- project_open_target_smoke_ok: `True`
+- project_open_target_default_smoke_ok: `True`
+- project_inspect_target_smoke_ok: `True`
+- project_inspect_target_default_smoke_ok: `True`
+- project_run_inspect_command_smoke_ok: `True`
+- project_run_inspect_command_default_smoke_ok: `True`
+- project_export_handoff_smoke_ok: `True`
+- project_export_handoff_conflict_smoke_ok: `True`
+- project_go_smoke_ok: `True`
+- project_go_repair_smoke_ok: `True`
+- project_go_conflict_smoke_ok: `True`
+- workspace_preview_smoke_ok: `True`
+- workspace_preview_project_smoke_ok: `True`
+- workspace_open_target_smoke_ok: `True`
+- workspace_open_target_project_smoke_ok: `True`
+- workspace_inspect_target_smoke_ok: `True`
+- workspace_inspect_target_project_smoke_ok: `True`
+- workspace_run_inspect_command_smoke_ok: `True`
+- workspace_run_inspect_command_project_smoke_ok: `True`
+- workspace_export_handoff_smoke_ok: `True`
+- workspace_export_handoff_project_smoke_ok: `True`
+- workspace_doctor_smoke_ok: `True`
+- workspace_doctor_project_smoke_ok: `True`
+- workspace_continue_smoke_ok: `True`
+- workspace_continue_project_smoke_ok: `True`
+- workspace_go_smoke_ok: `True`
+- workspace_go_project_smoke_ok: `True`
+- rc_go_smoke_ok: `True`
+- rc_go_refresh_smoke_ok: `True`
+- benchmark_release_baseline_ok: `True`
+- benchmark_release_baseline_passed: `16`
+- benchmark_release_baseline_failed: `0`
+- benchmark_release_decision: `fail`
+- trial_batch_record_count: `3`
+- trial_batch_success_count: `3`
+- trial_batch_repair_required_count: `0`
+- project_summary_probe_ok: `True`
+- project_workbench_primary_action_converged: `True`
+- trial_entry_route_converged: `True`
+
+## Project Workbench Primary Action
+
+- recommended_primary_action: `project_continue_diagnose_compile_sync`
+- recommended_primary_command: `PYTHONPATH=/Users/carwynmac/ai-cl python3 -m cli project continue --diagnose-compile-sync --base-url embedded://local --json`
+- recommended_primary_reason: `Project is healthy; use the safe continue path as the default next iteration action after source changes.`
+- doctor_status: `ok`
+- converged: `True`
+- trial_batch_distribution: `{'project_continue_diagnose_compile_sync': 3}`
+- probe_error: `None`
+
+## Trial Entry Route
+
+- expected_route: `trial_run_canonical_flow`
+- converged: `True`
+- trial_batch_distribution: `{'trial_run_canonical_flow': 3}`
+
+## Recommendation
+
+- Current frozen-profile surface is ready for continued controlled trials and RC-style review.
+
+## Artifacts
+
+- rc_checks_json: `/Users/carwynmac/ai-cl/testing/results/rc_checks_results.json`
+- rc_checks_report: `/Users/carwynmac/ai-cl/testing/results/rc_checks_report.md`
+- trial_batch_summary_json: `/Users/carwynmac/ai-cl/testing/results/first_user_trial_batch_recorded_summary_20260317.json`
+- trial_run_smoke_results: `/Users/carwynmac/ai-cl/testing/results/trial_run_smoke_results.json`
+- raw_model_outputs_results: `/Users/carwynmac/ai-cl/testing/results/raw_model_outputs_results.json`
+- patch_candidates_v3: `/Users/carwynmac/ai-cl/testing/results/patch_candidates_v3.json`
+- benchmark_results: `/Users/carwynmac/ai-cl/benchmark/results/latest/benchmark_results.json`
+
+## Command
+
+```bash
+bash /Users/carwynmac/ai-cl/testing/run_readiness_snapshot.sh
+```

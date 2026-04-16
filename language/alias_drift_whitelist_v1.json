@@ -1,0 +1,17 @@
+{
+  "version": "v1",
+  "component_aliases": {
+    "landing:Testimonials": "landing:Testimonial",
+    "ecom:Search": "ecom:SearchResultGrid"
+  },
+  "flow_aliases": {
+    "SUBMIT_CONTACT": "CONTACT_SUBMIT",
+    "ADD_CART": "ADD_TO_CART",
+    "SUPPORT_ESCALATE": "COMPLAINT_DEESCALATE"
+  },
+  "notes": [
+    "These aliases are normalized to formal installed tokens or flows.",
+    "They should not appear in suggested_tokens.",
+    "Testing runners should load this file as the single source of truth."
+  ]
+}

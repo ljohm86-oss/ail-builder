@@ -1,0 +1,483 @@
+{
+  "benchmark_version": "0.1",
+  "tasks": [
+    {
+      "task_id": "L1",
+      "category": "landing",
+      "title": "AI 产品官网",
+      "prompt": "做一个 AI SaaS 产品官网，包含首页、功能、价格、客户评价、联系我们。",
+      "expected_profile": "landing",
+      "expected_keywords": [
+        "#PROFILE[landing]",
+        "@PAGE[Home,/]",
+        "@PAGE[Pricing,/pricing]"
+      ],
+      "expected_routes": [
+        "/",
+        "/about",
+        "/features",
+        "/pricing",
+        "/contact"
+      ],
+      "forbidden_routes": [
+        "/product/:id",
+        "/cart",
+        "/checkout",
+        "/after-sales"
+      ],
+      "notes": "最小官网验证"
+    },
+    {
+      "task_id": "L2",
+      "category": "landing",
+      "title": "品牌营销落地页",
+      "prompt": "生成一个中文品牌官网，用于展示产品价值、功能、价格与联系方式。",
+      "expected_profile": "landing",
+      "expected_keywords": [
+        "#PROFILE[landing]",
+        "#UI[landing:Hero]",
+        "#UI[landing:Contact]"
+      ],
+      "expected_routes": [
+        "/",
+        "/about",
+        "/features",
+        "/pricing",
+        "/contact"
+      ],
+      "forbidden_routes": [
+        "/product/:id",
+        "/cart",
+        "/search",
+        "/after-sales"
+      ],
+      "notes": "品牌站基线"
+    },
+    {
+      "task_id": "L3",
+      "category": "landing",
+      "title": "团队协作平台官网",
+      "prompt": "做一个团队协作 SaaS 官网，重点展示功能介绍、价格方案和联系我们。",
+      "expected_profile": "landing",
+      "expected_keywords": [
+        "#PROFILE[landing]",
+        "@PAGE[Features,/features]",
+        "#UI[landing:Pricing]"
+      ],
+      "expected_routes": [
+        "/",
+        "/about",
+        "/features",
+        "/pricing",
+        "/contact"
+      ],
+      "forbidden_routes": [
+        "/cart",
+        "/checkout",
+        "/shop/:id",
+        "/after-sales"
+      ],
+      "notes": "SaaS 官网"
+    },
+    {
+      "task_id": "L4",
+      "category": "landing",
+      "title": "数据分析平台介绍站",
+      "prompt": "请生成一个中文数据分析平台官网，包含首页、功能页、价格页和联系页。",
+      "expected_profile": "landing",
+      "expected_keywords": [
+        "#PROFILE[landing]",
+        "@PAGE[About,/about]",
+        "#UI[landing:FeatureGrid]"
+      ],
+      "expected_routes": [
+        "/",
+        "/about",
+        "/features",
+        "/pricing",
+        "/contact"
+      ],
+      "forbidden_routes": [
+        "/product/:id",
+        "/cart",
+        "/checkout",
+        "/search"
+      ],
+      "notes": "分析平台官网"
+    },
+    {
+      "task_id": "L5",
+      "category": "landing",
+      "title": "开发者工具官网",
+      "prompt": "做一个开发者工具独立站，包含首页、功能说明、价格方案、联系我们。",
+      "expected_profile": "landing",
+      "expected_keywords": [
+        "#PROFILE[landing]",
+        "#UI[landing:Header]",
+        "#UI[landing:Footer]"
+      ],
+      "expected_routes": [
+        "/",
+        "/about",
+        "/features",
+        "/pricing",
+        "/contact"
+      ],
+      "forbidden_routes": [
+        "/product/:id",
+        "/cart",
+        "/after-sales",
+        "/search"
+      ],
+      "notes": "开发者工具站"
+    },
+    {
+      "task_id": "L6",
+      "category": "landing",
+      "title": "教育产品展示站",
+      "prompt": "请生成一个中文教育产品官网，适合营销落地页风格，包含功能、价格和联系入口。",
+      "expected_profile": "landing",
+      "expected_keywords": [
+        "#PROFILE[landing]",
+        "#UI[landing:CTA]",
+        "#UI[landing:Testimonial]"
+      ],
+      "expected_routes": [
+        "/",
+        "/about",
+        "/features",
+        "/pricing",
+        "/contact"
+      ],
+      "forbidden_routes": [
+        "/checkout",
+        "/shop/:id",
+        "/search",
+        "/after-sales"
+      ],
+      "notes": "教育产品落地页"
+    },
+    {
+      "task_id": "E1",
+      "category": "ecom_min",
+      "title": "中文电商前台",
+      "prompt": "生成一个中文电商网站前台，包含首页、商品详情、购物车、结算、分类、店铺和搜索。",
+      "expected_profile": "ecom_min",
+      "expected_keywords": [
+        "#PROFILE[ecom_min]",
+        "@PAGE[Product,/product/:id]",
+        "#UI[ecom:CheckoutPanel]"
+      ],
+      "expected_routes": [
+        "/",
+        "/product/:id",
+        "/cart",
+        "/checkout",
+        "/category/:name",
+        "/shop/:id",
+        "/search"
+      ],
+      "forbidden_routes": [
+        "/after-sales"
+      ],
+      "notes": "电商最小全链路"
+    },
+    {
+      "task_id": "E2",
+      "category": "ecom_min",
+      "title": "家居商城",
+      "prompt": "做一个中文家居商城前台，要求有商品详情、购物车、结算、分类导航和搜索结果页。",
+      "expected_profile": "ecom_min",
+      "expected_keywords": [
+        "#PROFILE[ecom_min]",
+        "#UI[ecom:ProductGrid]",
+        "#UI[ecom:ShopHeader]"
+      ],
+      "expected_routes": [
+        "/",
+        "/product/:id",
+        "/cart",
+        "/checkout",
+        "/category/:name",
+        "/shop/:id",
+        "/search"
+      ],
+      "forbidden_routes": [
+        "/after-sales"
+      ],
+      "notes": "家居电商"
+    },
+    {
+      "task_id": "E3",
+      "category": "ecom_min",
+      "title": "服饰购物网站",
+      "prompt": "生成一个中文服饰购物前台网站，包含商品详情、购物车、结算和搜索页。",
+      "expected_profile": "ecom_min",
+      "expected_keywords": [
+        "#PROFILE[ecom_min]",
+        "#UI[ecom:Header]",
+        "#UI[ecom:CartPanel]"
+      ],
+      "expected_routes": [
+        "/",
+        "/product/:id",
+        "/cart",
+        "/checkout",
+        "/category/:name",
+        "/shop/:id",
+        "/search"
+      ],
+      "forbidden_routes": [
+        "/after-sales"
+      ],
+      "notes": "服饰购物流程"
+    },
+    {
+      "task_id": "E4",
+      "category": "ecom_min",
+      "title": "数码商城",
+      "prompt": "请生成一个中文数码电商网站，包含首页、商品详情、购物车、结算、店铺页和搜索页。",
+      "expected_profile": "ecom_min",
+      "expected_keywords": [
+        "#PROFILE[ecom_min]",
+        "#UI[ecom:ProductDetail]",
+        "@PAGE[Search,/search]"
+      ],
+      "expected_routes": [
+        "/",
+        "/product/:id",
+        "/cart",
+        "/checkout",
+        "/category/:name",
+        "/shop/:id",
+        "/search"
+      ],
+      "forbidden_routes": [
+        "/after-sales"
+      ],
+      "notes": "数码电商"
+    },
+    {
+      "task_id": "E5",
+      "category": "ecom_min",
+      "title": "母婴电商前台",
+      "prompt": "做一个中文母婴商城前台，要求有首页、商品详情、购物车、结算、分类和店铺页。",
+      "expected_profile": "ecom_min",
+      "expected_keywords": [
+        "#PROFILE[ecom_min]",
+        "@PAGE[Category,/category/:name]",
+        "@PAGE[Shop,/shop/:id]"
+      ],
+      "expected_routes": [
+        "/",
+        "/product/:id",
+        "/cart",
+        "/checkout",
+        "/category/:name",
+        "/shop/:id",
+        "/search"
+      ],
+      "forbidden_routes": [
+        "/after-sales"
+      ],
+      "notes": "母婴购物站"
+    },
+    {
+      "task_id": "E6",
+      "category": "ecom_min",
+      "title": "生鲜购物站",
+      "prompt": "生成一个中文生鲜购物网站前台，包含商品详情、购物车、结算、分类页和搜索结果页。",
+      "expected_profile": "ecom_min",
+      "expected_keywords": [
+        "#PROFILE[ecom_min]",
+        "#UI[ecom:CategoryGrid]",
+        "#UI[ecom:SearchResultGrid]"
+      ],
+      "expected_routes": [
+        "/",
+        "/product/:id",
+        "/cart",
+        "/checkout",
+        "/category/:name",
+        "/shop/:id",
+        "/search"
+      ],
+      "forbidden_routes": [
+        "/after-sales"
+      ],
+      "notes": "生鲜电商"
+    },
+    {
+      "task_id": "A1",
+      "category": "after_sales",
+      "title": "售后服务中心",
+      "prompt": "做一个中文售后服务中心页面，包含退款申请、换货申请和联系客服入口。",
+      "expected_profile": "after_sales",
+      "expected_keywords": [
+        "#PROFILE[after_sales]",
+        "@PAGE[AfterSales,/after-sales]",
+        "#UI[ecom:AfterSalesEntry]"
+      ],
+      "expected_routes": [
+        "/after-sales"
+      ],
+      "forbidden_routes": [
+        "/product/:id",
+        "/cart",
+        "/checkout",
+        "/search"
+      ],
+      "notes": "售后入口"
+    },
+    {
+      "task_id": "A2",
+      "category": "after_sales",
+      "title": "退款换货入口",
+      "prompt": "生成一个中文退款换货前台入口页，重点是售后、退款和客服信息。",
+      "expected_profile": "after_sales",
+      "expected_keywords": [
+        "#PROFILE[after_sales]",
+        "#UI[ecom:AfterSalesEntry]"
+      ],
+      "expected_routes": [
+        "/after-sales"
+      ],
+      "forbidden_routes": [
+        "/product/:id",
+        "/checkout",
+        "/shop/:id"
+      ],
+      "notes": "退款换货中心"
+    },
+    {
+      "task_id": "A3",
+      "category": "after_sales",
+      "title": "订单售后帮助页",
+      "prompt": "做一个中文订单售后帮助页，提供退款、换货和联系客服三个入口。",
+      "expected_profile": "after_sales",
+      "expected_keywords": [
+        "#PROFILE[after_sales]",
+        "@PAGE[AfterSales,/after-sales]"
+      ],
+      "expected_routes": [
+        "/after-sales"
+      ],
+      "forbidden_routes": [
+        "/cart",
+        "/checkout",
+        "/search"
+      ],
+      "notes": "订单售后帮助"
+    },
+    {
+      "task_id": "A4",
+      "category": "after_sales",
+      "title": "客服与退款入口",
+      "prompt": "请生成一个中文售后页面，核心是客服、退款申请、换货申请。",
+      "expected_profile": "after_sales",
+      "expected_keywords": [
+        "#PROFILE[after_sales]",
+        "#UI[ecom:AfterSalesEntry]"
+      ],
+      "expected_routes": [
+        "/after-sales"
+      ],
+      "forbidden_routes": [
+        "/product/:id",
+        "/cart",
+        "/shop/:id"
+      ],
+      "notes": "客服售后入口"
+    },
+    {
+      "task_id": "P1",
+      "category": "app_min",
+      "title": "AI Chat App 原型",
+      "prompt": "做一个移动端 AI Chat App 原型，包含顶部栏、底部 tab、聊天列表、联系人和我的页面。",
+      "expected_profile": "app_min",
+      "expected_keywords": [
+        "#PROFILE[app_min]",
+        "#UI[app:BottomTab]",
+        "#UI[app:ChatWindow]"
+      ],
+      "expected_routes": [
+        "/"
+      ],
+      "forbidden_routes": [
+        "/about",
+        "/features",
+        "/pricing",
+        "/product/:id",
+        "/cart",
+        "/after-sales"
+      ],
+      "notes": "聊天应用原型"
+    },
+    {
+      "task_id": "P2",
+      "category": "app_min",
+      "title": "团队通讯 App",
+      "prompt": "生成一个移动端团队通讯 App 风格原型，包含 chats、contacts、discover、me 四个 tab。",
+      "expected_profile": "app_min",
+      "expected_keywords": [
+        "#PROFILE[app_min]",
+        "#UI[app:TopBar]",
+        "#UI[app:List]"
+      ],
+      "expected_routes": [
+        "/"
+      ],
+      "forbidden_routes": [
+        "/about",
+        "/contact",
+        "/product/:id",
+        "/checkout"
+      ],
+      "notes": "团队通讯壳"
+    },
+    {
+      "task_id": "P3",
+      "category": "app_min",
+      "title": "智能助手聊天 App",
+      "prompt": "做一个移动端智能助手聊天 App，单页，包含顶部栏、底部 tab 和聊天窗口。",
+      "expected_profile": "app_min",
+      "expected_keywords": [
+        "#PROFILE[app_min]",
+        "#UI[app:ChatWindow]",
+        "@PAGE[Home,/]"
+      ],
+      "expected_routes": [
+        "/"
+      ],
+      "forbidden_routes": [
+        "/pricing",
+        "/cart",
+        "/search",
+        "/after-sales"
+      ],
+      "notes": "AI 助手 App"
+    },
+    {
+      "task_id": "P4",
+      "category": "app_min",
+      "title": "联系人聊天原型",
+      "prompt": "请生成一个移动端聊天应用原型，重点是联系人 tab、发现 tab、我的资料和聊天窗口。",
+      "expected_profile": "app_min",
+      "expected_keywords": [
+        "#PROFILE[app_min]",
+        "#UI[app:Card]",
+        "#UI[app:BottomTab]"
+      ],
+      "expected_routes": [
+        "/"
+      ],
+      "forbidden_routes": [
+        "/features",
+        "/product/:id",
+        "/shop/:id",
+        "/after-sales"
+      ],
+      "notes": "联系人聊天原型"
+    }
+  ]
+}

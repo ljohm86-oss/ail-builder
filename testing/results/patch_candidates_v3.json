@@ -1,0 +1,287 @@
+{
+  "version": "v3",
+  "inputs": {
+    "raw_results": "/Users/carwynmac/ai-cl/testing/results/raw_model_outputs_results.json",
+    "real_requirements_results": "/Users/carwynmac/ai-cl/testing/results/real_requirements_results.json",
+    "benchmark_results": "/Users/carwynmac/ai-cl/benchmark/results/latest/benchmark_results.json",
+    "dictionary_gap_report": "/Users/carwynmac/ai-cl/testing/results/dictionary_gap_report.json",
+    "suggested_tokens": "/Users/carwynmac/ai-cl/testing/results/suggested_tokens.json",
+    "alias_whitelist": "/Users/carwynmac/ai-cl/language/alias_drift_whitelist_v1.json"
+  },
+  "summary": {
+    "raw_samples": 50,
+    "real_requirements": 30,
+    "benchmark_release_decision": "fail",
+    "active_suggested_tokens": 0,
+    "closed_signals_count": 11,
+    "recoverable_patterns_count": 4,
+    "active_patch_pressure_count": 0,
+    "candidate_types": {},
+    "priority_breakdown": {},
+    "cohort_breakdown": {
+      "legacy_raw": {
+        "total": 27,
+        "initial_compile_candidates": 8,
+        "repair_attempts": 27,
+        "repair_success": 27,
+        "final_compile_candidates": 27,
+        "recoverable_pattern_counts": {
+          "recoverable_app_boundary_violation": 3,
+          "recoverable_coverage_gap": 5,
+          "recoverable_support_gap": 2
+        },
+        "initial_compile_rate": 29.63,
+        "final_compile_rate": 100.0
+      },
+      "patch_validation": {
+        "total": 13,
+        "initial_compile_candidates": 12,
+        "repair_attempts": 13,
+        "repair_success": 13,
+        "final_compile_candidates": 13,
+        "recoverable_pattern_counts": {
+          "recoverable_support_gap": 2,
+          "recoverable_coverage_gap": 8
+        },
+        "initial_compile_rate": 92.31,
+        "final_compile_rate": 100.0
+      },
+      "clean_control": {
+        "total": 10,
+        "initial_compile_candidates": 10,
+        "repair_attempts": 1,
+        "repair_success": 1,
+        "final_compile_candidates": 10,
+        "recoverable_pattern_counts": {
+          "recoverable_support_gap": 1
+        },
+        "initial_compile_rate": 100.0,
+        "final_compile_rate": 100.0
+      }
+    }
+  },
+  "closed_signals": [
+    {
+      "signal_type": "closed_gap",
+      "profile": "after_sales",
+      "name": "after_sales:Support",
+      "evidence_count": 11,
+      "source_signals": [
+        "under_specified"
+      ],
+      "reason": "High frequency requirement phrase '联系客服' appears in under_specified samples",
+      "sample_ids": [
+        "A1",
+        "A2",
+        "A3",
+        "A4",
+        "A5",
+        "RAW_A1",
+        "RAW_A4"
+      ]
+    },
+    {
+      "signal_type": "closed_gap",
+      "profile": "app_min",
+      "name": "app:Composer",
+      "evidence_count": 3,
+      "source_signals": [
+        "under_specified"
+      ],
+      "reason": "High frequency requirement phrase '新增任务' appears in under_specified samples",
+      "sample_ids": [
+        "P2",
+        "P4",
+        "RAW_P4"
+      ]
+    },
+    {
+      "signal_type": "closed_gap",
+      "profile": "landing",
+      "name": "landing:Testimonial",
+      "evidence_count": 2,
+      "source_signals": [
+        "under_specified"
+      ],
+      "reason": "High frequency requirement phrase '客户评价' appears in under_specified samples",
+      "sample_ids": [
+        "L3",
+        "RAW_L9"
+      ]
+    },
+    {
+      "signal_type": "alias_normalized",
+      "profile": "landing",
+      "name": "landing:Testimonials->landing:Testimonial",
+      "evidence_count": 2,
+      "source_signals": [
+        "alias_normalized"
+      ],
+      "reason": "Alias/drift already normalized: landing:Testimonials->landing:Testimonial",
+      "sample_ids": [
+        "RAW_L3",
+        "RAW_L9"
+      ]
+    },
+    {
+      "signal_type": "alias_normalized",
+      "profile": "after_sales",
+      "name": "SUPPORT_ESCALATE->COMPLAINT_DEESCALATE",
+      "evidence_count": 1,
+      "source_signals": [
+        "alias_normalized"
+      ],
+      "reason": "Alias/drift already normalized: SUPPORT_ESCALATE->COMPLAINT_DEESCALATE",
+      "sample_ids": [
+        "RAW_A3"
+      ]
+    },
+    {
+      "signal_type": "closed_gap",
+      "profile": "app_min",
+      "name": "app:SearchBar",
+      "evidence_count": 1,
+      "source_signals": [
+        "under_specified"
+      ],
+      "reason": "High frequency requirement phrase '搜索联系人' appears in under_specified samples",
+      "sample_ids": [
+        "P3"
+      ]
+    },
+    {
+      "signal_type": "alias_normalized",
+      "profile": "ecom_min",
+      "name": "ADD_CART->ADD_TO_CART",
+      "evidence_count": 1,
+      "source_signals": [
+        "alias_normalized"
+      ],
+      "reason": "Alias/drift already normalized: ADD_CART->ADD_TO_CART",
+      "sample_ids": [
+        "RAW_E5"
+      ]
+    },
+    {
+      "signal_type": "alias_normalized",
+      "profile": "ecom_min",
+      "name": "ecom:Search->ecom:SearchResultGrid",
+      "evidence_count": 1,
+      "source_signals": [
+        "alias_normalized"
+      ],
+      "reason": "Alias/drift already normalized: ecom:Search->ecom:SearchResultGrid",
+      "sample_ids": [
+        "RAW_E3"
+      ]
+    },
+    {
+      "signal_type": "alias_normalized",
+      "profile": "landing",
+      "name": "SUBMIT_CONTACT->CONTACT_SUBMIT",
+      "evidence_count": 1,
+      "source_signals": [
+        "alias_normalized"
+      ],
+      "reason": "Alias/drift already normalized: SUBMIT_CONTACT->CONTACT_SUBMIT",
+      "sample_ids": [
+        "RAW_L6"
+      ]
+    },
+    {
+      "signal_type": "closed_gap",
+      "profile": "landing",
+      "name": "landing:Jobs",
+      "evidence_count": 1,
+      "source_signals": [
+        "under_specified"
+      ],
+      "reason": "High frequency requirement phrase '职位展示' appears in under_specified samples",
+      "sample_ids": [
+        "L5"
+      ]
+    },
+    {
+      "signal_type": "closed_gap",
+      "profile": "landing",
+      "name": "landing:Portfolio",
+      "evidence_count": 1,
+      "source_signals": [
+        "under_specified"
+      ],
+      "reason": "High frequency requirement phrase '项目作品' appears in under_specified samples",
+      "sample_ids": [
+        "L6"
+      ]
+    }
+  ],
+  "recoverable_patterns": [
+    {
+      "profile": "landing",
+      "name": "recoverable_coverage_gap",
+      "evidence_count": 10,
+      "sample_ids": [
+        "RAW_L10",
+        "RAW_L11",
+        "RAW_L12",
+        "RAW_L13",
+        "RAW_L14",
+        "RAW_L15",
+        "RAW_L16",
+        "RAW_L17",
+        "RAW_L20",
+        "RAW_L21"
+      ],
+      "cohorts": [
+        "legacy_raw",
+        "patch_validation"
+      ]
+    },
+    {
+      "profile": "after_sales",
+      "name": "recoverable_support_gap",
+      "evidence_count": 5,
+      "sample_ids": [
+        "RAW_A1",
+        "RAW_A4",
+        "RAW_A5",
+        "RAW_A6",
+        "RAW_A7"
+      ],
+      "cohorts": [
+        "clean_control",
+        "legacy_raw",
+        "patch_validation"
+      ]
+    },
+    {
+      "profile": "app_min",
+      "name": "recoverable_app_boundary_violation",
+      "evidence_count": 3,
+      "sample_ids": [
+        "RAW_P1",
+        "RAW_P2",
+        "RAW_P7"
+      ],
+      "cohorts": [
+        "legacy_raw"
+      ]
+    },
+    {
+      "profile": "app_min",
+      "name": "recoverable_coverage_gap",
+      "evidence_count": 3,
+      "sample_ids": [
+        "RAW_P4",
+        "RAW_P5",
+        "RAW_P6"
+      ],
+      "cohorts": [
+        "legacy_raw",
+        "patch_validation"
+      ]
+    }
+  ],
+  "active_patch_pressure": [],
+  "patch_candidates": []
+}

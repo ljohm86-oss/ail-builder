@@ -1,0 +1,45 @@
+{
+  "asset_version": "2026-03-19",
+  "pack_id": "after_sales",
+  "pack": "After-Sales Service Website Pack",
+  "support_level": "Supported",
+  "canonical_requirement": "做一个售后页面，包含退款申请、换货申请、投诉提交、联系客服。",
+  "demo_requirement": "做一个品牌售后服务网站，包含退款申请、换货申请、投诉提交、进度查询说明、联系客服。",
+  "expected_profile": "after_sales",
+  "expected_primary_route": "project_continue_diagnose_compile_sync",
+  "expected_primary_preview_target": "artifact_root",
+  "expected_export_primary_target": "artifact_root",
+  "best_entry_command": "PYTHONPATH=/Users/carwynmac/ai-cl python3 -m cli trial-run --scenario after_sales --base-url embedded://local --json",
+  "recommended_validation_flow": "trial-run -> project go -> project preview -> project export-handoff",
+  "safe_talking_points": [
+    "Supported as an after-sales service website.",
+    "Strong fit for refund, exchange, and complaint intake surfaces.",
+    "Works best as a support-entry website, not an operations platform."
+  ],
+  "avoid_promises": [
+    "support operations platform",
+    "CRM",
+    "internal service console"
+  ],
+  "validated_behavior": {
+    "detected_profile": "after_sales",
+    "trial_status": "ok",
+    "repair_used": false,
+    "managed_files_written": 7,
+    "project_go_route": "project_continue_diagnose_compile_sync",
+    "preview_primary_target": "artifact_root",
+    "export_primary_target_label": "artifact_root",
+    "delivery_ready": true
+  },
+  "demo_behavior": {
+    "demo_ready": true,
+    "flow_ok": true
+  },
+  "evidence": {
+    "delivery_validation_json": "/Users/carwynmac/ai-cl/testing/results/website_delivery_validation_20260319.json",
+    "demo_pack_run_json": "/Users/carwynmac/ai-cl/testing/results/website_demo_pack_run_20260319.json",
+    "website_frontier_summary": "/Users/carwynmac/ai-cl/WEBSITE_FRONTIER_SUMMARY_20260319.md",
+    "website_demo_pack": "/Users/carwynmac/ai-cl/WEBSITE_DEMO_PACK_20260319.md",
+    "website_delivery_checklist": "/Users/carwynmac/ai-cl/WEBSITE_DELIVERY_CHECKLIST_20260319.md"
+  }
+}

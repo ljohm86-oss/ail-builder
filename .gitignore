@@ -1,0 +1,37 @@
+# macOS / local OS noise
+.DS_Store
+
+# Local Codex / browser runtime state
+.playwright-cli/
+.workspace_ail/
+
+# Python caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+
+# Node / frontend build artifacts
+node_modules/
+dist/
+.vite/
+
+# Test runner artifacts
+test-results/
+playwright-report/
+
+# Generated outputs / local evidence bundles
+out/
+output/
+benchmark/results/latest/
+archive/generated_or_cache_20260316/ail_data.db
+archive/generated_or_cache_20260316/studio_web_generated/
+
+# Editor / IDE noise
+.idea/
+.vscode/

@@ -1,0 +1,5 @@
+#PROFILE[after_sales]
+@PAGE[AfterSales,/after-sales]
+#UI[after_sales:Entry]
+#UI[after_sales:Complaint]
+#FLOW[SUPPORT_ESCALATE]

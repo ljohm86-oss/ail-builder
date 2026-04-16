@@ -1,0 +1,24 @@
+{
+  "version": "v1",
+  "profile": "landing",
+  "ui_tokens": [
+    "Header",
+    "Hero",
+    "FeatureGrid",
+    "Testimonial",
+    "Pricing",
+    "CTA",
+    "Contact",
+    "Footer",
+    "FAQ",
+    "Team",
+    "Stats",
+    "LogoCloud",
+    "Jobs",
+    "Portfolio"
+  ],
+  "flows": [
+    "CONTACT_SUBMIT",
+    "LEAD_CAPTURE"
+  ]
+}

@@ -1,0 +1,559 @@
+{
+  "version": "v1",
+  "total": 25,
+  "groups": {
+    "landing": 11,
+    "ecom_min": 6,
+    "after_sales": 4,
+    "app_min": 4
+  },
+  "samples": [
+    {
+      "id": "RAW_L1",
+      "category": "landing",
+      "source_type": "clean_control",
+      "requirement": "做一个 AI SaaS 官网，包含首页、功能介绍、FAQ、联系我们。",
+      "raw_output": "#PROFILE[landing]\n@PAGE[Home,/]\n#UI[landing:Header]\n#UI[landing:Hero]\n#UI[landing:FeatureGrid]\n#UI[landing:FAQ]\n#UI[landing:Footer]\n@PAGE[Contact,/contact]\n#UI[landing:Contact]\n#FLOW[CONTACT_SUBMIT]\n",
+      "expected_noise_tags": [
+        "clean_control"
+      ]
+    },
+    {
+      "id": "RAW_L2",
+      "category": "landing",
+      "source_type": "simulated_team_output",
+      "requirement": "做一个科技公司官网，包含首页、关于我们、团队介绍、联系我们。",
+      "raw_output": "#PROFILE[landing]\n@PAGE[Home,/]\n#UI[landing:Header]\n#UI[landing:Hero]\n#UI[landing:Footer]\n",
+      "expected_noise_tags": [
+        "under_specified"
+      ]
+    },
+    {
+      "id": "RAW_L3",
+      "category": "landing",
+      "source_type": "simulated_team_output",
+      "requirement": "做一个产品营销页，包含 Hero、FAQ、联系我们。",
+      "raw_output": "#PROFILE[landing]\n@PAGE[Home,/]\n#UI[landing:Header]\n#UI[landing:Hero]\n#UI[landing:Testimonials]\n#UI[landing:Footer]\n",
+      "expected_noise_tags": [
+        "unknown_component"
+      ]
+    },
+    {
+      "id": "RAW_L4",
+      "category": "landing",
+      "source_type": "simulated_ide_output",
+      "requirement": "做一个 AI 官网，包含首页、功能介绍、FAQ、联系我们。",
+      "raw_output": "**Task 1**\n\n#PROFILE[landing]\n\n@PAGE[Home,/]\n\n#UI[landing:Header]\n\n#UI[landing:Hero]\n\n#UI[landing:FeatureGrid]\n\n#UI[landing:FAQ]\n\n#UI[landing:Contact]\n\n#UI[landing:Footer]\n\n#FLOW[CONTACT_SUBMIT]\n\n---\n\n**Task 2**\n\n#PROFILE[ecom_min]\n\n@PAGE[Home,/]\n\n#UI[ecom:Header]\n",
+      "expected_noise_tags": [
+        "multi_result_wrapper",
+        "markdown_wrapper",
+        "separator",
+        "multiple_profile"
+      ]
+    },
+    {
+      "id": "RAW_L5",
+      "category": "landing",
+      "source_type": "simulated_team_output",
+      "requirement": "做一个 B2B 官网，包含功能介绍、预约演示、联系我们。",
+      "raw_output": "#PROFILE[landing]\n#PROFILE[ecom_min]\n@PAGE[Home,/]\n#UI[landing:Header]\n#UI[landing:Hero]\n#UI[landing:FeatureGrid]\n#UI[ecom:Header]\n",
+      "expected_noise_tags": [
+        "multiple_profile"
+      ]
+    },
+    {
+      "id": "RAW_L6",
+      "category": "landing",
+      "source_type": "simulated_team_output",
+      "requirement": "做一个官网联系页，支持用户提交联系表单。",
+      "raw_output": "#PROFILE[landing]\n@PAGE[Contact,/contact]\n#UI[landing:Contact]\n#FLOW[SUBMIT_CONTACT]\n",
+      "expected_noise_tags": [
+        "unknown_flow"
+      ]
+    },
+    {
+      "id": "RAW_L7",
+      "category": "landing",
+      "source_type": "simulated_ide_output",
+      "requirement": "做一个自动化平台官网，包含首页、功能介绍、客户 Logo、FAQ、立即开始。",
+      "raw_output": "```ail\n#PROFILE[landing]\n@PAGE[Home,/]\n#UI[landing:Header]\n#UI[landing:Hero]\n#UI[landing:FeatureGrid]\n#UI[landing:LogoCloud]\n#UI[landing:FAQ]\n#UI[landing:CTA]\n#UI[landing:Footer]\n```\n",
+      "expected_noise_tags": [
+        "markdown_wrapper"
+      ]
+    },
+    {
+      "id": "RAW_L8",
+      "category": "landing",
+      "source_type": "clean_control",
+      "requirement": "做一个企业官网，包含首页、数据展示、合作伙伴 Logo、团队、联系我们。",
+      "raw_output": "#PROFILE[landing]\n@PAGE[Home,/]\n#UI[landing:Header]\n#UI[landing:Hero]\n#UI[landing:Stats]\n#UI[landing:LogoCloud]\n#UI[landing:Team]\n#UI[landing:Footer]\n@PAGE[Contact,/contact]\n#UI[landing:Contact]\n#FLOW[CONTACT_SUBMIT]\n",
+      "expected_noise_tags": [
+        "clean_control"
+      ]
+    },
+    {
+      "id": "RAW_E1",
+      "category": "ecom_min",
+      "source_type": "clean_control",
+      "requirement": "做一个服装商城，包含首页商品列表、商品详情页、购物车、结算页。",
+      "raw_output": "#PROFILE[ecom_min]\n@PAGE[Home,/]\n#UI[ecom:Header]\n#UI[ecom:ProductGrid]\n@PAGE[Product,/product/:id]\n#UI[ecom:ProductDetail]\n@PAGE[Cart,/cart]\n#UI[ecom:CartPanel]\n@PAGE[Checkout,/checkout]\n#UI[ecom:CheckoutPanel]\n#FLOW[ADD_TO_CART]\n#FLOW[CHECKOUT_SUBMIT]\n#FLOW[ORDER_PLACE]\n",
+      "expected_noise_tags": [
+        "clean_control"
+      ]
+    },
+    {
+      "id": "RAW_E2",
+      "category": "ecom_min",
+      "source_type": "simulated_team_output",
+      "requirement": "做一个数码商品商城，包含首页推荐商品、商品详情、购物车、结算。",
+      "raw_output": "#PROFILE[ecom_min]\n@PAGE[Home,/]\n#UI[ecom:Header]\n#UI[ecom:ProductGrid]\n",
+      "expected_noise_tags": [
+        "under_specified"
+      ]
+    },
+    {
+      "id": "RAW_E3",
+      "category": "ecom_min",
+      "source_type": "simulated_team_output",
+      "requirement": "做一个电商网站，支持商品搜索、搜索结果页、商品详情。",
+      "raw_output": "#PROFILE[ecom_min]\n@PAGE[Home,/]\n#UI[ecom:Header]\n#UI[ecom:Search]\n@PAGE[Product,/product/:id]\n#UI[ecom:ProductDetail]\n",
+      "expected_noise_tags": [
+        "unknown_component"
+      ]
+    },
+    {
+      "id": "RAW_E4",
+      "category": "ecom_min",
+      "source_type": "simulated_ide_output",
+      "requirement": "做一个电商网站，包含店铺页、商品列表、商品详情、购物车。",
+      "raw_output": "**Task 1**\n#PROFILE[landing]\n@PAGE[Home,/]\n#UI[landing:Header]\n---\n**Task 2**\n#PROFILE[ecom_min]\n@PAGE[Home,/]\n#UI[ecom:Header]\n#UI[ecom:ProductGrid]\n@PAGE[Shop,/shop/:id]\n#UI[ecom:ShopHeader]\n#UI[ecom:ProductGrid]\n@PAGE[Product,/product/:id]\n#UI[ecom:ProductDetail]\n@PAGE[Cart,/cart]\n#UI[ecom:CartPanel]\n",
+      "expected_noise_tags": [
+        "multi_result_wrapper",
+        "markdown_wrapper",
+        "separator",
+        "multiple_profile"
+      ]
+    },
+    {
+      "id": "RAW_E5",
+      "category": "ecom_min",
+      "source_type": "simulated_team_output",
+      "requirement": "做一个电商流程，包含商品详情、加入购物车、购物车、结算。",
+      "raw_output": "#PROFILE[ecom_min]\n@PAGE[Product,/product/:id]\n#UI[ecom:ProductDetail]\n@PAGE[Cart,/cart]\n#UI[ecom:CartPanel]\n#FLOW[ADD_CART]\n",
+      "expected_noise_tags": [
+        "unknown_flow",
+        "under_specified"
+      ]
+    },
+    {
+      "id": "RAW_E6",
+      "category": "ecom_min",
+      "source_type": "clean_control",
+      "requirement": "做一个分类电商网站，包含首页横幅、分类导航、分类商品列表、商品详情、结算。",
+      "raw_output": "#PROFILE[ecom_min]\n@PAGE[Home,/]\n#UI[ecom:Header]\n#UI[ecom:Banner]\n#UI[ecom:CategoryNav]\n#UI[ecom:ProductGrid]\n@PAGE[Category,/category/:name]\n#UI[ecom:CategoryNav]\n#UI[ecom:ProductGrid]\n@PAGE[Product,/product/:id]\n#UI[ecom:ProductDetail]\n@PAGE[Checkout,/checkout]\n#UI[ecom:CheckoutPanel]\n#FLOW[CHECKOUT_SUBMIT]\n#FLOW[ORDER_PLACE]\n",
+      "expected_noise_tags": [
+        "clean_control"
+      ]
+    },
+    {
+      "id": "RAW_A1",
+      "category": "after_sales",
+      "source_type": "clean_control",
+      "requirement": "做一个售后入口页，包含退款、换货、联系客服。",
+      "raw_output": "#PROFILE[after_sales]\n@PAGE[AfterSales,/after-sales]\n#UI[after_sales:Entry]\n#UI[after_sales:Refund]\n#UI[after_sales:Exchange]\n#UI[after_sales:Complaint]\n#FLOW[REFUND_FLOW]\n#FLOW[EXCHANGE_FLOW]\n",
+      "expected_noise_tags": [
+        "clean_control"
+      ]
+    },
+    {
+      "id": "RAW_A2",
+      "category": "after_sales",
+      "source_type": "simulated_team_output",
+      "requirement": "做一个售后页面，包含退款申请、投诉提交、升级处理入口。",
+      "raw_output": "#PROFILE[after_sales]\n@PAGE[AfterSales,/after-sales]\n#UI[after_sales:Entry]\n",
+      "expected_noise_tags": [
+        "under_specified"
+      ]
+    },
+    {
+      "id": "RAW_A3",
+      "category": "after_sales",
+      "source_type": "simulated_team_output",
+      "requirement": "做一个售后页面，包含换货申请、投诉提交、升级处理入口。",
+      "raw_output": "#PROFILE[after_sales]\n@PAGE[AfterSales,/after-sales]\n#UI[after_sales:Exchange]\n#FLOW[SUPPORT_ESCALATE]\n",
+      "expected_noise_tags": [
+        "unknown_flow",
+        "under_specified"
+      ]
+    },
+    {
+      "id": "RAW_P1",
+      "category": "app_min",
+      "source_type": "simulated_team_output",
+      "requirement": "做一个 AI Chat App 原型，包含顶部栏、底部 tab、聊天列表、聊天窗口。",
+      "raw_output": "#PROFILE[app_min]\n@API[AUTH,/api/login]{>DB_AUTH[users]}\n@PAGE[Login,/login]\n@PAGE[Home,/]\n#UI[app:TopBar]\n#UI[app:BottomTab]\n#UI[app:List]\n#UI[app:ChatWindow]\n",
+      "expected_noise_tags": [
+        "app_min_boundary_auth"
+      ]
+    },
+    {
+      "id": "RAW_P2",
+      "category": "app_min",
+      "source_type": "simulated_team_output",
+      "requirement": "做一个联系人 App 原型，包含顶部栏、底部 tab、联系人列表、个人卡片。",
+      "raw_output": "#PROFILE[app_min]\n@PAGE[Home,/]\n#UI[app:TopBar]\n#UI[app:BottomTab]\n#UI[app:List]\n@PAGE[Profile,/profile]\n#UI[app:Card]\n",
+      "expected_noise_tags": [
+        "app_min_multi_page"
+      ]
+    },
+    {
+      "id": "RAW_P3",
+      "category": "app_min",
+      "source_type": "clean_control",
+      "requirement": "做一个消息 App 原型，包含顶部栏、底部 tab、消息列表、聊天窗口。",
+      "raw_output": "#PROFILE[app_min]\n@PAGE[Home,/]\n#UI[app:TopBar]\n#UI[app:BottomTab]\n#UI[app:List]\n#UI[app:ChatWindow]\n",
+      "expected_noise_tags": [
+        "clean_control"
+      ]
+    },
+    {
+      "id": "RAW_L9",
+      "category": "landing",
+      "source_type": "simulated_team_output",
+      "requirement": "做一个 AI SaaS 官网，包含首页、功能介绍、客户评价、FAQ、联系我们。",
+      "raw_output": "#PROFILE[landing]\n@PAGE[Home,/]\n#UI[landing:Header]\n#UI[landing:Hero]\n#UI[landing:FeatureGrid]\n#UI[landing:Testimonials]\n#UI[landing:FAQ]\n#UI[landing:Contact]\n#UI[landing:Footer]\n",
+      "expected_noise_tags": [
+        "unknown_component"
+      ]
+    },
+    {
+      "id": "RAW_A4",
+      "category": "after_sales",
+      "source_type": "simulated_team_output",
+      "requirement": "做一个售后页面，用户可以申请退款并联系客服。",
+      "raw_output": "#PROFILE[after_sales]\n@PAGE[AfterSales,/after-sales]\n#UI[after_sales:Entry]\n#UI[after_sales:Refund]\n",
+      "expected_noise_tags": [
+        "under_specified"
+      ]
+    },
+    {
+      "id": "RAW_P4",
+      "category": "app_min",
+      "source_type": "simulated_team_output",
+      "requirement": "做一个简单的待办 app，支持新增任务和编辑输入。",
+      "raw_output": "#PROFILE[app_min]\n@PAGE[Home,/]\n#UI[app:TopBar]\n#UI[app:BottomTab]\n#UI[app:List]\n",
+      "expected_noise_tags": [
+        "under_specified"
+      ]
+    },
+    {
+      "id": "RAW_L10",
+      "category": "landing",
+      "source_type": "simulated_team_output",
+      "sample_cohort": "patch_validation",
+      "requirement": "做一个官网，包含客户评价、FAQ、联系我们。",
+      "raw_output": "#PROFILE[landing]\n@PAGE[Home,/]\n#UI[landing:Header]\n#UI[landing:Hero]\n#UI[landing:LogoCloud]\n#UI[landing:FAQ]\n#UI[landing:Contact]\n#UI[landing:Footer]\n",
+      "expected_noise_tags": [
+        "under_specified",
+        "logo_testimonial_drift"
+      ]
+    },
+    {
+      "id": "RAW_L11",
+      "category": "landing",
+      "source_type": "simulated_team_output",
+      "sample_cohort": "patch_validation",
+      "requirement": "做一个官网，包含用户反馈、功能介绍、联系我们。",
+      "raw_output": "#PROFILE[landing]\n@PAGE[Home,/]\n#UI[landing:Header]\n#UI[landing:Hero]\n#UI[landing:LogoCloud]\n#UI[landing:FeatureGrid]\n#UI[landing:Contact]\n#UI[landing:Footer]\n",
+      "expected_noise_tags": [
+        "under_specified",
+        "logo_testimonial_drift"
+      ]
+    },
+    {
+      "id": "RAW_L12",
+      "category": "landing",
+      "source_type": "simulated_team_output",
+      "sample_cohort": "legacy_raw",
+      "requirement": "做一个 AI 官网，包含客户评价、FAQ、联系我们。",
+      "raw_output": "#PROFILE[landing]\n@PAGE[Home,/]\n#UI[landing:Header]\n#UI[landing:Hero]\n#UI[landing:FAQ]\n#UI[landing:Footer]\n",
+      "expected_noise_tags": [
+        "under_specified"
+      ]
+    },
+    {
+      "id": "RAW_L13",
+      "category": "landing",
+      "source_type": "simulated_team_output",
+      "sample_cohort": "patch_validation",
+      "requirement": "做一个官网，包含用户反馈、联系我们。",
+      "raw_output": "#PROFILE[landing]\n@PAGE[Home,/]\n#UI[landing:Header]\n#UI[landing:Hero]\n#UI[landing:Contact]\n#UI[landing:Footer]\n",
+      "expected_noise_tags": [
+        "under_specified"
+      ]
+    },
+    {
+      "id": "RAW_L14",
+      "category": "landing",
+      "source_type": "simulated_ide_output",
+      "sample_cohort": "legacy_raw",
+      "requirement": "做一个招聘官网，包含职位展示、join us、联系我们。",
+      "raw_output": "**Draft**\n\n#PROFILE[landing]\n@PAGE[Home,/]\n#UI[landing:Header]\n#UI[landing:Hero]\n#UI[landing:Team]\n#UI[landing:Footer]\n",
+      "expected_noise_tags": [
+        "light_wrapper_noise",
+        "under_specified"
+      ]
+    },
+    {
+      "id": "RAW_L15",
+      "category": "landing",
+      "source_type": "simulated_team_output",
+      "sample_cohort": "patch_validation",
+      "requirement": "做一个官网，包含招聘岗位、团队、联系我们。",
+      "raw_output": "#PROFILE[landing]\n@PAGE[Home,/]\n#UI[landing:Header]\n#UI[landing:Hero]\n#UI[landing:Team]\n#UI[landing:Contact]\n#UI[landing:Footer]\n",
+      "expected_noise_tags": [
+        "under_specified"
+      ]
+    },
+    {
+      "id": "RAW_L16",
+      "category": "landing",
+      "source_type": "simulated_team_output",
+      "sample_cohort": "legacy_raw",
+      "requirement": "做一个设计工作室官网，包含项目作品、案例展示、联系我们。",
+      "raw_output": "#PROFILE[landing]\n@PAGE[Home,/]\n#UI[landing:Header]\n#UI[landing:Hero]\n#UI[landing:FeatureGrid]\n#UI[landing:Footer]\n",
+      "expected_noise_tags": [
+        "under_specified"
+      ]
+    },
+    {
+      "id": "RAW_L17",
+      "category": "landing",
+      "source_type": "simulated_team_output",
+      "sample_cohort": "patch_validation",
+      "requirement": "做一个官网，包含作品集、联系我们。",
+      "raw_output": "#PROFILE[landing]\n@PAGE[Home,/]\n#UI[landing:Header]\n#UI[landing:Hero]\n#UI[landing:Contact]\n#UI[landing:Footer]\n",
+      "expected_noise_tags": [
+        "under_specified"
+      ]
+    },
+    {
+      "id": "RAW_L18",
+      "category": "landing",
+      "source_type": "clean_control",
+      "sample_cohort": "clean_control",
+      "requirement": "做一个品牌官网，包含 partners、logo wall、联系我们。",
+      "raw_output": "#PROFILE[landing]\n@PAGE[Home,/]\n#UI[landing:Header]\n#UI[landing:Hero]\n#UI[landing:LogoCloud]\n#UI[landing:Footer]\n@PAGE[Contact,/contact]\n#UI[landing:Contact]\n#FLOW[CONTACT_SUBMIT]\n",
+      "expected_noise_tags": [
+        "clean_control"
+      ]
+    },
+    {
+      "id": "RAW_L19",
+      "category": "landing",
+      "source_type": "simulated_team_output",
+      "sample_cohort": "legacy_raw",
+      "requirement": "做一个官网，包含客户墙、FAQ、立即开始。",
+      "raw_output": "#PROFILE[landing]\n@PAGE[Home,/]\n#UI[landing:Header]\n#UI[landing:Hero]\n#UI[landing:FAQ]\n#UI[landing:CTA]\n#UI[landing:Footer]\n",
+      "expected_noise_tags": [
+        "under_specified"
+      ]
+    },
+    {
+      "id": "RAW_L20",
+      "category": "landing",
+      "source_type": "simulated_ide_output",
+      "sample_cohort": "legacy_raw",
+      "requirement": "做一个产品官网，包含 testimonial、FAQ、联系我们。",
+      "raw_output": "```ail\n#PROFILE[landing]\n@PAGE[Home,/]\n#UI[landing:Header]\n#UI[landing:Hero]\n#UI[landing:FAQ]\n#UI[landing:Contact]\n#UI[landing:Footer]\n```\n",
+      "expected_noise_tags": [
+        "light_wrapper_noise",
+        "under_specified"
+      ]
+    },
+    {
+      "id": "RAW_L21",
+      "category": "landing",
+      "source_type": "simulated_team_output",
+      "sample_cohort": "patch_validation",
+      "requirement": "做一个官网，包含 customer review、case studies、联系我们。",
+      "raw_output": "#PROFILE[landing]\n@PAGE[Home,/]\n#UI[landing:Header]\n#UI[landing:Hero]\n#UI[landing:Contact]\n#UI[landing:Footer]\n",
+      "expected_noise_tags": [
+        "under_specified"
+      ]
+    },
+    {
+      "id": "RAW_E7",
+      "category": "ecom_min",
+      "source_type": "simulated_team_output",
+      "sample_cohort": "legacy_raw",
+      "requirement": "做一个数码商城，包含搜索结果页、商品详情、购物车。",
+      "raw_output": "#PROFILE[ecom_min]\n@PAGE[Home,/]\n#UI[ecom:Header]\n#UI[ecom:Search]\n@PAGE[Product,/product/:id]\n#UI[ecom:ProductDetail]\n@PAGE[Cart,/cart]\n#UI[ecom:CartPanel]\n",
+      "expected_noise_tags": [
+        "legacy_style",
+        "unknown_component"
+      ]
+    },
+    {
+      "id": "RAW_E8",
+      "category": "ecom_min",
+      "source_type": "simulated_team_output",
+      "sample_cohort": "legacy_raw",
+      "requirement": "做一个店铺型商城，包含店铺页、商品详情、购物车、结算。",
+      "raw_output": "#PROFILE[ecom_min]\n@PAGE[Shop,/shop/:id]\n#UI[ecom:ShopHeader]\n@PAGE[Product,/product/:id]\n#UI[ecom:ProductDetail]\n#FLOW[ADD_CART]\n",
+      "expected_noise_tags": [
+        "legacy_style",
+        "under_specified",
+        "unknown_flow"
+      ]
+    },
+    {
+      "id": "RAW_E9",
+      "category": "ecom_min",
+      "source_type": "simulated_ide_output",
+      "sample_cohort": "legacy_raw",
+      "requirement": "做一个商城，包含分类导航、商品列表、商品详情、结算。",
+      "raw_output": "Draft:\n#PROFILE[ecom_min]\n@PAGE[Home,/]\n#UI[ecom:Header]\n#UI[ecom:CategoryNav]\n#UI[ecom:ProductGrid]\n@PAGE[Product,/product/:id]\n#UI[ecom:ProductDetail]\n",
+      "expected_noise_tags": [
+        "light_wrapper_noise",
+        "under_specified"
+      ]
+    },
+    {
+      "id": "RAW_E10",
+      "category": "ecom_min",
+      "source_type": "clean_control",
+      "sample_cohort": "clean_control",
+      "requirement": "做一个礼品商城，包含首页横幅、商品列表、店铺页、商品详情、结算。",
+      "raw_output": "#PROFILE[ecom_min]\n@PAGE[Home,/]\n#UI[ecom:Header]\n#UI[ecom:Banner]\n#UI[ecom:ProductGrid]\n@PAGE[Shop,/shop/:id]\n#UI[ecom:ShopHeader]\n#UI[ecom:ProductGrid]\n@PAGE[Product,/product/:id]\n#UI[ecom:ProductDetail]\n@PAGE[Checkout,/checkout]\n#UI[ecom:CheckoutPanel]\n#FLOW[CHECKOUT_SUBMIT]\n#FLOW[ORDER_PLACE]\n",
+      "expected_noise_tags": [
+        "clean_control"
+      ]
+    },
+    {
+      "id": "RAW_E11",
+      "category": "ecom_min",
+      "source_type": "simulated_team_output",
+      "sample_cohort": "patch_validation",
+      "requirement": "做一个电商网站，包含搜索结果页、商品详情、购物车、结算。",
+      "raw_output": "#PROFILE[ecom_min]\n@PAGE[Home,/]\n#UI[ecom:Header]\n@PAGE[Product,/product/:id]\n#UI[ecom:ProductDetail]\n@PAGE[Cart,/cart]\n#UI[ecom:CartPanel]\n",
+      "expected_noise_tags": [
+        "under_specified"
+      ]
+    },
+    {
+      "id": "RAW_E12",
+      "category": "ecom_min",
+      "source_type": "simulated_team_output",
+      "sample_cohort": "legacy_raw",
+      "requirement": "做一个商城，包含商品详情、加入购物车、结算。",
+      "raw_output": "#PROFILE[ecom_min]\n@PAGE[Product,/product/:id]\n#UI[ecom:ProductDetail]\n#FLOW[ADD_CART]\n",
+      "expected_noise_tags": [
+        "legacy_style",
+        "under_specified",
+        "unknown_flow"
+      ]
+    },
+    {
+      "id": "RAW_E13",
+      "category": "ecom_min",
+      "source_type": "simulated_team_output",
+      "sample_cohort": "patch_validation",
+      "requirement": "做一个商城，包含分类页、商品详情、购物车。",
+      "raw_output": "#PROFILE[ecom_min]\n@PAGE[Category,/category/:name]\n#UI[ecom:CategoryNav]\n#UI[ecom:ProductGrid]\n@PAGE[Product,/product/:id]\n#UI[ecom:ProductDetail]\n",
+      "expected_noise_tags": [
+        "under_specified"
+      ]
+    },
+    {
+      "id": "RAW_A5",
+      "category": "after_sales",
+      "source_type": "simulated_team_output",
+      "sample_cohort": "patch_validation",
+      "requirement": "做一个售后页面，包含退款申请和客服支持。",
+      "raw_output": "#PROFILE[after_sales]\n@PAGE[AfterSales,/after-sales]\n#UI[after_sales:Refund]\n",
+      "expected_noise_tags": [
+        "under_specified"
+      ]
+    },
+    {
+      "id": "RAW_A6",
+      "category": "after_sales",
+      "source_type": "simulated_team_output",
+      "sample_cohort": "legacy_raw",
+      "requirement": "做一个售后页面，包含换货申请、在线客服、处理结果。",
+      "raw_output": "#PROFILE[after_sales]\n@PAGE[AfterSales,/after-sales]\n#UI[after_sales:Exchange]\n",
+      "expected_noise_tags": [
+        "under_specified"
+      ]
+    },
+    {
+      "id": "RAW_A7",
+      "category": "after_sales",
+      "source_type": "simulated_ide_output",
+      "sample_cohort": "legacy_raw",
+      "requirement": "做一个投诉升级页面，包含投诉提交、客服介入、升级处理。",
+      "raw_output": "Task A\n#PROFILE[after_sales]\n@PAGE[AfterSales,/after-sales]\n#UI[after_sales:Complaint]\n#FLOW[SUPPORT_ESCALATE]\n",
+      "expected_noise_tags": [
+        "light_wrapper_noise",
+        "legacy_style",
+        "unknown_flow"
+      ]
+    },
+    {
+      "id": "RAW_A8",
+      "category": "after_sales",
+      "source_type": "clean_control",
+      "sample_cohort": "clean_control",
+      "requirement": "做一个售后总入口，包含退款、换货、投诉、联系客服。",
+      "raw_output": "#PROFILE[after_sales]\n@PAGE[AfterSales,/after-sales]\n#UI[after_sales:Entry]\n#UI[after_sales:Refund]\n#UI[after_sales:Exchange]\n#UI[after_sales:Complaint]\n#UI[after_sales:Support]\n#FLOW[REFUND_FLOW]\n#FLOW[EXCHANGE_FLOW]\n#FLOW[COMPLAINT_DEESCALATE]\n",
+      "expected_noise_tags": [
+        "clean_control"
+      ]
+    },
+    {
+      "id": "RAW_P5",
+      "category": "app_min",
+      "source_type": "simulated_team_output",
+      "sample_cohort": "legacy_raw",
+      "requirement": "做一个联系人 App 原型，包含顶部栏、底部 tab、搜索联系人、联系人列表。",
+      "raw_output": "#PROFILE[app_min]\n@PAGE[Home,/]\n#UI[app:TopBar]\n#UI[app:BottomTab]\n#UI[app:List]\n",
+      "expected_noise_tags": [
+        "under_specified"
+      ]
+    },
+    {
+      "id": "RAW_P6",
+      "category": "app_min",
+      "source_type": "simulated_team_output",
+      "sample_cohort": "patch_validation",
+      "requirement": "做一个待办 App 原型，包含顶部栏、底部 tab、新增任务、编辑输入。",
+      "raw_output": "#PROFILE[app_min]\n@PAGE[Home,/]\n#UI[app:TopBar]\n#UI[app:BottomTab]\n#UI[app:List]\n",
+      "expected_noise_tags": [
+        "under_specified"
+      ]
+    },
+    {
+      "id": "RAW_P7",
+      "category": "app_min",
+      "source_type": "simulated_team_output",
+      "sample_cohort": "legacy_raw",
+      "requirement": "做一个聊天 App 原型，包含顶部栏、底部 tab、聊天窗口，并带登录接口。",
+      "raw_output": "#PROFILE[app_min]\n@API[AUTH,/api/login]{>DB_AUTH[users]}\n@PAGE[Home,/]\n#UI[app:TopBar]\n#UI[app:BottomTab]\n#UI[app:ChatWindow]\n",
+      "expected_noise_tags": [
+        "boundary_pressure"
+      ]
+    },
+    {
+      "id": "RAW_P8",
+      "category": "app_min",
+      "source_type": "clean_control",
+      "sample_cohort": "clean_control",
+      "requirement": "做一个工具 App 原型，包含顶部栏、底部 tab、功能列表、信息卡片、搜索联系人。",
+      "raw_output": "#PROFILE[app_min]\n@PAGE[Home,/]\n#UI[app:TopBar]\n#UI[app:BottomTab]\n#UI[app:List]\n#UI[app:Card]\n#UI[app:SearchBar]\n",
+      "expected_noise_tags": [
+        "clean_control"
+      ]
+    }
+  ]
+}

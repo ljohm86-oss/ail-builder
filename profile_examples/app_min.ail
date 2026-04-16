@@ -1,0 +1,16 @@
+^SYS[AIChatMini]
+#PROFILE[app_min]
+#LIB[tailwind]
+
+>DB_TABLE[chats]{id:str,title:str,last_message:str,time:str,unread:int}
+>DB_TABLE[contacts]{id:str,name:str,status:str}
+>DB_TABLE[user_profile]{id:str,name:str,bio:text}
+
+@PAGE[Home,/]
+#UI[app:TopBar]{title:"AI Chat"}
+#UI[app:BottomTab]{items:"chats|contacts|discover|me"}
+#UI[app:List]{source:"chats",item:"chat_card",tab:"chats"}
+#UI[app:List]{source:"contacts",item:"contact_card",tab:"contacts"}
+#UI[app:Card]{title:"发现 AI 工具",subtitle:"探索更多玩法",tab:"discover"}
+#UI[app:Card]{title:"我的资料",subtitle:"查看个人信息",tab:"me"}
+#UI[app:ChatWindow]{title:"对话窗口",input:"on"}

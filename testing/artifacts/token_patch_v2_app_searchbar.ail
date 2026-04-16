@@ -1,0 +1,10 @@
+^SYS[AppSearchBarPatch]
+#PROFILE[app_min]
+#LIB[tailwind]
+
+@PAGE[Home,/]
+#UI[app:TopBar]{title:"Contacts"}
+#UI[app:BottomTab]{items:"contacts|me|discover|more"}
+#UI[app:SearchBar]{placeholder:"搜索联系人"}
+#UI[app:List]{source:"contacts",item:"contact_card",tab:"contacts"}
+#UI[app:Card]{title:"我的资料",subtitle:"查看个人信息",tab:"me"}

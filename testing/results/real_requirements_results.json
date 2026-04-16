@@ -1,0 +1,4598 @@
+{
+  "summary": {
+    "total_requirements": 30,
+    "initial_compile_candidates": 30,
+    "repair_attempts": 0,
+    "repair_success": 0,
+    "final_compile_candidates": 30,
+    "source_file": "/Users/carwynmac/ai-cl/testing/real_requirements_v1.json",
+    "source_version": "v1"
+  },
+  "category_breakdown": {
+    "landing": {
+      "total": 10,
+      "initial_compile_candidates": 10,
+      "repair_success": 0,
+      "final_compile_candidates": 10
+    },
+    "ecom_min": {
+      "total": 10,
+      "initial_compile_candidates": 10,
+      "repair_success": 0,
+      "final_compile_candidates": 10
+    },
+    "after_sales": {
+      "total": 5,
+      "initial_compile_candidates": 5,
+      "repair_success": 0,
+      "final_compile_candidates": 5
+    },
+    "app_min": {
+      "total": 5,
+      "initial_compile_candidates": 5,
+      "repair_success": 0,
+      "final_compile_candidates": 5
+    }
+  },
+  "top_issues": [],
+  "results": [
+    {
+      "requirement_id": "L1",
+      "category": "landing",
+      "title": "AI SaaS 官网",
+      "requirement": "做一个 AI SaaS 官网，包含首页、功能介绍、团队、FAQ、联系我们。",
+      "generated_ail": "#PROFILE[landing]\n@PAGE[Home,/]\n#UI[landing:Header]\n#UI[landing:Hero]\n#UI[landing:Footer]\n#UI[landing:FeatureGrid]\n#UI[landing:Team]\n#UI[landing:FAQ]\n@PAGE[Features,/features]\n#UI[landing:FeatureGrid]\n@PAGE[Contact,/contact]\n#UI[landing:Contact]\n#FLOW[CONTACT_SUBMIT]\n",
+      "pre_compile_recommended": true,
+      "repair_applied": false,
+      "post_compile_recommended": true,
+      "final_profile": "landing",
+      "issues": [],
+      "pre_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "landing",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "landing",
+        "parsed": {
+          "lines": [
+            "#PROFILE[landing]",
+            "@PAGE[Home,/]",
+            "#UI[landing:Header]",
+            "#UI[landing:Hero]",
+            "#UI[landing:Footer]",
+            "#UI[landing:FeatureGrid]",
+            "#UI[landing:Team]",
+            "#UI[landing:FAQ]",
+            "@PAGE[Features,/features]",
+            "#UI[landing:FeatureGrid]",
+            "@PAGE[Contact,/contact]",
+            "#UI[landing:Contact]",
+            "#FLOW[CONTACT_SUBMIT]"
+          ],
+          "profiles": [
+            "landing"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "landing:Header",
+                "landing:Hero",
+                "landing:Footer",
+                "landing:FeatureGrid",
+                "landing:Team",
+                "landing:FAQ"
+              ]
+            },
+            {
+              "name": "Features",
+              "path": "/features",
+              "ui": [
+                "landing:FeatureGrid"
+              ]
+            },
+            {
+              "name": "Contact",
+              "path": "/contact",
+              "ui": [
+                "landing:Contact"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "CONTACT_SUBMIT"
+          ],
+          "unsupported_constructs": []
+        }
+      },
+      "post_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "landing",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "landing",
+        "parsed": {
+          "lines": [
+            "#PROFILE[landing]",
+            "@PAGE[Home,/]",
+            "#UI[landing:Header]",
+            "#UI[landing:Hero]",
+            "#UI[landing:Footer]",
+            "#UI[landing:FeatureGrid]",
+            "#UI[landing:Team]",
+            "#UI[landing:FAQ]",
+            "@PAGE[Features,/features]",
+            "#UI[landing:FeatureGrid]",
+            "@PAGE[Contact,/contact]",
+            "#UI[landing:Contact]",
+            "#FLOW[CONTACT_SUBMIT]"
+          ],
+          "profiles": [
+            "landing"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "landing:Header",
+                "landing:Hero",
+                "landing:Footer",
+                "landing:FeatureGrid",
+                "landing:Team",
+                "landing:FAQ"
+              ]
+            },
+            {
+              "name": "Features",
+              "path": "/features",
+              "ui": [
+                "landing:FeatureGrid"
+              ]
+            },
+            {
+              "name": "Contact",
+              "path": "/contact",
+              "ui": [
+                "landing:Contact"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "CONTACT_SUBMIT"
+          ],
+          "unsupported_constructs": []
+        }
+      }
+    },
+    {
+      "requirement_id": "L2",
+      "category": "landing",
+      "title": "科技公司官网",
+      "requirement": "做一个科技公司官网，包含首页、关于我们、团队介绍、联系我们。",
+      "generated_ail": "#PROFILE[landing]\n@PAGE[Home,/]\n#UI[landing:Header]\n#UI[landing:Hero]\n#UI[landing:Footer]\n#UI[landing:Team]\n@PAGE[About,/about]\n#UI[landing:Hero]\n@PAGE[Contact,/contact]\n#UI[landing:Contact]\n#FLOW[CONTACT_SUBMIT]\n",
+      "pre_compile_recommended": true,
+      "repair_applied": false,
+      "post_compile_recommended": true,
+      "final_profile": "landing",
+      "issues": [],
+      "pre_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "landing",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "landing",
+        "parsed": {
+          "lines": [
+            "#PROFILE[landing]",
+            "@PAGE[Home,/]",
+            "#UI[landing:Header]",
+            "#UI[landing:Hero]",
+            "#UI[landing:Footer]",
+            "#UI[landing:Team]",
+            "@PAGE[About,/about]",
+            "#UI[landing:Hero]",
+            "@PAGE[Contact,/contact]",
+            "#UI[landing:Contact]",
+            "#FLOW[CONTACT_SUBMIT]"
+          ],
+          "profiles": [
+            "landing"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "landing:Header",
+                "landing:Hero",
+                "landing:Footer",
+                "landing:Team"
+              ]
+            },
+            {
+              "name": "About",
+              "path": "/about",
+              "ui": [
+                "landing:Hero"
+              ]
+            },
+            {
+              "name": "Contact",
+              "path": "/contact",
+              "ui": [
+                "landing:Contact"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "CONTACT_SUBMIT"
+          ],
+          "unsupported_constructs": []
+        }
+      },
+      "post_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "landing",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "landing",
+        "parsed": {
+          "lines": [
+            "#PROFILE[landing]",
+            "@PAGE[Home,/]",
+            "#UI[landing:Header]",
+            "#UI[landing:Hero]",
+            "#UI[landing:Footer]",
+            "#UI[landing:Team]",
+            "@PAGE[About,/about]",
+            "#UI[landing:Hero]",
+            "@PAGE[Contact,/contact]",
+            "#UI[landing:Contact]",
+            "#FLOW[CONTACT_SUBMIT]"
+          ],
+          "profiles": [
+            "landing"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "landing:Header",
+                "landing:Hero",
+                "landing:Footer",
+                "landing:Team"
+              ]
+            },
+            {
+              "name": "About",
+              "path": "/about",
+              "ui": [
+                "landing:Hero"
+              ]
+            },
+            {
+              "name": "Contact",
+              "path": "/contact",
+              "ui": [
+                "landing:Contact"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "CONTACT_SUBMIT"
+          ],
+          "unsupported_constructs": []
+        }
+      }
+    },
+    {
+      "requirement_id": "L3",
+      "category": "landing",
+      "title": "创业产品落地页",
+      "requirement": "做一个创业产品 landing page，包含 Hero、功能介绍、客户评价、CTA。",
+      "generated_ail": "#PROFILE[landing]\n@PAGE[Home,/]\n#UI[landing:Header]\n#UI[landing:Hero]\n#UI[landing:Footer]\n#UI[landing:FeatureGrid]\n#UI[landing:Testimonial]\n@PAGE[Features,/features]\n#UI[landing:FeatureGrid]\n",
+      "pre_compile_recommended": true,
+      "repair_applied": false,
+      "post_compile_recommended": true,
+      "final_profile": "landing",
+      "issues": [],
+      "pre_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "landing",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "landing",
+        "parsed": {
+          "lines": [
+            "#PROFILE[landing]",
+            "@PAGE[Home,/]",
+            "#UI[landing:Header]",
+            "#UI[landing:Hero]",
+            "#UI[landing:Footer]",
+            "#UI[landing:FeatureGrid]",
+            "#UI[landing:Testimonial]",
+            "@PAGE[Features,/features]",
+            "#UI[landing:FeatureGrid]"
+          ],
+          "profiles": [
+            "landing"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "landing:Header",
+                "landing:Hero",
+                "landing:Footer",
+                "landing:FeatureGrid",
+                "landing:Testimonial"
+              ]
+            },
+            {
+              "name": "Features",
+              "path": "/features",
+              "ui": [
+                "landing:FeatureGrid"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [],
+          "unsupported_constructs": []
+        }
+      },
+      "post_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "landing",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "landing",
+        "parsed": {
+          "lines": [
+            "#PROFILE[landing]",
+            "@PAGE[Home,/]",
+            "#UI[landing:Header]",
+            "#UI[landing:Hero]",
+            "#UI[landing:Footer]",
+            "#UI[landing:FeatureGrid]",
+            "#UI[landing:Testimonial]",
+            "@PAGE[Features,/features]",
+            "#UI[landing:FeatureGrid]"
+          ],
+          "profiles": [
+            "landing"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "landing:Header",
+                "landing:Hero",
+                "landing:Footer",
+                "landing:FeatureGrid",
+                "landing:Testimonial"
+              ]
+            },
+            {
+              "name": "Features",
+              "path": "/features",
+              "ui": [
+                "landing:FeatureGrid"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [],
+          "unsupported_constructs": []
+        }
+      }
+    },
+    {
+      "requirement_id": "L4",
+      "category": "landing",
+      "title": "产品营销页",
+      "requirement": "做一个产品 marketing page，包含功能、FAQ、联系我们。",
+      "generated_ail": "#PROFILE[landing]\n@PAGE[Home,/]\n#UI[landing:Header]\n#UI[landing:Hero]\n#UI[landing:Footer]\n#UI[landing:FeatureGrid]\n#UI[landing:FAQ]\n@PAGE[Features,/features]\n#UI[landing:FeatureGrid]\n@PAGE[Contact,/contact]\n#UI[landing:Contact]\n#FLOW[CONTACT_SUBMIT]\n",
+      "pre_compile_recommended": true,
+      "repair_applied": false,
+      "post_compile_recommended": true,
+      "final_profile": "landing",
+      "issues": [],
+      "pre_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "landing",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "landing",
+        "parsed": {
+          "lines": [
+            "#PROFILE[landing]",
+            "@PAGE[Home,/]",
+            "#UI[landing:Header]",
+            "#UI[landing:Hero]",
+            "#UI[landing:Footer]",
+            "#UI[landing:FeatureGrid]",
+            "#UI[landing:FAQ]",
+            "@PAGE[Features,/features]",
+            "#UI[landing:FeatureGrid]",
+            "@PAGE[Contact,/contact]",
+            "#UI[landing:Contact]",
+            "#FLOW[CONTACT_SUBMIT]"
+          ],
+          "profiles": [
+            "landing"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "landing:Header",
+                "landing:Hero",
+                "landing:Footer",
+                "landing:FeatureGrid",
+                "landing:FAQ"
+              ]
+            },
+            {
+              "name": "Features",
+              "path": "/features",
+              "ui": [
+                "landing:FeatureGrid"
+              ]
+            },
+            {
+              "name": "Contact",
+              "path": "/contact",
+              "ui": [
+                "landing:Contact"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "CONTACT_SUBMIT"
+          ],
+          "unsupported_constructs": []
+        }
+      },
+      "post_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "landing",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "landing",
+        "parsed": {
+          "lines": [
+            "#PROFILE[landing]",
+            "@PAGE[Home,/]",
+            "#UI[landing:Header]",
+            "#UI[landing:Hero]",
+            "#UI[landing:Footer]",
+            "#UI[landing:FeatureGrid]",
+            "#UI[landing:FAQ]",
+            "@PAGE[Features,/features]",
+            "#UI[landing:FeatureGrid]",
+            "@PAGE[Contact,/contact]",
+            "#UI[landing:Contact]",
+            "#FLOW[CONTACT_SUBMIT]"
+          ],
+          "profiles": [
+            "landing"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "landing:Header",
+                "landing:Hero",
+                "landing:Footer",
+                "landing:FeatureGrid",
+                "landing:FAQ"
+              ]
+            },
+            {
+              "name": "Features",
+              "path": "/features",
+              "ui": [
+                "landing:FeatureGrid"
+              ]
+            },
+            {
+              "name": "Contact",
+              "path": "/contact",
+              "ui": [
+                "landing:Contact"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "CONTACT_SUBMIT"
+          ],
+          "unsupported_constructs": []
+        }
+      }
+    },
+    {
+      "requirement_id": "L5",
+      "category": "landing",
+      "title": "招聘官网",
+      "requirement": "做一个招聘官网，包含首页、团队介绍、职位展示、联系我们。",
+      "generated_ail": "#PROFILE[landing]\n@PAGE[Home,/]\n#UI[landing:Header]\n#UI[landing:Hero]\n#UI[landing:Footer]\n#UI[landing:FeatureGrid]\n#UI[landing:Team]\n#UI[landing:Jobs]\n@PAGE[Features,/features]\n#UI[landing:FeatureGrid]\n@PAGE[Contact,/contact]\n#UI[landing:Contact]\n#FLOW[CONTACT_SUBMIT]\n",
+      "pre_compile_recommended": true,
+      "repair_applied": false,
+      "post_compile_recommended": true,
+      "final_profile": "landing",
+      "issues": [],
+      "pre_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "landing",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "landing",
+        "parsed": {
+          "lines": [
+            "#PROFILE[landing]",
+            "@PAGE[Home,/]",
+            "#UI[landing:Header]",
+            "#UI[landing:Hero]",
+            "#UI[landing:Footer]",
+            "#UI[landing:FeatureGrid]",
+            "#UI[landing:Team]",
+            "#UI[landing:Jobs]",
+            "@PAGE[Features,/features]",
+            "#UI[landing:FeatureGrid]",
+            "@PAGE[Contact,/contact]",
+            "#UI[landing:Contact]",
+            "#FLOW[CONTACT_SUBMIT]"
+          ],
+          "profiles": [
+            "landing"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "landing:Header",
+                "landing:Hero",
+                "landing:Footer",
+                "landing:FeatureGrid",
+                "landing:Team",
+                "landing:Jobs"
+              ]
+            },
+            {
+              "name": "Features",
+              "path": "/features",
+              "ui": [
+                "landing:FeatureGrid"
+              ]
+            },
+            {
+              "name": "Contact",
+              "path": "/contact",
+              "ui": [
+                "landing:Contact"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "CONTACT_SUBMIT"
+          ],
+          "unsupported_constructs": []
+        }
+      },
+      "post_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "landing",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "landing",
+        "parsed": {
+          "lines": [
+            "#PROFILE[landing]",
+            "@PAGE[Home,/]",
+            "#UI[landing:Header]",
+            "#UI[landing:Hero]",
+            "#UI[landing:Footer]",
+            "#UI[landing:FeatureGrid]",
+            "#UI[landing:Team]",
+            "#UI[landing:Jobs]",
+            "@PAGE[Features,/features]",
+            "#UI[landing:FeatureGrid]",
+            "@PAGE[Contact,/contact]",
+            "#UI[landing:Contact]",
+            "#FLOW[CONTACT_SUBMIT]"
+          ],
+          "profiles": [
+            "landing"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "landing:Header",
+                "landing:Hero",
+                "landing:Footer",
+                "landing:FeatureGrid",
+                "landing:Team",
+                "landing:Jobs"
+              ]
+            },
+            {
+              "name": "Features",
+              "path": "/features",
+              "ui": [
+                "landing:FeatureGrid"
+              ]
+            },
+            {
+              "name": "Contact",
+              "path": "/contact",
+              "ui": [
+                "landing:Contact"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "CONTACT_SUBMIT"
+          ],
+          "unsupported_constructs": []
+        }
+      }
+    },
+    {
+      "requirement_id": "L6",
+      "category": "landing",
+      "title": "个人介绍网站",
+      "requirement": "做一个个人介绍网站，包含首页、关于我、项目作品、联系方式。",
+      "generated_ail": "#PROFILE[landing]\n@PAGE[Home,/]\n#UI[landing:Header]\n#UI[landing:Hero]\n#UI[landing:Footer]\n#UI[landing:FeatureGrid]\n#UI[landing:Team]\n#UI[landing:Portfolio]\n@PAGE[About,/about]\n#UI[landing:Hero]\n@PAGE[Features,/features]\n#UI[landing:FeatureGrid]\n@PAGE[Contact,/contact]\n#UI[landing:Contact]\n#FLOW[CONTACT_SUBMIT]\n",
+      "pre_compile_recommended": true,
+      "repair_applied": false,
+      "post_compile_recommended": true,
+      "final_profile": "landing",
+      "issues": [],
+      "pre_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "landing",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "landing",
+        "parsed": {
+          "lines": [
+            "#PROFILE[landing]",
+            "@PAGE[Home,/]",
+            "#UI[landing:Header]",
+            "#UI[landing:Hero]",
+            "#UI[landing:Footer]",
+            "#UI[landing:FeatureGrid]",
+            "#UI[landing:Team]",
+            "#UI[landing:Portfolio]",
+            "@PAGE[About,/about]",
+            "#UI[landing:Hero]",
+            "@PAGE[Features,/features]",
+            "#UI[landing:FeatureGrid]",
+            "@PAGE[Contact,/contact]",
+            "#UI[landing:Contact]",
+            "#FLOW[CONTACT_SUBMIT]"
+          ],
+          "profiles": [
+            "landing"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "landing:Header",
+                "landing:Hero",
+                "landing:Footer",
+                "landing:FeatureGrid",
+                "landing:Team",
+                "landing:Portfolio"
+              ]
+            },
+            {
+              "name": "About",
+              "path": "/about",
+              "ui": [
+                "landing:Hero"
+              ]
+            },
+            {
+              "name": "Features",
+              "path": "/features",
+              "ui": [
+                "landing:FeatureGrid"
+              ]
+            },
+            {
+              "name": "Contact",
+              "path": "/contact",
+              "ui": [
+                "landing:Contact"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "CONTACT_SUBMIT"
+          ],
+          "unsupported_constructs": []
+        }
+      },
+      "post_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "landing",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "landing",
+        "parsed": {
+          "lines": [
+            "#PROFILE[landing]",
+            "@PAGE[Home,/]",
+            "#UI[landing:Header]",
+            "#UI[landing:Hero]",
+            "#UI[landing:Footer]",
+            "#UI[landing:FeatureGrid]",
+            "#UI[landing:Team]",
+            "#UI[landing:Portfolio]",
+            "@PAGE[About,/about]",
+            "#UI[landing:Hero]",
+            "@PAGE[Features,/features]",
+            "#UI[landing:FeatureGrid]",
+            "@PAGE[Contact,/contact]",
+            "#UI[landing:Contact]",
+            "#FLOW[CONTACT_SUBMIT]"
+          ],
+          "profiles": [
+            "landing"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "landing:Header",
+                "landing:Hero",
+                "landing:Footer",
+                "landing:FeatureGrid",
+                "landing:Team",
+                "landing:Portfolio"
+              ]
+            },
+            {
+              "name": "About",
+              "path": "/about",
+              "ui": [
+                "landing:Hero"
+              ]
+            },
+            {
+              "name": "Features",
+              "path": "/features",
+              "ui": [
+                "landing:FeatureGrid"
+              ]
+            },
+            {
+              "name": "Contact",
+              "path": "/contact",
+              "ui": [
+                "landing:Contact"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "CONTACT_SUBMIT"
+          ],
+          "unsupported_constructs": []
+        }
+      }
+    },
+    {
+      "requirement_id": "L7",
+      "category": "landing",
+      "title": "自动化平台官网",
+      "requirement": "做一个 AI 自动化平台官网，包含首页、功能介绍、数据统计、客户 Logo、团队、FAQ、联系我们、立即开始。",
+      "generated_ail": "#PROFILE[landing]\n@PAGE[Home,/]\n#UI[landing:Header]\n#UI[landing:Hero]\n#UI[landing:Footer]\n#UI[landing:FeatureGrid]\n#UI[landing:Team]\n#UI[landing:FAQ]\n#UI[landing:Stats]\n#UI[landing:LogoCloud]\n#UI[landing:CTA]\n@PAGE[Features,/features]\n#UI[landing:FeatureGrid]\n@PAGE[Contact,/contact]\n#UI[landing:Contact]\n#FLOW[CONTACT_SUBMIT]\n#FLOW[LEAD_CAPTURE]\n",
+      "pre_compile_recommended": true,
+      "repair_applied": false,
+      "post_compile_recommended": true,
+      "final_profile": "landing",
+      "issues": [],
+      "pre_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "landing",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "landing",
+        "parsed": {
+          "lines": [
+            "#PROFILE[landing]",
+            "@PAGE[Home,/]",
+            "#UI[landing:Header]",
+            "#UI[landing:Hero]",
+            "#UI[landing:Footer]",
+            "#UI[landing:FeatureGrid]",
+            "#UI[landing:Team]",
+            "#UI[landing:FAQ]",
+            "#UI[landing:Stats]",
+            "#UI[landing:LogoCloud]",
+            "#UI[landing:CTA]",
+            "@PAGE[Features,/features]",
+            "#UI[landing:FeatureGrid]",
+            "@PAGE[Contact,/contact]",
+            "#UI[landing:Contact]",
+            "#FLOW[CONTACT_SUBMIT]",
+            "#FLOW[LEAD_CAPTURE]"
+          ],
+          "profiles": [
+            "landing"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "landing:Header",
+                "landing:Hero",
+                "landing:Footer",
+                "landing:FeatureGrid",
+                "landing:Team",
+                "landing:FAQ",
+                "landing:Stats",
+                "landing:LogoCloud",
+                "landing:CTA"
+              ]
+            },
+            {
+              "name": "Features",
+              "path": "/features",
+              "ui": [
+                "landing:FeatureGrid"
+              ]
+            },
+            {
+              "name": "Contact",
+              "path": "/contact",
+              "ui": [
+                "landing:Contact"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "CONTACT_SUBMIT",
+            "LEAD_CAPTURE"
+          ],
+          "unsupported_constructs": []
+        }
+      },
+      "post_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "landing",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "landing",
+        "parsed": {
+          "lines": [
+            "#PROFILE[landing]",
+            "@PAGE[Home,/]",
+            "#UI[landing:Header]",
+            "#UI[landing:Hero]",
+            "#UI[landing:Footer]",
+            "#UI[landing:FeatureGrid]",
+            "#UI[landing:Team]",
+            "#UI[landing:FAQ]",
+            "#UI[landing:Stats]",
+            "#UI[landing:LogoCloud]",
+            "#UI[landing:CTA]",
+            "@PAGE[Features,/features]",
+            "#UI[landing:FeatureGrid]",
+            "@PAGE[Contact,/contact]",
+            "#UI[landing:Contact]",
+            "#FLOW[CONTACT_SUBMIT]",
+            "#FLOW[LEAD_CAPTURE]"
+          ],
+          "profiles": [
+            "landing"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "landing:Header",
+                "landing:Hero",
+                "landing:Footer",
+                "landing:FeatureGrid",
+                "landing:Team",
+                "landing:FAQ",
+                "landing:Stats",
+                "landing:LogoCloud",
+                "landing:CTA"
+              ]
+            },
+            {
+              "name": "Features",
+              "path": "/features",
+              "ui": [
+                "landing:FeatureGrid"
+              ]
+            },
+            {
+              "name": "Contact",
+              "path": "/contact",
+              "ui": [
+                "landing:Contact"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "CONTACT_SUBMIT",
+            "LEAD_CAPTURE"
+          ],
+          "unsupported_constructs": []
+        }
+      }
+    },
+    {
+      "requirement_id": "L8",
+      "category": "landing",
+      "title": "企业官网增强版",
+      "requirement": "做一个科技公司官网，包含首页、关于我们、团队介绍、公司数据展示、合作伙伴 Logo、联系我们。",
+      "generated_ail": "#PROFILE[landing]\n@PAGE[Home,/]\n#UI[landing:Header]\n#UI[landing:Hero]\n#UI[landing:Footer]\n#UI[landing:Team]\n#UI[landing:Stats]\n#UI[landing:LogoCloud]\n@PAGE[About,/about]\n#UI[landing:Hero]\n@PAGE[Contact,/contact]\n#UI[landing:Contact]\n#FLOW[CONTACT_SUBMIT]\n",
+      "pre_compile_recommended": true,
+      "repair_applied": false,
+      "post_compile_recommended": true,
+      "final_profile": "landing",
+      "issues": [],
+      "pre_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "landing",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "landing",
+        "parsed": {
+          "lines": [
+            "#PROFILE[landing]",
+            "@PAGE[Home,/]",
+            "#UI[landing:Header]",
+            "#UI[landing:Hero]",
+            "#UI[landing:Footer]",
+            "#UI[landing:Team]",
+            "#UI[landing:Stats]",
+            "#UI[landing:LogoCloud]",
+            "@PAGE[About,/about]",
+            "#UI[landing:Hero]",
+            "@PAGE[Contact,/contact]",
+            "#UI[landing:Contact]",
+            "#FLOW[CONTACT_SUBMIT]"
+          ],
+          "profiles": [
+            "landing"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "landing:Header",
+                "landing:Hero",
+                "landing:Footer",
+                "landing:Team",
+                "landing:Stats",
+                "landing:LogoCloud"
+              ]
+            },
+            {
+              "name": "About",
+              "path": "/about",
+              "ui": [
+                "landing:Hero"
+              ]
+            },
+            {
+              "name": "Contact",
+              "path": "/contact",
+              "ui": [
+                "landing:Contact"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "CONTACT_SUBMIT"
+          ],
+          "unsupported_constructs": []
+        }
+      },
+      "post_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "landing",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "landing",
+        "parsed": {
+          "lines": [
+            "#PROFILE[landing]",
+            "@PAGE[Home,/]",
+            "#UI[landing:Header]",
+            "#UI[landing:Hero]",
+            "#UI[landing:Footer]",
+            "#UI[landing:Team]",
+            "#UI[landing:Stats]",
+            "#UI[landing:LogoCloud]",
+            "@PAGE[About,/about]",
+            "#UI[landing:Hero]",
+            "@PAGE[Contact,/contact]",
+            "#UI[landing:Contact]",
+            "#FLOW[CONTACT_SUBMIT]"
+          ],
+          "profiles": [
+            "landing"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "landing:Header",
+                "landing:Hero",
+                "landing:Footer",
+                "landing:Team",
+                "landing:Stats",
+                "landing:LogoCloud"
+              ]
+            },
+            {
+              "name": "About",
+              "path": "/about",
+              "ui": [
+                "landing:Hero"
+              ]
+            },
+            {
+              "name": "Contact",
+              "path": "/contact",
+              "ui": [
+                "landing:Contact"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "CONTACT_SUBMIT"
+          ],
+          "unsupported_constructs": []
+        }
+      }
+    },
+    {
+      "requirement_id": "L9",
+      "category": "landing",
+      "title": "B2B 营销页",
+      "requirement": "做一个 B2B 产品营销页，包含 Hero、功能亮点、FAQ、预约演示、联系我们。",
+      "generated_ail": "#PROFILE[landing]\n@PAGE[Home,/]\n#UI[landing:Header]\n#UI[landing:Hero]\n#UI[landing:Footer]\n#UI[landing:FeatureGrid]\n#UI[landing:FAQ]\n#UI[landing:CTA]\n@PAGE[Features,/features]\n#UI[landing:FeatureGrid]\n@PAGE[Contact,/contact]\n#UI[landing:Contact]\n#FLOW[CONTACT_SUBMIT]\n#FLOW[LEAD_CAPTURE]\n",
+      "pre_compile_recommended": true,
+      "repair_applied": false,
+      "post_compile_recommended": true,
+      "final_profile": "landing",
+      "issues": [],
+      "pre_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "landing",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "landing",
+        "parsed": {
+          "lines": [
+            "#PROFILE[landing]",
+            "@PAGE[Home,/]",
+            "#UI[landing:Header]",
+            "#UI[landing:Hero]",
+            "#UI[landing:Footer]",
+            "#UI[landing:FeatureGrid]",
+            "#UI[landing:FAQ]",
+            "#UI[landing:CTA]",
+            "@PAGE[Features,/features]",
+            "#UI[landing:FeatureGrid]",
+            "@PAGE[Contact,/contact]",
+            "#UI[landing:Contact]",
+            "#FLOW[CONTACT_SUBMIT]",
+            "#FLOW[LEAD_CAPTURE]"
+          ],
+          "profiles": [
+            "landing"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "landing:Header",
+                "landing:Hero",
+                "landing:Footer",
+                "landing:FeatureGrid",
+                "landing:FAQ",
+                "landing:CTA"
+              ]
+            },
+            {
+              "name": "Features",
+              "path": "/features",
+              "ui": [
+                "landing:FeatureGrid"
+              ]
+            },
+            {
+              "name": "Contact",
+              "path": "/contact",
+              "ui": [
+                "landing:Contact"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "CONTACT_SUBMIT",
+            "LEAD_CAPTURE"
+          ],
+          "unsupported_constructs": []
+        }
+      },
+      "post_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "landing",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "landing",
+        "parsed": {
+          "lines": [
+            "#PROFILE[landing]",
+            "@PAGE[Home,/]",
+            "#UI[landing:Header]",
+            "#UI[landing:Hero]",
+            "#UI[landing:Footer]",
+            "#UI[landing:FeatureGrid]",
+            "#UI[landing:FAQ]",
+            "#UI[landing:CTA]",
+            "@PAGE[Features,/features]",
+            "#UI[landing:FeatureGrid]",
+            "@PAGE[Contact,/contact]",
+            "#UI[landing:Contact]",
+            "#FLOW[CONTACT_SUBMIT]",
+            "#FLOW[LEAD_CAPTURE]"
+          ],
+          "profiles": [
+            "landing"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "landing:Header",
+                "landing:Hero",
+                "landing:Footer",
+                "landing:FeatureGrid",
+                "landing:FAQ",
+                "landing:CTA"
+              ]
+            },
+            {
+              "name": "Features",
+              "path": "/features",
+              "ui": [
+                "landing:FeatureGrid"
+              ]
+            },
+            {
+              "name": "Contact",
+              "path": "/contact",
+              "ui": [
+                "landing:Contact"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "CONTACT_SUBMIT",
+            "LEAD_CAPTURE"
+          ],
+          "unsupported_constructs": []
+        }
+      }
+    },
+    {
+      "requirement_id": "L10",
+      "category": "landing",
+      "title": "创业产品介绍页",
+      "requirement": "做一个创业产品 landing page，包含 Hero、功能介绍、客户 Logo、常见问题、立即体验。",
+      "generated_ail": "#PROFILE[landing]\n@PAGE[Home,/]\n#UI[landing:Header]\n#UI[landing:Hero]\n#UI[landing:Footer]\n#UI[landing:FeatureGrid]\n#UI[landing:FAQ]\n#UI[landing:LogoCloud]\n#UI[landing:CTA]\n@PAGE[Features,/features]\n#UI[landing:FeatureGrid]\n#FLOW[LEAD_CAPTURE]\n",
+      "pre_compile_recommended": true,
+      "repair_applied": false,
+      "post_compile_recommended": true,
+      "final_profile": "landing",
+      "issues": [],
+      "pre_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "landing",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "landing",
+        "parsed": {
+          "lines": [
+            "#PROFILE[landing]",
+            "@PAGE[Home,/]",
+            "#UI[landing:Header]",
+            "#UI[landing:Hero]",
+            "#UI[landing:Footer]",
+            "#UI[landing:FeatureGrid]",
+            "#UI[landing:FAQ]",
+            "#UI[landing:LogoCloud]",
+            "#UI[landing:CTA]",
+            "@PAGE[Features,/features]",
+            "#UI[landing:FeatureGrid]",
+            "#FLOW[LEAD_CAPTURE]"
+          ],
+          "profiles": [
+            "landing"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "landing:Header",
+                "landing:Hero",
+                "landing:Footer",
+                "landing:FeatureGrid",
+                "landing:FAQ",
+                "landing:LogoCloud",
+                "landing:CTA"
+              ]
+            },
+            {
+              "name": "Features",
+              "path": "/features",
+              "ui": [
+                "landing:FeatureGrid"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "LEAD_CAPTURE"
+          ],
+          "unsupported_constructs": []
+        }
+      },
+      "post_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "landing",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "landing",
+        "parsed": {
+          "lines": [
+            "#PROFILE[landing]",
+            "@PAGE[Home,/]",
+            "#UI[landing:Header]",
+            "#UI[landing:Hero]",
+            "#UI[landing:Footer]",
+            "#UI[landing:FeatureGrid]",
+            "#UI[landing:FAQ]",
+            "#UI[landing:LogoCloud]",
+            "#UI[landing:CTA]",
+            "@PAGE[Features,/features]",
+            "#UI[landing:FeatureGrid]",
+            "#FLOW[LEAD_CAPTURE]"
+          ],
+          "profiles": [
+            "landing"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "landing:Header",
+                "landing:Hero",
+                "landing:Footer",
+                "landing:FeatureGrid",
+                "landing:FAQ",
+                "landing:LogoCloud",
+                "landing:CTA"
+              ]
+            },
+            {
+              "name": "Features",
+              "path": "/features",
+              "ui": [
+                "landing:FeatureGrid"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "LEAD_CAPTURE"
+          ],
+          "unsupported_constructs": []
+        }
+      }
+    },
+    {
+      "requirement_id": "E1",
+      "category": "ecom_min",
+      "title": "服装独立站",
+      "requirement": "做一个服装商城，包含首页商品列表、商品详情页、购物车、结算页。",
+      "generated_ail": "#PROFILE[ecom_min]\n@PAGE[Home,/]\n#UI[ecom:Header]\n#UI[ecom:ProductGrid]\n@PAGE[Product,/product/:id]\n#UI[ecom:ProductDetail]\n@PAGE[Cart,/cart]\n#UI[ecom:CartPanel]\n@PAGE[Checkout,/checkout]\n#UI[ecom:CheckoutPanel]\n#FLOW[ADD_TO_CART]\n#FLOW[CHECKOUT_SUBMIT]\n#FLOW[ORDER_PLACE]\n",
+      "pre_compile_recommended": true,
+      "repair_applied": false,
+      "post_compile_recommended": true,
+      "final_profile": "ecom_min",
+      "issues": [],
+      "pre_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "ecom_min",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "ecom_min",
+        "parsed": {
+          "lines": [
+            "#PROFILE[ecom_min]",
+            "@PAGE[Home,/]",
+            "#UI[ecom:Header]",
+            "#UI[ecom:ProductGrid]",
+            "@PAGE[Product,/product/:id]",
+            "#UI[ecom:ProductDetail]",
+            "@PAGE[Cart,/cart]",
+            "#UI[ecom:CartPanel]",
+            "@PAGE[Checkout,/checkout]",
+            "#UI[ecom:CheckoutPanel]",
+            "#FLOW[ADD_TO_CART]",
+            "#FLOW[CHECKOUT_SUBMIT]",
+            "#FLOW[ORDER_PLACE]"
+          ],
+          "profiles": [
+            "ecom_min"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "ecom:Header",
+                "ecom:ProductGrid"
+              ]
+            },
+            {
+              "name": "Product",
+              "path": "/product/:id",
+              "ui": [
+                "ecom:ProductDetail"
+              ]
+            },
+            {
+              "name": "Cart",
+              "path": "/cart",
+              "ui": [
+                "ecom:CartPanel"
+              ]
+            },
+            {
+              "name": "Checkout",
+              "path": "/checkout",
+              "ui": [
+                "ecom:CheckoutPanel"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "ADD_TO_CART",
+            "CHECKOUT_SUBMIT",
+            "ORDER_PLACE"
+          ],
+          "unsupported_constructs": []
+        }
+      },
+      "post_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "ecom_min",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "ecom_min",
+        "parsed": {
+          "lines": [
+            "#PROFILE[ecom_min]",
+            "@PAGE[Home,/]",
+            "#UI[ecom:Header]",
+            "#UI[ecom:ProductGrid]",
+            "@PAGE[Product,/product/:id]",
+            "#UI[ecom:ProductDetail]",
+            "@PAGE[Cart,/cart]",
+            "#UI[ecom:CartPanel]",
+            "@PAGE[Checkout,/checkout]",
+            "#UI[ecom:CheckoutPanel]",
+            "#FLOW[ADD_TO_CART]",
+            "#FLOW[CHECKOUT_SUBMIT]",
+            "#FLOW[ORDER_PLACE]"
+          ],
+          "profiles": [
+            "ecom_min"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "ecom:Header",
+                "ecom:ProductGrid"
+              ]
+            },
+            {
+              "name": "Product",
+              "path": "/product/:id",
+              "ui": [
+                "ecom:ProductDetail"
+              ]
+            },
+            {
+              "name": "Cart",
+              "path": "/cart",
+              "ui": [
+                "ecom:CartPanel"
+              ]
+            },
+            {
+              "name": "Checkout",
+              "path": "/checkout",
+              "ui": [
+                "ecom:CheckoutPanel"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "ADD_TO_CART",
+            "CHECKOUT_SUBMIT",
+            "ORDER_PLACE"
+          ],
+          "unsupported_constructs": []
+        }
+      }
+    },
+    {
+      "requirement_id": "E2",
+      "category": "ecom_min",
+      "title": "数码商城",
+      "requirement": "做一个数码商品商城，包含首页推荐商品、商品详情、购物车、结算。",
+      "generated_ail": "#PROFILE[ecom_min]\n@PAGE[Home,/]\n#UI[ecom:Header]\n#UI[ecom:ProductGrid]\n@PAGE[Product,/product/:id]\n#UI[ecom:ProductDetail]\n@PAGE[Cart,/cart]\n#UI[ecom:CartPanel]\n@PAGE[Checkout,/checkout]\n#UI[ecom:CheckoutPanel]\n#FLOW[ADD_TO_CART]\n#FLOW[CHECKOUT_SUBMIT]\n#FLOW[ORDER_PLACE]\n",
+      "pre_compile_recommended": true,
+      "repair_applied": false,
+      "post_compile_recommended": true,
+      "final_profile": "ecom_min",
+      "issues": [],
+      "pre_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "ecom_min",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "ecom_min",
+        "parsed": {
+          "lines": [
+            "#PROFILE[ecom_min]",
+            "@PAGE[Home,/]",
+            "#UI[ecom:Header]",
+            "#UI[ecom:ProductGrid]",
+            "@PAGE[Product,/product/:id]",
+            "#UI[ecom:ProductDetail]",
+            "@PAGE[Cart,/cart]",
+            "#UI[ecom:CartPanel]",
+            "@PAGE[Checkout,/checkout]",
+            "#UI[ecom:CheckoutPanel]",
+            "#FLOW[ADD_TO_CART]",
+            "#FLOW[CHECKOUT_SUBMIT]",
+            "#FLOW[ORDER_PLACE]"
+          ],
+          "profiles": [
+            "ecom_min"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "ecom:Header",
+                "ecom:ProductGrid"
+              ]
+            },
+            {
+              "name": "Product",
+              "path": "/product/:id",
+              "ui": [
+                "ecom:ProductDetail"
+              ]
+            },
+            {
+              "name": "Cart",
+              "path": "/cart",
+              "ui": [
+                "ecom:CartPanel"
+              ]
+            },
+            {
+              "name": "Checkout",
+              "path": "/checkout",
+              "ui": [
+                "ecom:CheckoutPanel"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "ADD_TO_CART",
+            "CHECKOUT_SUBMIT",
+            "ORDER_PLACE"
+          ],
+          "unsupported_constructs": []
+        }
+      },
+      "post_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "ecom_min",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "ecom_min",
+        "parsed": {
+          "lines": [
+            "#PROFILE[ecom_min]",
+            "@PAGE[Home,/]",
+            "#UI[ecom:Header]",
+            "#UI[ecom:ProductGrid]",
+            "@PAGE[Product,/product/:id]",
+            "#UI[ecom:ProductDetail]",
+            "@PAGE[Cart,/cart]",
+            "#UI[ecom:CartPanel]",
+            "@PAGE[Checkout,/checkout]",
+            "#UI[ecom:CheckoutPanel]",
+            "#FLOW[ADD_TO_CART]",
+            "#FLOW[CHECKOUT_SUBMIT]",
+            "#FLOW[ORDER_PLACE]"
+          ],
+          "profiles": [
+            "ecom_min"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "ecom:Header",
+                "ecom:ProductGrid"
+              ]
+            },
+            {
+              "name": "Product",
+              "path": "/product/:id",
+              "ui": [
+                "ecom:ProductDetail"
+              ]
+            },
+            {
+              "name": "Cart",
+              "path": "/cart",
+              "ui": [
+                "ecom:CartPanel"
+              ]
+            },
+            {
+              "name": "Checkout",
+              "path": "/checkout",
+              "ui": [
+                "ecom:CheckoutPanel"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "ADD_TO_CART",
+            "CHECKOUT_SUBMIT",
+            "ORDER_PLACE"
+          ],
+          "unsupported_constructs": []
+        }
+      }
+    },
+    {
+      "requirement_id": "E3",
+      "category": "ecom_min",
+      "title": "分类商城",
+      "requirement": "做一个电商网站，包含首页、商品分类页、商品详情页、购物车。",
+      "generated_ail": "#PROFILE[ecom_min]\n@PAGE[Home,/]\n#UI[ecom:Header]\n#UI[ecom:CategoryNav]\n#UI[ecom:ProductGrid]\n@PAGE[Product,/product/:id]\n#UI[ecom:ProductDetail]\n@PAGE[Cart,/cart]\n#UI[ecom:CartPanel]\n@PAGE[Category,/category/:name]\n#UI[ecom:CategoryNav]\n#UI[ecom:ProductGrid]\n#FLOW[ADD_TO_CART]\n",
+      "pre_compile_recommended": true,
+      "repair_applied": false,
+      "post_compile_recommended": true,
+      "final_profile": "ecom_min",
+      "issues": [],
+      "pre_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "ecom_min",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "ecom_min",
+        "parsed": {
+          "lines": [
+            "#PROFILE[ecom_min]",
+            "@PAGE[Home,/]",
+            "#UI[ecom:Header]",
+            "#UI[ecom:CategoryNav]",
+            "#UI[ecom:ProductGrid]",
+            "@PAGE[Product,/product/:id]",
+            "#UI[ecom:ProductDetail]",
+            "@PAGE[Cart,/cart]",
+            "#UI[ecom:CartPanel]",
+            "@PAGE[Category,/category/:name]",
+            "#UI[ecom:CategoryNav]",
+            "#UI[ecom:ProductGrid]",
+            "#FLOW[ADD_TO_CART]"
+          ],
+          "profiles": [
+            "ecom_min"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "ecom:Header",
+                "ecom:CategoryNav",
+                "ecom:ProductGrid"
+              ]
+            },
+            {
+              "name": "Product",
+              "path": "/product/:id",
+              "ui": [
+                "ecom:ProductDetail"
+              ]
+            },
+            {
+              "name": "Cart",
+              "path": "/cart",
+              "ui": [
+                "ecom:CartPanel"
+              ]
+            },
+            {
+              "name": "Category",
+              "path": "/category/:name",
+              "ui": [
+                "ecom:CategoryNav",
+                "ecom:ProductGrid"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "ADD_TO_CART"
+          ],
+          "unsupported_constructs": []
+        }
+      },
+      "post_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "ecom_min",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "ecom_min",
+        "parsed": {
+          "lines": [
+            "#PROFILE[ecom_min]",
+            "@PAGE[Home,/]",
+            "#UI[ecom:Header]",
+            "#UI[ecom:CategoryNav]",
+            "#UI[ecom:ProductGrid]",
+            "@PAGE[Product,/product/:id]",
+            "#UI[ecom:ProductDetail]",
+            "@PAGE[Cart,/cart]",
+            "#UI[ecom:CartPanel]",
+            "@PAGE[Category,/category/:name]",
+            "#UI[ecom:CategoryNav]",
+            "#UI[ecom:ProductGrid]",
+            "#FLOW[ADD_TO_CART]"
+          ],
+          "profiles": [
+            "ecom_min"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "ecom:Header",
+                "ecom:CategoryNav",
+                "ecom:ProductGrid"
+              ]
+            },
+            {
+              "name": "Product",
+              "path": "/product/:id",
+              "ui": [
+                "ecom:ProductDetail"
+              ]
+            },
+            {
+              "name": "Cart",
+              "path": "/cart",
+              "ui": [
+                "ecom:CartPanel"
+              ]
+            },
+            {
+              "name": "Category",
+              "path": "/category/:name",
+              "ui": [
+                "ecom:CategoryNav",
+                "ecom:ProductGrid"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "ADD_TO_CART"
+          ],
+          "unsupported_constructs": []
+        }
+      }
+    },
+    {
+      "requirement_id": "E4",
+      "category": "ecom_min",
+      "title": "搜索商城",
+      "requirement": "做一个电商网站，支持商品搜索、搜索结果页、商品详情。",
+      "generated_ail": "#PROFILE[ecom_min]\n@PAGE[Home,/]\n#UI[ecom:Header]\n#UI[ecom:ProductGrid]\n@PAGE[Product,/product/:id]\n#UI[ecom:ProductDetail]\n@PAGE[Search,/search]\n#UI[ecom:SearchResultGrid]\n",
+      "pre_compile_recommended": true,
+      "repair_applied": false,
+      "post_compile_recommended": true,
+      "final_profile": "ecom_min",
+      "issues": [],
+      "pre_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "ecom_min",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "ecom_min",
+        "parsed": {
+          "lines": [
+            "#PROFILE[ecom_min]",
+            "@PAGE[Home,/]",
+            "#UI[ecom:Header]",
+            "#UI[ecom:ProductGrid]",
+            "@PAGE[Product,/product/:id]",
+            "#UI[ecom:ProductDetail]",
+            "@PAGE[Search,/search]",
+            "#UI[ecom:SearchResultGrid]"
+          ],
+          "profiles": [
+            "ecom_min"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "ecom:Header",
+                "ecom:ProductGrid"
+              ]
+            },
+            {
+              "name": "Product",
+              "path": "/product/:id",
+              "ui": [
+                "ecom:ProductDetail"
+              ]
+            },
+            {
+              "name": "Search",
+              "path": "/search",
+              "ui": [
+                "ecom:SearchResultGrid"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [],
+          "unsupported_constructs": []
+        }
+      },
+      "post_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "ecom_min",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "ecom_min",
+        "parsed": {
+          "lines": [
+            "#PROFILE[ecom_min]",
+            "@PAGE[Home,/]",
+            "#UI[ecom:Header]",
+            "#UI[ecom:ProductGrid]",
+            "@PAGE[Product,/product/:id]",
+            "#UI[ecom:ProductDetail]",
+            "@PAGE[Search,/search]",
+            "#UI[ecom:SearchResultGrid]"
+          ],
+          "profiles": [
+            "ecom_min"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "ecom:Header",
+                "ecom:ProductGrid"
+              ]
+            },
+            {
+              "name": "Product",
+              "path": "/product/:id",
+              "ui": [
+                "ecom:ProductDetail"
+              ]
+            },
+            {
+              "name": "Search",
+              "path": "/search",
+              "ui": [
+                "ecom:SearchResultGrid"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [],
+          "unsupported_constructs": []
+        }
+      }
+    },
+    {
+      "requirement_id": "E5",
+      "category": "ecom_min",
+      "title": "店铺商城",
+      "requirement": "做一个电商网站，包含店铺页、商品列表、商品详情、购物车。",
+      "generated_ail": "#PROFILE[ecom_min]\n@PAGE[Home,/]\n#UI[ecom:Header]\n#UI[ecom:ProductGrid]\n@PAGE[Product,/product/:id]\n#UI[ecom:ProductDetail]\n@PAGE[Cart,/cart]\n#UI[ecom:CartPanel]\n@PAGE[Shop,/shop/:id]\n#UI[ecom:ShopHeader]\n#UI[ecom:ProductGrid]\n#FLOW[ADD_TO_CART]\n",
+      "pre_compile_recommended": true,
+      "repair_applied": false,
+      "post_compile_recommended": true,
+      "final_profile": "ecom_min",
+      "issues": [],
+      "pre_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "ecom_min",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "ecom_min",
+        "parsed": {
+          "lines": [
+            "#PROFILE[ecom_min]",
+            "@PAGE[Home,/]",
+            "#UI[ecom:Header]",
+            "#UI[ecom:ProductGrid]",
+            "@PAGE[Product,/product/:id]",
+            "#UI[ecom:ProductDetail]",
+            "@PAGE[Cart,/cart]",
+            "#UI[ecom:CartPanel]",
+            "@PAGE[Shop,/shop/:id]",
+            "#UI[ecom:ShopHeader]",
+            "#UI[ecom:ProductGrid]",
+            "#FLOW[ADD_TO_CART]"
+          ],
+          "profiles": [
+            "ecom_min"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "ecom:Header",
+                "ecom:ProductGrid"
+              ]
+            },
+            {
+              "name": "Product",
+              "path": "/product/:id",
+              "ui": [
+                "ecom:ProductDetail"
+              ]
+            },
+            {
+              "name": "Cart",
+              "path": "/cart",
+              "ui": [
+                "ecom:CartPanel"
+              ]
+            },
+            {
+              "name": "Shop",
+              "path": "/shop/:id",
+              "ui": [
+                "ecom:ShopHeader",
+                "ecom:ProductGrid"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "ADD_TO_CART"
+          ],
+          "unsupported_constructs": []
+        }
+      },
+      "post_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "ecom_min",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "ecom_min",
+        "parsed": {
+          "lines": [
+            "#PROFILE[ecom_min]",
+            "@PAGE[Home,/]",
+            "#UI[ecom:Header]",
+            "#UI[ecom:ProductGrid]",
+            "@PAGE[Product,/product/:id]",
+            "#UI[ecom:ProductDetail]",
+            "@PAGE[Cart,/cart]",
+            "#UI[ecom:CartPanel]",
+            "@PAGE[Shop,/shop/:id]",
+            "#UI[ecom:ShopHeader]",
+            "#UI[ecom:ProductGrid]",
+            "#FLOW[ADD_TO_CART]"
+          ],
+          "profiles": [
+            "ecom_min"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "ecom:Header",
+                "ecom:ProductGrid"
+              ]
+            },
+            {
+              "name": "Product",
+              "path": "/product/:id",
+              "ui": [
+                "ecom:ProductDetail"
+              ]
+            },
+            {
+              "name": "Cart",
+              "path": "/cart",
+              "ui": [
+                "ecom:CartPanel"
+              ]
+            },
+            {
+              "name": "Shop",
+              "path": "/shop/:id",
+              "ui": [
+                "ecom:ShopHeader",
+                "ecom:ProductGrid"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "ADD_TO_CART"
+          ],
+          "unsupported_constructs": []
+        }
+      }
+    },
+    {
+      "requirement_id": "E6",
+      "category": "ecom_min",
+      "title": "下单流程测试",
+      "requirement": "做一个电商流程，包含商品详情、加入购物车、购物车、结算。",
+      "generated_ail": "#PROFILE[ecom_min]\n@PAGE[Home,/]\n#UI[ecom:Header]\n#UI[ecom:ProductGrid]\n@PAGE[Product,/product/:id]\n#UI[ecom:ProductDetail]\n@PAGE[Cart,/cart]\n#UI[ecom:CartPanel]\n@PAGE[Checkout,/checkout]\n#UI[ecom:CheckoutPanel]\n#FLOW[ADD_TO_CART]\n#FLOW[CHECKOUT_SUBMIT]\n#FLOW[ORDER_PLACE]\n",
+      "pre_compile_recommended": true,
+      "repair_applied": false,
+      "post_compile_recommended": true,
+      "final_profile": "ecom_min",
+      "issues": [],
+      "pre_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "ecom_min",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "ecom_min",
+        "parsed": {
+          "lines": [
+            "#PROFILE[ecom_min]",
+            "@PAGE[Home,/]",
+            "#UI[ecom:Header]",
+            "#UI[ecom:ProductGrid]",
+            "@PAGE[Product,/product/:id]",
+            "#UI[ecom:ProductDetail]",
+            "@PAGE[Cart,/cart]",
+            "#UI[ecom:CartPanel]",
+            "@PAGE[Checkout,/checkout]",
+            "#UI[ecom:CheckoutPanel]",
+            "#FLOW[ADD_TO_CART]",
+            "#FLOW[CHECKOUT_SUBMIT]",
+            "#FLOW[ORDER_PLACE]"
+          ],
+          "profiles": [
+            "ecom_min"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "ecom:Header",
+                "ecom:ProductGrid"
+              ]
+            },
+            {
+              "name": "Product",
+              "path": "/product/:id",
+              "ui": [
+                "ecom:ProductDetail"
+              ]
+            },
+            {
+              "name": "Cart",
+              "path": "/cart",
+              "ui": [
+                "ecom:CartPanel"
+              ]
+            },
+            {
+              "name": "Checkout",
+              "path": "/checkout",
+              "ui": [
+                "ecom:CheckoutPanel"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "ADD_TO_CART",
+            "CHECKOUT_SUBMIT",
+            "ORDER_PLACE"
+          ],
+          "unsupported_constructs": []
+        }
+      },
+      "post_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "ecom_min",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "ecom_min",
+        "parsed": {
+          "lines": [
+            "#PROFILE[ecom_min]",
+            "@PAGE[Home,/]",
+            "#UI[ecom:Header]",
+            "#UI[ecom:ProductGrid]",
+            "@PAGE[Product,/product/:id]",
+            "#UI[ecom:ProductDetail]",
+            "@PAGE[Cart,/cart]",
+            "#UI[ecom:CartPanel]",
+            "@PAGE[Checkout,/checkout]",
+            "#UI[ecom:CheckoutPanel]",
+            "#FLOW[ADD_TO_CART]",
+            "#FLOW[CHECKOUT_SUBMIT]",
+            "#FLOW[ORDER_PLACE]"
+          ],
+          "profiles": [
+            "ecom_min"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "ecom:Header",
+                "ecom:ProductGrid"
+              ]
+            },
+            {
+              "name": "Product",
+              "path": "/product/:id",
+              "ui": [
+                "ecom:ProductDetail"
+              ]
+            },
+            {
+              "name": "Cart",
+              "path": "/cart",
+              "ui": [
+                "ecom:CartPanel"
+              ]
+            },
+            {
+              "name": "Checkout",
+              "path": "/checkout",
+              "ui": [
+                "ecom:CheckoutPanel"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "ADD_TO_CART",
+            "CHECKOUT_SUBMIT",
+            "ORDER_PLACE"
+          ],
+          "unsupported_constructs": []
+        }
+      }
+    },
+    {
+      "requirement_id": "E7",
+      "category": "ecom_min",
+      "title": "服装站增强版",
+      "requirement": "做一个服装独立站，包含首页横幅、分类导航、商品列表、商品详情、购物车、结算。",
+      "generated_ail": "#PROFILE[ecom_min]\n@PAGE[Home,/]\n#UI[ecom:Header]\n#UI[ecom:Banner]\n#UI[ecom:CategoryNav]\n#UI[ecom:ProductGrid]\n@PAGE[Product,/product/:id]\n#UI[ecom:ProductDetail]\n@PAGE[Cart,/cart]\n#UI[ecom:CartPanel]\n@PAGE[Checkout,/checkout]\n#UI[ecom:CheckoutPanel]\n@PAGE[Category,/category/:name]\n#UI[ecom:CategoryNav]\n#UI[ecom:ProductGrid]\n#FLOW[ADD_TO_CART]\n#FLOW[CHECKOUT_SUBMIT]\n#FLOW[ORDER_PLACE]\n",
+      "pre_compile_recommended": true,
+      "repair_applied": false,
+      "post_compile_recommended": true,
+      "final_profile": "ecom_min",
+      "issues": [],
+      "pre_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "ecom_min",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "ecom_min",
+        "parsed": {
+          "lines": [
+            "#PROFILE[ecom_min]",
+            "@PAGE[Home,/]",
+            "#UI[ecom:Header]",
+            "#UI[ecom:Banner]",
+            "#UI[ecom:CategoryNav]",
+            "#UI[ecom:ProductGrid]",
+            "@PAGE[Product,/product/:id]",
+            "#UI[ecom:ProductDetail]",
+            "@PAGE[Cart,/cart]",
+            "#UI[ecom:CartPanel]",
+            "@PAGE[Checkout,/checkout]",
+            "#UI[ecom:CheckoutPanel]",
+            "@PAGE[Category,/category/:name]",
+            "#UI[ecom:CategoryNav]",
+            "#UI[ecom:ProductGrid]",
+            "#FLOW[ADD_TO_CART]",
+            "#FLOW[CHECKOUT_SUBMIT]",
+            "#FLOW[ORDER_PLACE]"
+          ],
+          "profiles": [
+            "ecom_min"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "ecom:Header",
+                "ecom:Banner",
+                "ecom:CategoryNav",
+                "ecom:ProductGrid"
+              ]
+            },
+            {
+              "name": "Product",
+              "path": "/product/:id",
+              "ui": [
+                "ecom:ProductDetail"
+              ]
+            },
+            {
+              "name": "Cart",
+              "path": "/cart",
+              "ui": [
+                "ecom:CartPanel"
+              ]
+            },
+            {
+              "name": "Checkout",
+              "path": "/checkout",
+              "ui": [
+                "ecom:CheckoutPanel"
+              ]
+            },
+            {
+              "name": "Category",
+              "path": "/category/:name",
+              "ui": [
+                "ecom:CategoryNav",
+                "ecom:ProductGrid"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "ADD_TO_CART",
+            "CHECKOUT_SUBMIT",
+            "ORDER_PLACE"
+          ],
+          "unsupported_constructs": []
+        }
+      },
+      "post_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "ecom_min",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "ecom_min",
+        "parsed": {
+          "lines": [
+            "#PROFILE[ecom_min]",
+            "@PAGE[Home,/]",
+            "#UI[ecom:Header]",
+            "#UI[ecom:Banner]",
+            "#UI[ecom:CategoryNav]",
+            "#UI[ecom:ProductGrid]",
+            "@PAGE[Product,/product/:id]",
+            "#UI[ecom:ProductDetail]",
+            "@PAGE[Cart,/cart]",
+            "#UI[ecom:CartPanel]",
+            "@PAGE[Checkout,/checkout]",
+            "#UI[ecom:CheckoutPanel]",
+            "@PAGE[Category,/category/:name]",
+            "#UI[ecom:CategoryNav]",
+            "#UI[ecom:ProductGrid]",
+            "#FLOW[ADD_TO_CART]",
+            "#FLOW[CHECKOUT_SUBMIT]",
+            "#FLOW[ORDER_PLACE]"
+          ],
+          "profiles": [
+            "ecom_min"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "ecom:Header",
+                "ecom:Banner",
+                "ecom:CategoryNav",
+                "ecom:ProductGrid"
+              ]
+            },
+            {
+              "name": "Product",
+              "path": "/product/:id",
+              "ui": [
+                "ecom:ProductDetail"
+              ]
+            },
+            {
+              "name": "Cart",
+              "path": "/cart",
+              "ui": [
+                "ecom:CartPanel"
+              ]
+            },
+            {
+              "name": "Checkout",
+              "path": "/checkout",
+              "ui": [
+                "ecom:CheckoutPanel"
+              ]
+            },
+            {
+              "name": "Category",
+              "path": "/category/:name",
+              "ui": [
+                "ecom:CategoryNav",
+                "ecom:ProductGrid"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "ADD_TO_CART",
+            "CHECKOUT_SUBMIT",
+            "ORDER_PLACE"
+          ],
+          "unsupported_constructs": []
+        }
+      }
+    },
+    {
+      "requirement_id": "E8",
+      "category": "ecom_min",
+      "title": "搜索型数码商城",
+      "requirement": "做一个数码商城，包含首页商品列表、搜索结果页、商品详情、购物车。",
+      "generated_ail": "#PROFILE[ecom_min]\n@PAGE[Home,/]\n#UI[ecom:Header]\n#UI[ecom:ProductGrid]\n@PAGE[Product,/product/:id]\n#UI[ecom:ProductDetail]\n@PAGE[Cart,/cart]\n#UI[ecom:CartPanel]\n@PAGE[Search,/search]\n#UI[ecom:SearchResultGrid]\n#FLOW[ADD_TO_CART]\n",
+      "pre_compile_recommended": true,
+      "repair_applied": false,
+      "post_compile_recommended": true,
+      "final_profile": "ecom_min",
+      "issues": [],
+      "pre_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "ecom_min",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "ecom_min",
+        "parsed": {
+          "lines": [
+            "#PROFILE[ecom_min]",
+            "@PAGE[Home,/]",
+            "#UI[ecom:Header]",
+            "#UI[ecom:ProductGrid]",
+            "@PAGE[Product,/product/:id]",
+            "#UI[ecom:ProductDetail]",
+            "@PAGE[Cart,/cart]",
+            "#UI[ecom:CartPanel]",
+            "@PAGE[Search,/search]",
+            "#UI[ecom:SearchResultGrid]",
+            "#FLOW[ADD_TO_CART]"
+          ],
+          "profiles": [
+            "ecom_min"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "ecom:Header",
+                "ecom:ProductGrid"
+              ]
+            },
+            {
+              "name": "Product",
+              "path": "/product/:id",
+              "ui": [
+                "ecom:ProductDetail"
+              ]
+            },
+            {
+              "name": "Cart",
+              "path": "/cart",
+              "ui": [
+                "ecom:CartPanel"
+              ]
+            },
+            {
+              "name": "Search",
+              "path": "/search",
+              "ui": [
+                "ecom:SearchResultGrid"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "ADD_TO_CART"
+          ],
+          "unsupported_constructs": []
+        }
+      },
+      "post_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "ecom_min",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "ecom_min",
+        "parsed": {
+          "lines": [
+            "#PROFILE[ecom_min]",
+            "@PAGE[Home,/]",
+            "#UI[ecom:Header]",
+            "#UI[ecom:ProductGrid]",
+            "@PAGE[Product,/product/:id]",
+            "#UI[ecom:ProductDetail]",
+            "@PAGE[Cart,/cart]",
+            "#UI[ecom:CartPanel]",
+            "@PAGE[Search,/search]",
+            "#UI[ecom:SearchResultGrid]",
+            "#FLOW[ADD_TO_CART]"
+          ],
+          "profiles": [
+            "ecom_min"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "ecom:Header",
+                "ecom:ProductGrid"
+              ]
+            },
+            {
+              "name": "Product",
+              "path": "/product/:id",
+              "ui": [
+                "ecom:ProductDetail"
+              ]
+            },
+            {
+              "name": "Cart",
+              "path": "/cart",
+              "ui": [
+                "ecom:CartPanel"
+              ]
+            },
+            {
+              "name": "Search",
+              "path": "/search",
+              "ui": [
+                "ecom:SearchResultGrid"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "ADD_TO_CART"
+          ],
+          "unsupported_constructs": []
+        }
+      }
+    },
+    {
+      "requirement_id": "E9",
+      "category": "ecom_min",
+      "title": "店铺型商城增强版",
+      "requirement": "做一个店铺型电商网站，包含首页、店铺页、商品详情、购物车、结算。",
+      "generated_ail": "#PROFILE[ecom_min]\n@PAGE[Home,/]\n#UI[ecom:Header]\n#UI[ecom:ProductGrid]\n@PAGE[Product,/product/:id]\n#UI[ecom:ProductDetail]\n@PAGE[Cart,/cart]\n#UI[ecom:CartPanel]\n@PAGE[Checkout,/checkout]\n#UI[ecom:CheckoutPanel]\n@PAGE[Shop,/shop/:id]\n#UI[ecom:ShopHeader]\n#UI[ecom:ProductGrid]\n#FLOW[ADD_TO_CART]\n#FLOW[CHECKOUT_SUBMIT]\n#FLOW[ORDER_PLACE]\n",
+      "pre_compile_recommended": true,
+      "repair_applied": false,
+      "post_compile_recommended": true,
+      "final_profile": "ecom_min",
+      "issues": [],
+      "pre_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "ecom_min",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "ecom_min",
+        "parsed": {
+          "lines": [
+            "#PROFILE[ecom_min]",
+            "@PAGE[Home,/]",
+            "#UI[ecom:Header]",
+            "#UI[ecom:ProductGrid]",
+            "@PAGE[Product,/product/:id]",
+            "#UI[ecom:ProductDetail]",
+            "@PAGE[Cart,/cart]",
+            "#UI[ecom:CartPanel]",
+            "@PAGE[Checkout,/checkout]",
+            "#UI[ecom:CheckoutPanel]",
+            "@PAGE[Shop,/shop/:id]",
+            "#UI[ecom:ShopHeader]",
+            "#UI[ecom:ProductGrid]",
+            "#FLOW[ADD_TO_CART]",
+            "#FLOW[CHECKOUT_SUBMIT]",
+            "#FLOW[ORDER_PLACE]"
+          ],
+          "profiles": [
+            "ecom_min"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "ecom:Header",
+                "ecom:ProductGrid"
+              ]
+            },
+            {
+              "name": "Product",
+              "path": "/product/:id",
+              "ui": [
+                "ecom:ProductDetail"
+              ]
+            },
+            {
+              "name": "Cart",
+              "path": "/cart",
+              "ui": [
+                "ecom:CartPanel"
+              ]
+            },
+            {
+              "name": "Checkout",
+              "path": "/checkout",
+              "ui": [
+                "ecom:CheckoutPanel"
+              ]
+            },
+            {
+              "name": "Shop",
+              "path": "/shop/:id",
+              "ui": [
+                "ecom:ShopHeader",
+                "ecom:ProductGrid"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "ADD_TO_CART",
+            "CHECKOUT_SUBMIT",
+            "ORDER_PLACE"
+          ],
+          "unsupported_constructs": []
+        }
+      },
+      "post_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "ecom_min",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "ecom_min",
+        "parsed": {
+          "lines": [
+            "#PROFILE[ecom_min]",
+            "@PAGE[Home,/]",
+            "#UI[ecom:Header]",
+            "#UI[ecom:ProductGrid]",
+            "@PAGE[Product,/product/:id]",
+            "#UI[ecom:ProductDetail]",
+            "@PAGE[Cart,/cart]",
+            "#UI[ecom:CartPanel]",
+            "@PAGE[Checkout,/checkout]",
+            "#UI[ecom:CheckoutPanel]",
+            "@PAGE[Shop,/shop/:id]",
+            "#UI[ecom:ShopHeader]",
+            "#UI[ecom:ProductGrid]",
+            "#FLOW[ADD_TO_CART]",
+            "#FLOW[CHECKOUT_SUBMIT]",
+            "#FLOW[ORDER_PLACE]"
+          ],
+          "profiles": [
+            "ecom_min"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "ecom:Header",
+                "ecom:ProductGrid"
+              ]
+            },
+            {
+              "name": "Product",
+              "path": "/product/:id",
+              "ui": [
+                "ecom:ProductDetail"
+              ]
+            },
+            {
+              "name": "Cart",
+              "path": "/cart",
+              "ui": [
+                "ecom:CartPanel"
+              ]
+            },
+            {
+              "name": "Checkout",
+              "path": "/checkout",
+              "ui": [
+                "ecom:CheckoutPanel"
+              ]
+            },
+            {
+              "name": "Shop",
+              "path": "/shop/:id",
+              "ui": [
+                "ecom:ShopHeader",
+                "ecom:ProductGrid"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "ADD_TO_CART",
+            "CHECKOUT_SUBMIT",
+            "ORDER_PLACE"
+          ],
+          "unsupported_constructs": []
+        }
+      }
+    },
+    {
+      "requirement_id": "E10",
+      "category": "ecom_min",
+      "title": "分类电商网站",
+      "requirement": "做一个分类电商网站，包含首页横幅、分类导航、分类商品列表、商品详情、结算。",
+      "generated_ail": "#PROFILE[ecom_min]\n@PAGE[Home,/]\n#UI[ecom:Header]\n#UI[ecom:Banner]\n#UI[ecom:CategoryNav]\n#UI[ecom:ProductGrid]\n@PAGE[Product,/product/:id]\n#UI[ecom:ProductDetail]\n@PAGE[Checkout,/checkout]\n#UI[ecom:CheckoutPanel]\n@PAGE[Category,/category/:name]\n#UI[ecom:CategoryNav]\n#UI[ecom:ProductGrid]\n#FLOW[CHECKOUT_SUBMIT]\n#FLOW[ORDER_PLACE]\n",
+      "pre_compile_recommended": true,
+      "repair_applied": false,
+      "post_compile_recommended": true,
+      "final_profile": "ecom_min",
+      "issues": [],
+      "pre_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "ecom_min",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "ecom_min",
+        "parsed": {
+          "lines": [
+            "#PROFILE[ecom_min]",
+            "@PAGE[Home,/]",
+            "#UI[ecom:Header]",
+            "#UI[ecom:Banner]",
+            "#UI[ecom:CategoryNav]",
+            "#UI[ecom:ProductGrid]",
+            "@PAGE[Product,/product/:id]",
+            "#UI[ecom:ProductDetail]",
+            "@PAGE[Checkout,/checkout]",
+            "#UI[ecom:CheckoutPanel]",
+            "@PAGE[Category,/category/:name]",
+            "#UI[ecom:CategoryNav]",
+            "#UI[ecom:ProductGrid]",
+            "#FLOW[CHECKOUT_SUBMIT]",
+            "#FLOW[ORDER_PLACE]"
+          ],
+          "profiles": [
+            "ecom_min"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "ecom:Header",
+                "ecom:Banner",
+                "ecom:CategoryNav",
+                "ecom:ProductGrid"
+              ]
+            },
+            {
+              "name": "Product",
+              "path": "/product/:id",
+              "ui": [
+                "ecom:ProductDetail"
+              ]
+            },
+            {
+              "name": "Checkout",
+              "path": "/checkout",
+              "ui": [
+                "ecom:CheckoutPanel"
+              ]
+            },
+            {
+              "name": "Category",
+              "path": "/category/:name",
+              "ui": [
+                "ecom:CategoryNav",
+                "ecom:ProductGrid"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "CHECKOUT_SUBMIT",
+            "ORDER_PLACE"
+          ],
+          "unsupported_constructs": []
+        }
+      },
+      "post_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "ecom_min",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "ecom_min",
+        "parsed": {
+          "lines": [
+            "#PROFILE[ecom_min]",
+            "@PAGE[Home,/]",
+            "#UI[ecom:Header]",
+            "#UI[ecom:Banner]",
+            "#UI[ecom:CategoryNav]",
+            "#UI[ecom:ProductGrid]",
+            "@PAGE[Product,/product/:id]",
+            "#UI[ecom:ProductDetail]",
+            "@PAGE[Checkout,/checkout]",
+            "#UI[ecom:CheckoutPanel]",
+            "@PAGE[Category,/category/:name]",
+            "#UI[ecom:CategoryNav]",
+            "#UI[ecom:ProductGrid]",
+            "#FLOW[CHECKOUT_SUBMIT]",
+            "#FLOW[ORDER_PLACE]"
+          ],
+          "profiles": [
+            "ecom_min"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "ecom:Header",
+                "ecom:Banner",
+                "ecom:CategoryNav",
+                "ecom:ProductGrid"
+              ]
+            },
+            {
+              "name": "Product",
+              "path": "/product/:id",
+              "ui": [
+                "ecom:ProductDetail"
+              ]
+            },
+            {
+              "name": "Checkout",
+              "path": "/checkout",
+              "ui": [
+                "ecom:CheckoutPanel"
+              ]
+            },
+            {
+              "name": "Category",
+              "path": "/category/:name",
+              "ui": [
+                "ecom:CategoryNav",
+                "ecom:ProductGrid"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "CHECKOUT_SUBMIT",
+            "ORDER_PLACE"
+          ],
+          "unsupported_constructs": []
+        }
+      }
+    },
+    {
+      "requirement_id": "A1",
+      "category": "after_sales",
+      "title": "退款流程",
+      "requirement": "做一个退款流程页，包含填写退款原因、提交申请、客服审核、退款结果通知。",
+      "generated_ail": "#PROFILE[after_sales]\n@PAGE[AfterSales,/after-sales]\n#UI[after_sales:Entry]\n#UI[after_sales:Refund]\n#UI[after_sales:Support]\n#FLOW[REFUND_FLOW]\n",
+      "pre_compile_recommended": true,
+      "repair_applied": false,
+      "post_compile_recommended": true,
+      "final_profile": "after_sales",
+      "issues": [],
+      "pre_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "after_sales",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "after_sales",
+        "parsed": {
+          "lines": [
+            "#PROFILE[after_sales]",
+            "@PAGE[AfterSales,/after-sales]",
+            "#UI[after_sales:Entry]",
+            "#UI[after_sales:Refund]",
+            "#UI[after_sales:Support]",
+            "#FLOW[REFUND_FLOW]"
+          ],
+          "profiles": [
+            "after_sales"
+          ],
+          "pages": [
+            {
+              "name": "AfterSales",
+              "path": "/after-sales",
+              "ui": [
+                "after_sales:Entry",
+                "after_sales:Refund",
+                "after_sales:Support"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "REFUND_FLOW"
+          ],
+          "unsupported_constructs": []
+        }
+      },
+      "post_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "after_sales",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "after_sales",
+        "parsed": {
+          "lines": [
+            "#PROFILE[after_sales]",
+            "@PAGE[AfterSales,/after-sales]",
+            "#UI[after_sales:Entry]",
+            "#UI[after_sales:Refund]",
+            "#UI[after_sales:Support]",
+            "#FLOW[REFUND_FLOW]"
+          ],
+          "profiles": [
+            "after_sales"
+          ],
+          "pages": [
+            {
+              "name": "AfterSales",
+              "path": "/after-sales",
+              "ui": [
+                "after_sales:Entry",
+                "after_sales:Refund",
+                "after_sales:Support"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "REFUND_FLOW"
+          ],
+          "unsupported_constructs": []
+        }
+      }
+    },
+    {
+      "requirement_id": "A2",
+      "category": "after_sales",
+      "title": "换货流程",
+      "requirement": "做一个换货流程页，包含填写换货原因、提交申请、客服审核、重新发货。",
+      "generated_ail": "#PROFILE[after_sales]\n@PAGE[AfterSales,/after-sales]\n#UI[after_sales:Entry]\n#UI[after_sales:Exchange]\n#UI[after_sales:Support]\n#FLOW[EXCHANGE_FLOW]\n",
+      "pre_compile_recommended": true,
+      "repair_applied": false,
+      "post_compile_recommended": true,
+      "final_profile": "after_sales",
+      "issues": [],
+      "pre_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "after_sales",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "after_sales",
+        "parsed": {
+          "lines": [
+            "#PROFILE[after_sales]",
+            "@PAGE[AfterSales,/after-sales]",
+            "#UI[after_sales:Entry]",
+            "#UI[after_sales:Exchange]",
+            "#UI[after_sales:Support]",
+            "#FLOW[EXCHANGE_FLOW]"
+          ],
+          "profiles": [
+            "after_sales"
+          ],
+          "pages": [
+            {
+              "name": "AfterSales",
+              "path": "/after-sales",
+              "ui": [
+                "after_sales:Entry",
+                "after_sales:Exchange",
+                "after_sales:Support"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "EXCHANGE_FLOW"
+          ],
+          "unsupported_constructs": []
+        }
+      },
+      "post_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "after_sales",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "after_sales",
+        "parsed": {
+          "lines": [
+            "#PROFILE[after_sales]",
+            "@PAGE[AfterSales,/after-sales]",
+            "#UI[after_sales:Entry]",
+            "#UI[after_sales:Exchange]",
+            "#UI[after_sales:Support]",
+            "#FLOW[EXCHANGE_FLOW]"
+          ],
+          "profiles": [
+            "after_sales"
+          ],
+          "pages": [
+            {
+              "name": "AfterSales",
+              "path": "/after-sales",
+              "ui": [
+                "after_sales:Entry",
+                "after_sales:Exchange",
+                "after_sales:Support"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "EXCHANGE_FLOW"
+          ],
+          "unsupported_constructs": []
+        }
+      }
+    },
+    {
+      "requirement_id": "A3",
+      "category": "after_sales",
+      "title": "售后入口",
+      "requirement": "做一个售后入口页，包含退款、换货、联系客服。",
+      "generated_ail": "#PROFILE[after_sales]\n@PAGE[AfterSales,/after-sales]\n#UI[after_sales:Entry]\n#UI[after_sales:Refund]\n#UI[after_sales:Exchange]\n#UI[after_sales:Support]\n#FLOW[REFUND_FLOW]\n#FLOW[EXCHANGE_FLOW]\n",
+      "pre_compile_recommended": true,
+      "repair_applied": false,
+      "post_compile_recommended": true,
+      "final_profile": "after_sales",
+      "issues": [],
+      "pre_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "after_sales",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "after_sales",
+        "parsed": {
+          "lines": [
+            "#PROFILE[after_sales]",
+            "@PAGE[AfterSales,/after-sales]",
+            "#UI[after_sales:Entry]",
+            "#UI[after_sales:Refund]",
+            "#UI[after_sales:Exchange]",
+            "#UI[after_sales:Support]",
+            "#FLOW[REFUND_FLOW]",
+            "#FLOW[EXCHANGE_FLOW]"
+          ],
+          "profiles": [
+            "after_sales"
+          ],
+          "pages": [
+            {
+              "name": "AfterSales",
+              "path": "/after-sales",
+              "ui": [
+                "after_sales:Entry",
+                "after_sales:Refund",
+                "after_sales:Exchange",
+                "after_sales:Support"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "REFUND_FLOW",
+            "EXCHANGE_FLOW"
+          ],
+          "unsupported_constructs": []
+        }
+      },
+      "post_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "after_sales",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "after_sales",
+        "parsed": {
+          "lines": [
+            "#PROFILE[after_sales]",
+            "@PAGE[AfterSales,/after-sales]",
+            "#UI[after_sales:Entry]",
+            "#UI[after_sales:Refund]",
+            "#UI[after_sales:Exchange]",
+            "#UI[after_sales:Support]",
+            "#FLOW[REFUND_FLOW]",
+            "#FLOW[EXCHANGE_FLOW]"
+          ],
+          "profiles": [
+            "after_sales"
+          ],
+          "pages": [
+            {
+              "name": "AfterSales",
+              "path": "/after-sales",
+              "ui": [
+                "after_sales:Entry",
+                "after_sales:Refund",
+                "after_sales:Exchange",
+                "after_sales:Support"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "REFUND_FLOW",
+            "EXCHANGE_FLOW"
+          ],
+          "unsupported_constructs": []
+        }
+      }
+    },
+    {
+      "requirement_id": "A4",
+      "category": "after_sales",
+      "title": "客服投诉",
+      "requirement": "做一个客服投诉页面，包含投诉提交、客服介入、升级处理。",
+      "generated_ail": "#PROFILE[after_sales]\n@PAGE[AfterSales,/after-sales]\n#UI[after_sales:Entry]\n#UI[after_sales:Complaint]\n#UI[after_sales:Support]\n#FLOW[COMPLAINT_DEESCALATE]\n",
+      "pre_compile_recommended": true,
+      "repair_applied": false,
+      "post_compile_recommended": true,
+      "final_profile": "after_sales",
+      "issues": [],
+      "pre_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "after_sales",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "after_sales",
+        "parsed": {
+          "lines": [
+            "#PROFILE[after_sales]",
+            "@PAGE[AfterSales,/after-sales]",
+            "#UI[after_sales:Entry]",
+            "#UI[after_sales:Complaint]",
+            "#UI[after_sales:Support]",
+            "#FLOW[COMPLAINT_DEESCALATE]"
+          ],
+          "profiles": [
+            "after_sales"
+          ],
+          "pages": [
+            {
+              "name": "AfterSales",
+              "path": "/after-sales",
+              "ui": [
+                "after_sales:Entry",
+                "after_sales:Complaint",
+                "after_sales:Support"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "COMPLAINT_DEESCALATE"
+          ],
+          "unsupported_constructs": []
+        }
+      },
+      "post_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "after_sales",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "after_sales",
+        "parsed": {
+          "lines": [
+            "#PROFILE[after_sales]",
+            "@PAGE[AfterSales,/after-sales]",
+            "#UI[after_sales:Entry]",
+            "#UI[after_sales:Complaint]",
+            "#UI[after_sales:Support]",
+            "#FLOW[COMPLAINT_DEESCALATE]"
+          ],
+          "profiles": [
+            "after_sales"
+          ],
+          "pages": [
+            {
+              "name": "AfterSales",
+              "path": "/after-sales",
+              "ui": [
+                "after_sales:Entry",
+                "after_sales:Complaint",
+                "after_sales:Support"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "COMPLAINT_DEESCALATE"
+          ],
+          "unsupported_constructs": []
+        }
+      }
+    },
+    {
+      "requirement_id": "A5",
+      "category": "after_sales",
+      "title": "退款进度场景",
+      "requirement": "做一个售后入口，用户可以提交退款申请、查看退款处理进度，并联系客服。",
+      "generated_ail": "#PROFILE[after_sales]\n@PAGE[AfterSales,/after-sales]\n#UI[after_sales:Entry]\n#UI[after_sales:Refund]\n#UI[after_sales:Support]\n#FLOW[REFUND_FLOW]\n",
+      "pre_compile_recommended": true,
+      "repair_applied": false,
+      "post_compile_recommended": true,
+      "final_profile": "after_sales",
+      "issues": [],
+      "pre_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "after_sales",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "after_sales",
+        "parsed": {
+          "lines": [
+            "#PROFILE[after_sales]",
+            "@PAGE[AfterSales,/after-sales]",
+            "#UI[after_sales:Entry]",
+            "#UI[after_sales:Refund]",
+            "#UI[after_sales:Support]",
+            "#FLOW[REFUND_FLOW]"
+          ],
+          "profiles": [
+            "after_sales"
+          ],
+          "pages": [
+            {
+              "name": "AfterSales",
+              "path": "/after-sales",
+              "ui": [
+                "after_sales:Entry",
+                "after_sales:Refund",
+                "after_sales:Support"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "REFUND_FLOW"
+          ],
+          "unsupported_constructs": []
+        }
+      },
+      "post_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "after_sales",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "after_sales",
+        "parsed": {
+          "lines": [
+            "#PROFILE[after_sales]",
+            "@PAGE[AfterSales,/after-sales]",
+            "#UI[after_sales:Entry]",
+            "#UI[after_sales:Refund]",
+            "#UI[after_sales:Support]",
+            "#FLOW[REFUND_FLOW]"
+          ],
+          "profiles": [
+            "after_sales"
+          ],
+          "pages": [
+            {
+              "name": "AfterSales",
+              "path": "/after-sales",
+              "ui": [
+                "after_sales:Entry",
+                "after_sales:Refund",
+                "after_sales:Support"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [
+            "REFUND_FLOW"
+          ],
+          "unsupported_constructs": []
+        }
+      }
+    },
+    {
+      "requirement_id": "P1",
+      "category": "app_min",
+      "title": "AI Chat App",
+      "requirement": "做一个 AI Chat App 原型，包含聊天、联系人、发现、我的。",
+      "generated_ail": "#PROFILE[app_min]\n@PAGE[Home,/]\n#UI[app:TopBar]\n#UI[app:BottomTab]\n#UI[app:List]\n#UI[app:ChatWindow]\n#UI[app:Card]\n",
+      "pre_compile_recommended": true,
+      "repair_applied": false,
+      "post_compile_recommended": true,
+      "final_profile": "app_min",
+      "issues": [],
+      "pre_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "app_min",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "app_min",
+        "parsed": {
+          "lines": [
+            "#PROFILE[app_min]",
+            "@PAGE[Home,/]",
+            "#UI[app:TopBar]",
+            "#UI[app:BottomTab]",
+            "#UI[app:List]",
+            "#UI[app:ChatWindow]",
+            "#UI[app:Card]"
+          ],
+          "profiles": [
+            "app_min"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "app:TopBar",
+                "app:BottomTab",
+                "app:List",
+                "app:ChatWindow",
+                "app:Card"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [],
+          "unsupported_constructs": []
+        }
+      },
+      "post_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "app_min",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "app_min",
+        "parsed": {
+          "lines": [
+            "#PROFILE[app_min]",
+            "@PAGE[Home,/]",
+            "#UI[app:TopBar]",
+            "#UI[app:BottomTab]",
+            "#UI[app:List]",
+            "#UI[app:ChatWindow]",
+            "#UI[app:Card]"
+          ],
+          "profiles": [
+            "app_min"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "app:TopBar",
+                "app:BottomTab",
+                "app:List",
+                "app:ChatWindow",
+                "app:Card"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [],
+          "unsupported_constructs": []
+        }
+      }
+    },
+    {
+      "requirement_id": "P2",
+      "category": "app_min",
+      "title": "待办 App",
+      "requirement": "做一个 todo app 原型，包含任务列表、新增任务、完成任务。",
+      "generated_ail": "#PROFILE[app_min]\n@PAGE[Home,/]\n#UI[app:TopBar]\n#UI[app:BottomTab]\n#UI[app:List]\n#UI[app:Card]\n#UI[app:Composer]\n",
+      "pre_compile_recommended": true,
+      "repair_applied": false,
+      "post_compile_recommended": true,
+      "final_profile": "app_min",
+      "issues": [],
+      "pre_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "app_min",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "app_min",
+        "parsed": {
+          "lines": [
+            "#PROFILE[app_min]",
+            "@PAGE[Home,/]",
+            "#UI[app:TopBar]",
+            "#UI[app:BottomTab]",
+            "#UI[app:List]",
+            "#UI[app:Card]",
+            "#UI[app:Composer]"
+          ],
+          "profiles": [
+            "app_min"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "app:TopBar",
+                "app:BottomTab",
+                "app:List",
+                "app:Card",
+                "app:Composer"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [],
+          "unsupported_constructs": []
+        }
+      },
+      "post_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "app_min",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "app_min",
+        "parsed": {
+          "lines": [
+            "#PROFILE[app_min]",
+            "@PAGE[Home,/]",
+            "#UI[app:TopBar]",
+            "#UI[app:BottomTab]",
+            "#UI[app:List]",
+            "#UI[app:Card]",
+            "#UI[app:Composer]"
+          ],
+          "profiles": [
+            "app_min"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "app:TopBar",
+                "app:BottomTab",
+                "app:List",
+                "app:Card",
+                "app:Composer"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [],
+          "unsupported_constructs": []
+        }
+      }
+    },
+    {
+      "requirement_id": "P3",
+      "category": "app_min",
+      "title": "联系人 App",
+      "requirement": "做一个联系人 app 原型，包含联系人列表、搜索联系人、联系人详情。",
+      "generated_ail": "#PROFILE[app_min]\n@PAGE[Home,/]\n#UI[app:TopBar]\n#UI[app:BottomTab]\n#UI[app:List]\n#UI[app:Card]\n#UI[app:SearchBar]\n",
+      "pre_compile_recommended": true,
+      "repair_applied": false,
+      "post_compile_recommended": true,
+      "final_profile": "app_min",
+      "issues": [],
+      "pre_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "app_min",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "app_min",
+        "parsed": {
+          "lines": [
+            "#PROFILE[app_min]",
+            "@PAGE[Home,/]",
+            "#UI[app:TopBar]",
+            "#UI[app:BottomTab]",
+            "#UI[app:List]",
+            "#UI[app:Card]",
+            "#UI[app:SearchBar]"
+          ],
+          "profiles": [
+            "app_min"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "app:TopBar",
+                "app:BottomTab",
+                "app:List",
+                "app:Card",
+                "app:SearchBar"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [],
+          "unsupported_constructs": []
+        }
+      },
+      "post_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "app_min",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "app_min",
+        "parsed": {
+          "lines": [
+            "#PROFILE[app_min]",
+            "@PAGE[Home,/]",
+            "#UI[app:TopBar]",
+            "#UI[app:BottomTab]",
+            "#UI[app:List]",
+            "#UI[app:Card]",
+            "#UI[app:SearchBar]"
+          ],
+          "profiles": [
+            "app_min"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "app:TopBar",
+                "app:BottomTab",
+                "app:List",
+                "app:Card",
+                "app:SearchBar"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [],
+          "unsupported_constructs": []
+        }
+      }
+    },
+    {
+      "requirement_id": "P4",
+      "category": "app_min",
+      "title": "笔记 App",
+      "requirement": "做一个笔记 app 原型，包含笔记列表、新增笔记、编辑笔记。",
+      "generated_ail": "#PROFILE[app_min]\n@PAGE[Home,/]\n#UI[app:TopBar]\n#UI[app:BottomTab]\n#UI[app:List]\n#UI[app:Card]\n#UI[app:Composer]\n",
+      "pre_compile_recommended": true,
+      "repair_applied": false,
+      "post_compile_recommended": true,
+      "final_profile": "app_min",
+      "issues": [],
+      "pre_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "app_min",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "app_min",
+        "parsed": {
+          "lines": [
+            "#PROFILE[app_min]",
+            "@PAGE[Home,/]",
+            "#UI[app:TopBar]",
+            "#UI[app:BottomTab]",
+            "#UI[app:List]",
+            "#UI[app:Card]",
+            "#UI[app:Composer]"
+          ],
+          "profiles": [
+            "app_min"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "app:TopBar",
+                "app:BottomTab",
+                "app:List",
+                "app:Card",
+                "app:Composer"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [],
+          "unsupported_constructs": []
+        }
+      },
+      "post_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "app_min",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "app_min",
+        "parsed": {
+          "lines": [
+            "#PROFILE[app_min]",
+            "@PAGE[Home,/]",
+            "#UI[app:TopBar]",
+            "#UI[app:BottomTab]",
+            "#UI[app:List]",
+            "#UI[app:Card]",
+            "#UI[app:Composer]"
+          ],
+          "profiles": [
+            "app_min"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "app:TopBar",
+                "app:BottomTab",
+                "app:List",
+                "app:Card",
+                "app:Composer"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [],
+          "unsupported_constructs": []
+        }
+      }
+    },
+    {
+      "requirement_id": "P5",
+      "category": "app_min",
+      "title": "AI Chat 原型增强版",
+      "requirement": "做一个 AI Chat App 原型，包含顶部栏、底部 tab、聊天列表、发现页、我的页、聊天窗口。",
+      "generated_ail": "#PROFILE[app_min]\n@PAGE[Home,/]\n#UI[app:TopBar]\n#UI[app:BottomTab]\n#UI[app:List]\n#UI[app:ChatWindow]\n#UI[app:Card]\n",
+      "pre_compile_recommended": true,
+      "repair_applied": false,
+      "post_compile_recommended": true,
+      "final_profile": "app_min",
+      "issues": [],
+      "pre_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "app_min",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "app_min",
+        "parsed": {
+          "lines": [
+            "#PROFILE[app_min]",
+            "@PAGE[Home,/]",
+            "#UI[app:TopBar]",
+            "#UI[app:BottomTab]",
+            "#UI[app:List]",
+            "#UI[app:ChatWindow]",
+            "#UI[app:Card]"
+          ],
+          "profiles": [
+            "app_min"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "app:TopBar",
+                "app:BottomTab",
+                "app:List",
+                "app:ChatWindow",
+                "app:Card"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [],
+          "unsupported_constructs": []
+        }
+      },
+      "post_diagnosis": {
+        "valid": "yes",
+        "compile_recommended": "yes",
+        "confidence": "high",
+        "detected_profile": "app_min",
+        "profile_match": "yes",
+        "multiple_profiles": "no",
+        "structure_valid": "yes",
+        "structure_notes": "order ok",
+        "alias_components": [],
+        "alias_flows": [],
+        "unknown_components": [],
+        "unknown_flows": [],
+        "unsupported_constructs": [],
+        "boundary_exceeded": "no",
+        "boundary_reason": "none",
+        "model_output_issue": "no",
+        "dictionary_gap": "no",
+        "compiler_gap": "no",
+        "unsupported_by_current_system": "no",
+        "expected_profile": "app_min",
+        "parsed": {
+          "lines": [
+            "#PROFILE[app_min]",
+            "@PAGE[Home,/]",
+            "#UI[app:TopBar]",
+            "#UI[app:BottomTab]",
+            "#UI[app:List]",
+            "#UI[app:ChatWindow]",
+            "#UI[app:Card]"
+          ],
+          "profiles": [
+            "app_min"
+          ],
+          "pages": [
+            {
+              "name": "Home",
+              "path": "/",
+              "ui": [
+                "app:TopBar",
+                "app:BottomTab",
+                "app:List",
+                "app:ChatWindow",
+                "app:Card"
+              ]
+            }
+          ],
+          "db_lines": [],
+          "api_lines": [],
+          "flows": [],
+          "unsupported_constructs": []
+        }
+      }
+    }
+  ]
+}

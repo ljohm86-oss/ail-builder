@@ -1,0 +1,4 @@
+#PROFILE[ecom_min]
+@PAGE[Product,/product/:id]
+#UI[ecom:ProductDetail]
+#FLOW[ADD_CART]

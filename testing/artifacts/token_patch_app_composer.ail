@@ -1,0 +1,10 @@
+^SYS[AppComposerPatch]
+#PROFILE[app_min]
+#LIB[tailwind]
+
+@PAGE[Home,/]
+#UI[app:TopBar]{title:"Tasks"}
+#UI[app:BottomTab]{items:"tasks|notes|me|more"}
+#UI[app:List]{source:"tasks",item:"task_card",tab:"tasks"}
+#UI[app:Card]{title:"我的资料",subtitle:"查看个人信息",tab:"me"}
+#UI[app:Composer]{title:"新增任务",placeholder:"输入任务内容",button:"添加"}

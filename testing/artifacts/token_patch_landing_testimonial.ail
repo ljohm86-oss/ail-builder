@@ -1,0 +1,11 @@
+^SYS[LandingTokenPatch]
+#PROFILE[landing]
+#LIB[tailwind]
+
+@PAGE[Home,/]
+#UI[landing:Header]{brand:"Signal AI",links:"Features|Contact"}
+#UI[landing:Hero]{title:"AI 官网",subtitle:"展示能力与客户评价"}
+#UI[landing:FeatureGrid]{title:"功能",items:"自动化|分析|协作"}
+#UI[landing:Testimonial]{title:"客户评价",items:"效率提升|部署更快|上线稳定"}
+#UI[landing:CTA]{title:"立即开始",button:"免费试用"}
+#UI[landing:Footer]{brand:"Signal AI",links:"Features|Contact"}

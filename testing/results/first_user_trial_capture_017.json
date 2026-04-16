@@ -1,0 +1,339 @@
+{
+  "status": "ok",
+  "entrypoint": "trial-run",
+  "project_path": "/private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.dadkjbxo",
+  "scenario": "landing",
+  "requirement": "做一个 AI SaaS 官网，包含首页、功能介绍、FAQ、联系我们。",
+  "detected_profile": "landing",
+  "repair_used": false,
+  "build_id": "build_20260318_035529_032550+0000",
+  "managed_files_written": 6,
+  "source_of_truth": "/private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.dadkjbxo/.ail/source.ail",
+  "manifest": "/private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.dadkjbxo/.ail/manifest.json",
+  "created": [
+    ".ail",
+    ".ail/patches",
+    "src/views/generated/",
+    "src/router/generated/",
+    "backend/generated/",
+    "src/ail_generated/",
+    "src/custom/",
+    "src/extensions/",
+    "src/theme/",
+    "backend/custom/",
+    ".ail/source.ail",
+    ".ail/manifest.json",
+    ".ail/last_build.json"
+  ],
+  "existing": [],
+  "generate_notices": [
+    "generated source using the local fallback path and saved it in editable AIL form"
+  ],
+  "compile_notices": [
+    "applied compiler compatibility metadata automatically during compile"
+  ],
+  "notices": [
+    "generated source using the local fallback path and saved it in editable AIL form",
+    "applied compiler compatibility metadata automatically during compile"
+  ],
+  "cloud": {
+    "base_url": "embedded://local",
+    "api_variant": "v1_compile",
+    "endpoint": "/api/v1/compile"
+  },
+  "cloud_status": {
+    "status": "ok",
+    "project_id": "proj_ail_trial_run_dadkjbxo",
+    "project": {
+      "created_at": "2026-03-18T03:55:29.032550+00:00",
+      "latest_build_id": "build_20260318_035529_032550+0000",
+      "latest_manifest_version": 1,
+      "project_id": "proj_ail_trial_run_dadkjbxo",
+      "updated_at": "2026-03-18T03:55:29.032550+00:00"
+    },
+    "latest_build": {
+      "artifact_available": true,
+      "build_id": "build_20260318_035529_032550+0000",
+      "created_at": "2026-03-18T03:55:29.032550+00:00",
+      "diff_summary": {
+        "added": 6,
+        "deleted": 0,
+        "updated": 0
+      },
+      "manifest_version": 1,
+      "mode": "full",
+      "project_id": "proj_ail_trial_run_dadkjbxo",
+      "server_info": {
+        "base_url": "http://127.0.0.1:5002",
+        "pid": 73178,
+        "timestamp": "2026-03-18T03:55:29.032550+00:00",
+        "version": "v5"
+      },
+      "source_project_root": "/Users/carwynmac/ai-cl/output_projects/AilTrialRunDadkjbxo",
+      "status": "succeeded"
+    },
+    "latest_artifact": {
+      "artifact_id": "artifact_build_20260318_035529_032550+0000",
+      "build_id": "build_20260318_035529_032550+0000",
+      "download_url": null,
+      "expires_at": null,
+      "format": "directory_descriptor",
+      "local_path": "/Users/carwynmac/ai-cl/output_projects/AilTrialRunDadkjbxo",
+      "sha256": "b150b2fb15db1c154548123c6a110779a42c7497a4d276e9806dfbc0cd335d46"
+    },
+    "recent_builds": [
+      {
+        "build_id": "build_20260318_035529_032550+0000",
+        "created_at": "2026-03-18T03:55:29.032550+00:00",
+        "mode": "full",
+        "status": "succeeded"
+      }
+    ],
+    "recent_build_count": 1,
+    "next_cursor": null,
+    "cloud": {
+      "project": {
+        "base_url": "embedded://local",
+        "api_variant": "v1_project_query",
+        "endpoint": "/api/v1/project/proj_ail_trial_run_dadkjbxo"
+      },
+      "builds": {
+        "base_url": "embedded://local",
+        "api_variant": "v1_project_builds_query",
+        "endpoint": "/api/v1/project/proj_ail_trial_run_dadkjbxo/builds?limit=5"
+      },
+      "build": {
+        "base_url": "embedded://local",
+        "api_variant": "v1_build_query",
+        "endpoint": "/api/v1/build/build_20260318_035529_032550+0000"
+      },
+      "artifact": {
+        "base_url": "embedded://local",
+        "api_variant": "v1_build_artifact_query",
+        "endpoint": "/api/v1/build/build_20260318_035529_032550+0000/artifact"
+      }
+    }
+  },
+  "project_check": {
+    "status": "ok",
+    "project_id": "proj_ail_trial_run_dadkjbxo",
+    "project_root": "/private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.dadkjbxo",
+    "checks": {
+      "ail_initialized": true,
+      "source_exists": true,
+      "manifest_exists": true,
+      "last_build_exists": true,
+      "cached_build_present": true,
+      "cached_build_files_present": true,
+      "cloud_status_available": true,
+      "sync_conflicts_detected": false,
+      "ready_for_compile_sync": true,
+      "ready_for_sync": true
+    },
+    "manifest_summary": {
+      "manifest_version": 1,
+      "current_build_id": "build_20260318_035529_032550+0000",
+      "managed_file_count": 6
+    },
+    "last_build_summary": {
+      "build_id": "build_20260318_035529_032550+0000",
+      "status": "",
+      "created_at": "2026-03-18T03:55:29.032550+00:00",
+      "file_count": 6,
+      "deleted_file_count": 0
+    },
+    "cloud_status": {
+      "status": "ok",
+      "project_id": "proj_ail_trial_run_dadkjbxo",
+      "project": {
+        "created_at": "2026-03-18T03:55:29.032550+00:00",
+        "latest_build_id": "build_20260318_035529_032550+0000",
+        "latest_manifest_version": 1,
+        "project_id": "proj_ail_trial_run_dadkjbxo",
+        "updated_at": "2026-03-18T03:55:29.032550+00:00"
+      },
+      "latest_build": {
+        "artifact_available": true,
+        "build_id": "build_20260318_035529_032550+0000",
+        "created_at": "2026-03-18T03:55:29.032550+00:00",
+        "diff_summary": {
+          "added": 6,
+          "deleted": 0,
+          "updated": 0
+        },
+        "manifest_version": 1,
+        "mode": "full",
+        "project_id": "proj_ail_trial_run_dadkjbxo",
+        "server_info": {
+          "base_url": "http://127.0.0.1:5002",
+          "pid": 73178,
+          "timestamp": "2026-03-18T03:55:29.032550+00:00",
+          "version": "v5"
+        },
+        "source_project_root": "/Users/carwynmac/ai-cl/output_projects/AilTrialRunDadkjbxo",
+        "status": "succeeded"
+      },
+      "latest_artifact": {
+        "artifact_id": "artifact_build_20260318_035529_032550+0000",
+        "build_id": "build_20260318_035529_032550+0000",
+        "download_url": null,
+        "expires_at": null,
+        "format": "directory_descriptor",
+        "local_path": "/Users/carwynmac/ai-cl/output_projects/AilTrialRunDadkjbxo",
+        "sha256": "b150b2fb15db1c154548123c6a110779a42c7497a4d276e9806dfbc0cd335d46"
+      },
+      "recent_builds": [
+        {
+          "build_id": "build_20260318_035529_032550+0000",
+          "created_at": "2026-03-18T03:55:29.032550+00:00",
+          "mode": "full",
+          "status": "succeeded"
+        }
+      ],
+      "recent_build_count": 1,
+      "next_cursor": null,
+      "cloud": {
+        "project": {
+          "base_url": "embedded://local",
+          "api_variant": "v1_project_query",
+          "endpoint": "/api/v1/project/proj_ail_trial_run_dadkjbxo"
+        },
+        "builds": {
+          "base_url": "embedded://local",
+          "api_variant": "v1_project_builds_query",
+          "endpoint": "/api/v1/project/proj_ail_trial_run_dadkjbxo/builds?limit=5"
+        },
+        "build": {
+          "base_url": "embedded://local",
+          "api_variant": "v1_build_query",
+          "endpoint": "/api/v1/build/build_20260318_035529_032550+0000"
+        },
+        "artifact": {
+          "base_url": "embedded://local",
+          "api_variant": "v1_build_artifact_query",
+          "endpoint": "/api/v1/build/build_20260318_035529_032550+0000/artifact"
+        }
+      }
+    },
+    "cloud_status_error": null,
+    "sync_conflicts": [],
+    "sync_conflict_error": null,
+    "preview_hint": "Start with /Users/carwynmac/ai-cl/output_projects/AilTrialRunDadkjbxo",
+    "open_targets": [
+      {
+        "label": "artifact_root",
+        "path": "/Users/carwynmac/ai-cl/output_projects/AilTrialRunDadkjbxo",
+        "kind": "directory"
+      },
+      {
+        "label": "source_of_truth",
+        "path": "/private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.dadkjbxo/.ail/source.ail",
+        "kind": "file"
+      },
+      {
+        "label": "manifest",
+        "path": "/private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.dadkjbxo/.ail/manifest.json",
+        "kind": "file"
+      },
+      {
+        "label": "generated_views_dir",
+        "path": "/private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.dadkjbxo/src/views/generated",
+        "kind": "directory"
+      },
+      {
+        "label": "generated_router_dir",
+        "path": "/private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.dadkjbxo/src/router/generated",
+        "kind": "directory"
+      },
+      {
+        "label": "generated_backend_dir",
+        "path": "/private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.dadkjbxo/backend/generated",
+        "kind": "directory"
+      }
+    ],
+    "next_steps": [
+      "inspect /private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.dadkjbxo/src/views/generated",
+      "run PYTHONPATH=/Users/carwynmac/ai-cl python3 -m cli project summary --base-url embedded://local --json",
+      "run PYTHONPATH=/Users/carwynmac/ai-cl python3 -m cli project continue --compile-sync --base-url embedded://local when source changes"
+    ]
+  },
+  "source_diagnosis": {
+    "requirement": "做一个 landing 官网",
+    "diagnosis": {
+      "valid": "yes",
+      "compile_recommended": "yes",
+      "confidence": "high",
+      "detected_profile": "landing",
+      "profile_match": "yes",
+      "multiple_profiles": "no",
+      "structure_valid": "yes",
+      "structure_notes": "order ok",
+      "alias_components": [],
+      "alias_flows": [],
+      "unknown_components": [],
+      "unknown_flows": [],
+      "unsupported_constructs": [],
+      "boundary_exceeded": "no",
+      "boundary_reason": "none",
+      "model_output_issue": "no",
+      "dictionary_gap": "no",
+      "compiler_gap": "no",
+      "unsupported_by_current_system": "no",
+      "expected_profile": "landing"
+    }
+  },
+  "doctor_status": "ok",
+  "doctor_findings": [
+    "Source, build cache, cloud status, and sync safety are all healthy."
+  ],
+  "recommended_action": "continue_iteration",
+  "preview_hint": "Start with /Users/carwynmac/ai-cl/output_projects/AilTrialRunDadkjbxo",
+  "open_targets": [
+    {
+      "label": "artifact_root",
+      "path": "/Users/carwynmac/ai-cl/output_projects/AilTrialRunDadkjbxo",
+      "kind": "directory"
+    },
+    {
+      "label": "source_of_truth",
+      "path": "/private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.dadkjbxo/.ail/source.ail",
+      "kind": "file"
+    },
+    {
+      "label": "manifest",
+      "path": "/private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.dadkjbxo/.ail/manifest.json",
+      "kind": "file"
+    },
+    {
+      "label": "generated_views_dir",
+      "path": "/private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.dadkjbxo/src/views/generated",
+      "kind": "directory"
+    },
+    {
+      "label": "generated_router_dir",
+      "path": "/private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.dadkjbxo/src/router/generated",
+      "kind": "directory"
+    },
+    {
+      "label": "generated_backend_dir",
+      "path": "/private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.dadkjbxo/backend/generated",
+      "kind": "directory"
+    }
+  ],
+  "artifacts": {
+    "source_of_truth": "/private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.dadkjbxo/.ail/source.ail",
+    "manifest": "/private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.dadkjbxo/.ail/manifest.json",
+    "last_build": "/private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.dadkjbxo/.ail/last_build.json",
+    "generated_views_dir": "/private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.dadkjbxo/src/views/generated",
+    "generated_router_dir": "/private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.dadkjbxo/src/router/generated",
+    "generated_backend_dir": "/private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.dadkjbxo/backend/generated"
+  },
+  "next_steps": [
+    "inspect /Users/carwynmac/ai-cl/output_projects/AilTrialRunDadkjbxo",
+    "inspect /private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.dadkjbxo/.ail/source.ail",
+    "run PYTHONPATH=/Users/carwynmac/ai-cl python3 -m cli cloud status proj_ail_trial_run_dadkjbxo --base-url embedded://local --json"
+  ],
+  "recommended_primary_action": "project_continue_diagnose_compile_sync",
+  "recommended_primary_command": "PYTHONPATH=/Users/carwynmac/ai-cl python3 -m cli project continue --diagnose-compile-sync --base-url embedded://local --json",
+  "recommended_primary_reason": "Project is healthy; use the safe continue path as the default next iteration action after source changes."
+}

@@ -1,0 +1,35 @@
+{
+  "version": "v0.1",
+  "release_baseline_task_ids": [
+    "L1",
+    "L2",
+    "L3",
+    "L4",
+    "L5",
+    "L6",
+    "E1",
+    "E2",
+    "E3",
+    "E4",
+    "E5",
+    "E6",
+    "A1",
+    "A2",
+    "A3",
+    "A4"
+  ],
+  "experimental_task_ids": [
+    "P1",
+    "P2",
+    "P3",
+    "P4"
+  ],
+  "release_rule": {
+    "baseline_must_all_pass": true,
+    "experimental_must_not_block_release": true
+  },
+  "notes": [
+    "landing/ecom_min/after_sales are current frozen release profiles",
+    "app_min remains experimental and is not part of release gate"
+  ]
+}

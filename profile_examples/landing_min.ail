@@ -1,0 +1,23 @@
+^SYS[BrandSite]
+#PROFILE[landing]
+#LIB[tailwind]
+
+@PAGE[Home,/]
+#UI[landing:Header]{brand:"Nova AI",links:"Features|Pricing|Contact"}
+#UI[landing:Hero]{title:"AI 驱动的高效工作平台",subtitle:"帮助团队更快完成复杂任务",cta_primary:"立即体验",cta_secondary:"查看介绍"}
+#UI[landing:FeatureGrid]{title:"核心能力",items:"快速生成|流程自动化|更低成本|可扩展"}
+#UI[landing:Testimonial]{title:"用户评价",items:"部署更快|协作更顺畅|上线效率提升"}
+#UI[landing:CTA]{title:"现在开始使用",button:"免费开始"}
+#UI[landing:Footer]{brand:"Nova AI",links:"About|Pricing|Contact"}
+
+@PAGE[About,/about]
+#UI[landing:Hero]{title:"关于我们",subtitle:"我们专注于 AI 产品与效率系统"}
+
+@PAGE[Features,/features]
+#UI[landing:FeatureGrid]{title:"功能介绍",items:"智能生成|模板能力|多场景支持|低成本交付"}
+
+@PAGE[Pricing,/pricing]
+#UI[landing:Pricing]{title:"价格方案",plans:"基础版|专业版|企业版"}
+
+@PAGE[Contact,/contact]
+#UI[landing:Contact]{title:"联系我们",fields:"name|email|message"}

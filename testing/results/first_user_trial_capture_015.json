@@ -1,0 +1,130 @@
+{
+  "status": "ok",
+  "entrypoint": "trial-run",
+  "project_path": "/private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.x9fxxog8",
+  "scenario": "ecom_min",
+  "requirement": "做一个数码商城，包含首页商品列表、商品详情、购物车、结算。",
+  "detected_profile": "ecom_min",
+  "repair_used": false,
+  "build_id": "build_20260317_142528_143428+0000",
+  "managed_files_written": 9,
+  "source_of_truth": "/private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.x9fxxog8/.ail/source.ail",
+  "manifest": "/private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.x9fxxog8/.ail/manifest.json",
+  "created": [
+    ".ail",
+    ".ail/patches",
+    "src/views/generated/",
+    "src/router/generated/",
+    "backend/generated/",
+    "src/ail_generated/",
+    "src/custom/",
+    "src/extensions/",
+    "src/theme/",
+    "backend/custom/",
+    ".ail/source.ail",
+    ".ail/manifest.json",
+    ".ail/last_build.json"
+  ],
+  "existing": [],
+  "generate_notices": [
+    "generated source using the local fallback path and saved it in editable AIL form"
+  ],
+  "compile_notices": [
+    "applied compiler compatibility metadata automatically during compile"
+  ],
+  "notices": [
+    "generated source using the local fallback path and saved it in editable AIL form",
+    "applied compiler compatibility metadata automatically during compile"
+  ],
+  "cloud": {
+    "base_url": "embedded://local",
+    "api_variant": "v1_compile",
+    "endpoint": "/api/v1/compile"
+  },
+  "cloud_status": {
+    "status": "ok",
+    "project_id": "proj_ail_trial_run_x9fxxog8",
+    "project": {
+      "created_at": "2026-03-17T14:25:28.143428+00:00",
+      "latest_build_id": "build_20260317_142528_143428+0000",
+      "latest_manifest_version": 1,
+      "project_id": "proj_ail_trial_run_x9fxxog8",
+      "updated_at": "2026-03-17T14:25:28.143428+00:00"
+    },
+    "latest_build": {
+      "artifact_available": true,
+      "build_id": "build_20260317_142528_143428+0000",
+      "created_at": "2026-03-17T14:25:28.143428+00:00",
+      "diff_summary": {
+        "added": 9,
+        "deleted": 0,
+        "updated": 0
+      },
+      "manifest_version": 1,
+      "mode": "full",
+      "project_id": "proj_ail_trial_run_x9fxxog8",
+      "server_info": {
+        "base_url": "http://127.0.0.1:5002",
+        "pid": 63691,
+        "timestamp": "2026-03-17T14:25:28.143428+00:00",
+        "version": "v5"
+      },
+      "source_project_root": "/Users/carwynmac/ai-cl/output_projects/AilTrialRunX9fxxog8",
+      "status": "succeeded"
+    },
+    "latest_artifact": {
+      "artifact_id": "artifact_build_20260317_142528_143428+0000",
+      "build_id": "build_20260317_142528_143428+0000",
+      "download_url": null,
+      "expires_at": null,
+      "format": "directory_descriptor",
+      "local_path": "/Users/carwynmac/ai-cl/output_projects/AilTrialRunX9fxxog8",
+      "sha256": "6a15513a9f057eeed1b43d8c17147ad2478ff3b4b55252f2cb146814fbaf86c1"
+    },
+    "recent_builds": [
+      {
+        "build_id": "build_20260317_142528_143428+0000",
+        "created_at": "2026-03-17T14:25:28.143428+00:00",
+        "mode": "full",
+        "status": "succeeded"
+      }
+    ],
+    "recent_build_count": 1,
+    "next_cursor": null,
+    "cloud": {
+      "project": {
+        "base_url": "embedded://local",
+        "api_variant": "v1_project_query",
+        "endpoint": "/api/v1/project/proj_ail_trial_run_x9fxxog8"
+      },
+      "builds": {
+        "base_url": "embedded://local",
+        "api_variant": "v1_project_builds_query",
+        "endpoint": "/api/v1/project/proj_ail_trial_run_x9fxxog8/builds?limit=5"
+      },
+      "build": {
+        "base_url": "embedded://local",
+        "api_variant": "v1_build_query",
+        "endpoint": "/api/v1/build/build_20260317_142528_143428+0000"
+      },
+      "artifact": {
+        "base_url": "embedded://local",
+        "api_variant": "v1_build_artifact_query",
+        "endpoint": "/api/v1/build/build_20260317_142528_143428+0000/artifact"
+      }
+    }
+  },
+  "artifacts": {
+    "source_of_truth": "/private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.x9fxxog8/.ail/source.ail",
+    "manifest": "/private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.x9fxxog8/.ail/manifest.json",
+    "last_build": "/private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.x9fxxog8/.ail/last_build.json",
+    "generated_views_dir": "/private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.x9fxxog8/src/views/generated",
+    "generated_router_dir": "/private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.x9fxxog8/src/router/generated",
+    "generated_backend_dir": "/private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.x9fxxog8/backend/generated"
+  },
+  "next_steps": [
+    "inspect /private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.x9fxxog8/src/views/generated",
+    "inspect /private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.x9fxxog8/src/router/generated",
+    "inspect /private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.x9fxxog8/backend/generated"
+  ]
+}

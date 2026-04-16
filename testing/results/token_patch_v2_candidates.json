@@ -1,0 +1,98 @@
+{
+  "version": "v2-draft",
+  "source": {
+    "dictionary_gap_report": "/Users/carwynmac/ai-cl/testing/results/dictionary_gap_report.json",
+    "suggested_tokens": "/Users/carwynmac/ai-cl/testing/results/suggested_tokens.json"
+  },
+  "closed_gaps_confirmed": [
+    "landing:Testimonial",
+    "after_sales:Support",
+    "app:Composer"
+  ],
+  "candidate_tokens": [
+    {
+      "profile": "app_min",
+      "token_type": "ui",
+      "suggested_token": "app:SearchBar",
+      "priority": 1,
+      "reason": "联系人类 app 原型开始出现搜索需求，当前 app_min 没有直接表达。",
+      "evidence": {
+        "phrase": "搜索联系人",
+        "count": 1,
+        "sample_ids": ["P3"]
+      },
+      "minimal_scope": [
+        "generator skill: 遇到 搜索联系人 / 搜索 时允许生成 app:SearchBar",
+        "diagnostic skill: app:SearchBar 视为合法 token",
+        "repair skill: app_min + 搜索联系人 时可补 app:SearchBar",
+        "compile mapping: 在 app_min 顶部或列表上方渲染一个最小搜索输入栏"
+      ],
+      "why_now": "对 app_min 是高频、低风险补齐，且不引入多页或后端。"
+    },
+    {
+      "profile": "landing",
+      "token_type": "ui",
+      "suggested_token": "landing:Jobs",
+      "priority": 2,
+      "reason": "招聘官网类需求出现职位展示，但当前 landing 缺少专门区块。",
+      "evidence": {
+        "phrase": "职位展示",
+        "count": 1,
+        "sample_ids": ["L5"]
+      },
+      "minimal_scope": [
+        "generator skill: 遇到 职位展示 / 招聘 / 岗位 时允许生成 landing:Jobs",
+        "diagnostic skill: landing:Jobs 视为合法 token",
+        "repair skill: landing + 职位展示 时可补 landing:Jobs",
+        "compile mapping: 渲染一个简单职位卡片列表"
+      ],
+      "why_now": "对招聘站有直接价值，但比 app:SearchBar 更垂直。"
+    },
+    {
+      "profile": "landing",
+      "token_type": "ui",
+      "suggested_token": "landing:Portfolio",
+      "priority": 3,
+      "reason": "个人站 / 工作室官网出现项目作品需求，当前 landing 缺少作品展示区块。",
+      "evidence": {
+        "phrase": "项目作品",
+        "count": 1,
+        "sample_ids": ["L6"]
+      },
+      "minimal_scope": [
+        "generator skill: 遇到 项目作品 / 案例展示 时允许生成 landing:Portfolio",
+        "diagnostic skill: landing:Portfolio 视为合法 token",
+        "repair skill: landing + 项目作品 时可补 landing:Portfolio",
+        "compile mapping: 渲染一个简单项目卡片网格"
+      ],
+      "why_now": "对个人站和工作室站有价值，但优先级低于 app 搜索。"
+    }
+  ],
+  "deferred_alias_only_items": [
+    {
+      "raw_form": "landing:Testimonials",
+      "canonical": "landing:Testimonial"
+    },
+    {
+      "raw_form": "ecom:Search",
+      "canonical": "ecom:SearchResultGrid"
+    },
+    {
+      "raw_form": "SUBMIT_CONTACT",
+      "canonical": "CONTACT_SUBMIT"
+    },
+    {
+      "raw_form": "ADD_CART",
+      "canonical": "ADD_TO_CART"
+    },
+    {
+      "raw_form": "SUPPORT_ESCALATE",
+      "canonical": "COMPLAINT_DEESCALATE"
+    }
+  ],
+  "recommended_order": [
+    "app:SearchBar",
+    "landing:Jobs",
+    "landing:Portfolio"
+  ]
+}

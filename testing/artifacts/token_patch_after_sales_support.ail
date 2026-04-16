@@ -1,0 +1,7 @@
+^SYS[AfterSalesSupportPatch]
+#PROFILE[after_sales]
+
+@PAGE[AfterSales,/after-sales]
+#UI[after_sales:Entry]{title:"售后入口"}
+#UI[after_sales:Refund]{title:"退款申请"}
+#UI[after_sales:Support]{title:"联系客服",subtitle:"在线客服与电话客服"}

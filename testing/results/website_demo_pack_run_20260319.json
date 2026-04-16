@@ -1,0 +1,150 @@
+{
+  "summary": {
+    "status": "ok",
+    "date": "2026-03-19",
+    "base_url": "embedded://local",
+    "include_partial": false,
+    "case_count": 4,
+    "demo_ready_count": 4,
+    "supported_demo_ready_count": 4,
+    "partial_demo_ready_count": 0
+  },
+  "cases": [
+    {
+      "id": "company_product",
+      "pack": "Company / Product Website Pack",
+      "support_level": "Supported",
+      "requirement": "做一个企业产品官网，包含首页、产品优势、团队介绍、客户评价、FAQ、数据展示、合作伙伴 Logo、联系我们。",
+      "expected_profile": "landing",
+      "trial_run": {
+        "exit_code": 0,
+        "status": "ok",
+        "detected_profile": "landing",
+        "repair_used": false,
+        "managed_files_written": 6
+      },
+      "project_go": {
+        "exit_code": 0,
+        "status": "ok",
+        "route_taken": "project_continue_diagnose_compile_sync"
+      },
+      "project_preview": {
+        "exit_code": 0,
+        "status": "ok",
+        "primary_target": "artifact_root"
+      },
+      "project_export_handoff": {
+        "exit_code": 0,
+        "status": "ok",
+        "primary_target_label": "artifact_root"
+      },
+      "validation": {
+        "profile_ok": true,
+        "flow_ok": true,
+        "demo_ready": true
+      }
+    },
+    {
+      "id": "personal_independent",
+      "pack": "Personal Independent Site Pack",
+      "support_level": "Supported",
+      "requirement": "做一个个人独立站，包含首页、个人介绍、服务介绍、作品展示、联系方式。",
+      "expected_profile": "landing",
+      "trial_run": {
+        "exit_code": 0,
+        "status": "ok",
+        "detected_profile": "landing",
+        "repair_used": false,
+        "managed_files_written": 6
+      },
+      "project_go": {
+        "exit_code": 0,
+        "status": "ok",
+        "route_taken": "project_continue_diagnose_compile_sync"
+      },
+      "project_preview": {
+        "exit_code": 0,
+        "status": "ok",
+        "primary_target": "artifact_root"
+      },
+      "project_export_handoff": {
+        "exit_code": 0,
+        "status": "ok",
+        "primary_target_label": "artifact_root"
+      },
+      "validation": {
+        "profile_ok": true,
+        "flow_ok": true,
+        "demo_ready": true
+      }
+    },
+    {
+      "id": "ecom_storefront",
+      "pack": "Ecommerce Independent Storefront Pack",
+      "support_level": "Supported",
+      "requirement": "做一个服装独立站，包含首页横幅、分类导航、商品列表、商品详情、购物车、结算。",
+      "expected_profile": "ecom_min",
+      "trial_run": {
+        "exit_code": 0,
+        "status": "ok",
+        "detected_profile": "ecom_min",
+        "repair_used": false,
+        "managed_files_written": 10
+      },
+      "project_go": {
+        "exit_code": 0,
+        "status": "ok",
+        "route_taken": "project_continue_diagnose_compile_sync"
+      },
+      "project_preview": {
+        "exit_code": 0,
+        "status": "ok",
+        "primary_target": "artifact_root"
+      },
+      "project_export_handoff": {
+        "exit_code": 0,
+        "status": "ok",
+        "primary_target_label": "artifact_root"
+      },
+      "validation": {
+        "profile_ok": true,
+        "flow_ok": true,
+        "demo_ready": true
+      }
+    },
+    {
+      "id": "after_sales",
+      "pack": "After-Sales Service Website Pack",
+      "support_level": "Supported",
+      "requirement": "做一个品牌售后服务网站，包含退款申请、换货申请、投诉提交、进度查询说明、联系客服。",
+      "expected_profile": "after_sales",
+      "trial_run": {
+        "exit_code": 0,
+        "status": "ok",
+        "detected_profile": "after_sales",
+        "repair_used": false,
+        "managed_files_written": 7
+      },
+      "project_go": {
+        "exit_code": 0,
+        "status": "ok",
+        "route_taken": "project_continue_diagnose_compile_sync"
+      },
+      "project_preview": {
+        "exit_code": 0,
+        "status": "ok",
+        "primary_target": "artifact_root"
+      },
+      "project_export_handoff": {
+        "exit_code": 0,
+        "status": "ok",
+        "primary_target_label": "artifact_root"
+      },
+      "validation": {
+        "profile_ok": true,
+        "flow_ok": true,
+        "demo_ready": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+#PROFILE[ecom_min]
+@PAGE[Search,/search]
+#UI[ecom:Search]

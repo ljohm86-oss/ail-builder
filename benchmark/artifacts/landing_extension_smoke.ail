@@ -1,0 +1,29 @@
+^SYS[LandingExtensionSmoke]
+#PROFILE[landing]
+#LIB[tailwind]
+
+@PAGE[Home,/]
+#UI[landing:Header]{brand:"Orbit AI",links:"About|Features|Pricing|Contact"}
+#UI[landing:Hero]{title:"AI teams ship faster",subtitle:"High-signal landing profile extension smoke test",cta_primary:"Start now",cta_secondary:"See features"}
+#UI[landing:Stats]{items=[{"label":"Users","value":"10K+"},{"label":"Countries","value":"35"},{"label":"Uptime","value":"99.9%"}]}
+#UI[landing:LogoCloud]{logos=["a.png","b.png","c.png","d.png"]}
+#UI[landing:FeatureGrid]{title:"Core capabilities",items:"Fast setup|Stable workflows|Low ops cost|Flexible templates"}
+#UI[landing:Team]{members=[{"name":"Alice","role":"CEO"},{"name":"Bob","role":"CTO"},{"name":"Cara","role":"Design Lead"}]}
+#UI[landing:Testimonial]{title:"Customer voice",items:"Launches move faster|Handoffs are clearer|Teams stay aligned"}
+#UI[landing:FAQ]{title:"Frequently Asked Questions",items=[{"q":"What is this?","a":"A deterministic landing extension smoke test."},{"q":"How to contact?","a":"Use the contact form below."}]}
+#UI[landing:CTA]{title:"Ready to get started?",button:"Contact us"}
+#UI[landing:Footer]{brand:"Orbit AI",links:"About|Pricing|Contact"}
+
+@PAGE[About,/about]
+#UI[landing:Hero]{title:"About Orbit AI",subtitle:"Built for modern product teams"}
+
+@PAGE[Features,/features]
+#UI[landing:FeatureGrid]{title:"Feature breakdown",items:"Generation|Automation|Templates|Delivery"}
+
+@PAGE[Pricing,/pricing]
+#UI[landing:Pricing]{title:"Pricing plans",plans:"Starter|Growth|Enterprise"}
+
+@PAGE[Contact,/contact]
+#UI[landing:Contact]{title:"Contact us",fields:"name|email|message"}
+#FLOW[CONTACT_SUBMIT]{form_id:"contact_form"}
+#FLOW[LEAD_CAPTURE]{field:"email"}

@@ -1,0 +1,339 @@
+{
+  "summary": {
+    "date": "2026-03-19",
+    "status": "ok",
+    "cases_total": 5,
+    "delivery_ready_count": 5,
+    "supported_ready_count": 4,
+    "partial_ready_count": 1,
+    "rc_status": "ok",
+    "workspace_status": "ok",
+    "recommended_release_action": "workspace_go",
+    "recommended_workspace_action": "trial_run_landing"
+  },
+  "cases": [
+    {
+      "pack": "Personal Independent Site Pack",
+      "support_level": "Supported",
+      "requirement": "做一个个人独立站，包含首页、个人介绍、服务介绍、作品展示、联系方式。",
+      "expected_profile": "landing",
+      "trial_run": {
+        "exit_code": 0,
+        "status": "ok",
+        "project_path": "/private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.r0sny3ht",
+        "detected_profile": "landing",
+        "repair_used": false,
+        "managed_files_written": 6
+      },
+      "project_go": {
+        "exit_code": 0,
+        "status": "ok",
+        "route_taken": "project_continue_diagnose_compile_sync"
+      },
+      "project_preview": {
+        "exit_code": 0,
+        "status": "ok",
+        "primary_target": "artifact_root",
+        "latest_artifact_id": "artifact_build_20260319_103110_896274+0000"
+      },
+      "project_export_handoff": {
+        "exit_code": 0,
+        "status": "ok",
+        "primary_target_label": "artifact_root"
+      },
+      "validation": {
+        "profile_ok": true,
+        "flow_ok": true,
+        "delivery_ready": true
+      }
+    },
+    {
+      "pack": "Company / Product Website Pack",
+      "support_level": "Supported",
+      "requirement": "做一个企业产品官网，包含首页、产品优势、团队介绍、客户评价、FAQ、数据展示、合作伙伴 Logo、联系我们。",
+      "expected_profile": "landing",
+      "trial_run": {
+        "exit_code": 0,
+        "status": "ok",
+        "project_path": "/private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.ymuk9pur",
+        "detected_profile": "landing",
+        "repair_used": false,
+        "managed_files_written": 6
+      },
+      "project_go": {
+        "exit_code": 0,
+        "status": "ok",
+        "route_taken": "project_continue_diagnose_compile_sync"
+      },
+      "project_preview": {
+        "exit_code": 0,
+        "status": "ok",
+        "primary_target": "artifact_root",
+        "latest_artifact_id": "artifact_build_20260319_103115_633247+0000"
+      },
+      "project_export_handoff": {
+        "exit_code": 0,
+        "status": "ok",
+        "primary_target_label": "artifact_root"
+      },
+      "validation": {
+        "profile_ok": true,
+        "flow_ok": true,
+        "delivery_ready": true
+      }
+    },
+    {
+      "pack": "Ecommerce Independent Storefront Pack",
+      "support_level": "Supported",
+      "requirement": "做一个服装独立站，包含首页横幅、分类导航、商品列表、商品详情、购物车、结算。",
+      "expected_profile": "ecom_min",
+      "trial_run": {
+        "exit_code": 0,
+        "status": "ok",
+        "project_path": "/private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.8jei95u7",
+        "detected_profile": "ecom_min",
+        "repair_used": false,
+        "managed_files_written": 10
+      },
+      "project_go": {
+        "exit_code": 0,
+        "status": "ok",
+        "route_taken": "project_continue_diagnose_compile_sync"
+      },
+      "project_preview": {
+        "exit_code": 0,
+        "status": "ok",
+        "primary_target": "artifact_root",
+        "latest_artifact_id": "artifact_build_20260319_103120_460880+0000"
+      },
+      "project_export_handoff": {
+        "exit_code": 0,
+        "status": "ok",
+        "primary_target_label": "artifact_root"
+      },
+      "validation": {
+        "profile_ok": true,
+        "flow_ok": true,
+        "delivery_ready": true
+      }
+    },
+    {
+      "pack": "After-Sales Service Website Pack",
+      "support_level": "Supported",
+      "requirement": "做一个品牌售后服务网站，包含退款申请、换货申请、投诉提交、进度查询说明、联系客服。",
+      "expected_profile": "after_sales",
+      "trial_run": {
+        "exit_code": 0,
+        "status": "ok",
+        "project_path": "/private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.usfrudvz",
+        "detected_profile": "after_sales",
+        "repair_used": false,
+        "managed_files_written": 7
+      },
+      "project_go": {
+        "exit_code": 0,
+        "status": "ok",
+        "route_taken": "project_continue_diagnose_compile_sync"
+      },
+      "project_preview": {
+        "exit_code": 0,
+        "status": "ok",
+        "primary_target": "artifact_root",
+        "latest_artifact_id": "artifact_build_20260319_103125_242815+0000"
+      },
+      "project_export_handoff": {
+        "exit_code": 0,
+        "status": "ok",
+        "primary_target_label": "artifact_root"
+      },
+      "validation": {
+        "profile_ok": true,
+        "flow_ok": true,
+        "delivery_ready": true
+      }
+    },
+    {
+      "pack": "Personal Blog-Style Site Pack",
+      "support_level": "Partial",
+      "requirement": "做一个个人博客风格网站，包含首页、文章列表、关于我、联系方式。",
+      "expected_profile": "landing",
+      "trial_run": {
+        "exit_code": 0,
+        "status": "ok",
+        "project_path": "/private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.orgzv3n9",
+        "detected_profile": "landing",
+        "repair_used": false,
+        "managed_files_written": 6
+      },
+      "project_go": {
+        "exit_code": 0,
+        "status": "ok",
+        "route_taken": "project_continue_diagnose_compile_sync"
+      },
+      "project_preview": {
+        "exit_code": 0,
+        "status": "ok",
+        "primary_target": "artifact_root",
+        "latest_artifact_id": "artifact_build_20260319_103130_018468+0000"
+      },
+      "project_export_handoff": {
+        "exit_code": 0,
+        "status": "ok",
+        "primary_target_label": "artifact_root"
+      },
+      "validation": {
+        "profile_ok": true,
+        "flow_ok": true,
+        "delivery_ready": true
+      }
+    }
+  ],
+  "rc_check": {
+    "status": "ok",
+    "entrypoint": "rc-check",
+    "repo_root": "/Users/carwynmac/ai-cl",
+    "rc": {
+      "status": "ok",
+      "benchmark_ok": true,
+      "project_workbench_primary_action_converged": true,
+      "trial_entry_route_converged": true
+    },
+    "readiness": {
+      "status": "ok",
+      "stage": "frozen_profile_product_closure",
+      "project_workbench_ok": true,
+      "trial_batch_ok": true,
+      "trial_entry_ok": true
+    },
+    "benchmark": {
+      "release_baseline_ok": true,
+      "release_baseline_passed": 16,
+      "release_baseline_failed": 0,
+      "release_decision": "fail"
+    },
+    "latest_trial_batch": {
+      "status": "ok",
+      "record_count": 3,
+      "success_count": 3,
+      "repair_required_count": 0,
+      "recommended_primary_action_distribution": {
+        "project_continue_diagnose_compile_sync": 3
+      },
+      "route_taken_distribution": {
+        "trial_run_canonical_flow": 3
+      }
+    },
+    "workspace_summary": {
+      "status": "ok",
+      "entrypoint": "workspace-summary",
+      "repo_root": "/Users/carwynmac/ai-cl",
+      "cwd": "/Users/carwynmac/ai-cl",
+      "inside_ail_project": false,
+      "product_surface": {
+        "frozen_profiles": [
+          "landing",
+          "ecom_min",
+          "after_sales"
+        ],
+        "experimental_profiles": [
+          "app_min"
+        ]
+      },
+      "current_project": null,
+      "readiness": {
+        "status": "ok",
+        "stage": "frozen_profile_product_closure",
+        "project_workbench_primary_action_converged": true,
+        "trial_entry_route_converged": true
+      },
+      "rc": {
+        "status": "ok",
+        "benchmark_ok": true,
+        "project_go_ok": true,
+        "project_workbench_primary_action_converged": true,
+        "trial_entry_route_converged": true
+      },
+      "latest_trial_batch": {
+        "status": "ok",
+        "record_count": 3,
+        "success_count": 3,
+        "repair_required_count": 0,
+        "recommended_primary_action_distribution": {
+          "project_continue_diagnose_compile_sync": 3
+        },
+        "route_taken_distribution": {
+          "trial_run_canonical_flow": 3
+        }
+      },
+      "recommended_workspace_action": "trial_run_landing",
+      "recommended_workspace_command": "PYTHONPATH=/Users/carwynmac/ai-cl python3 -m cli trial-run --scenario landing --base-url embedded://local --json",
+      "recommended_workspace_reason": "Workspace-level readiness is healthy; the fastest supported repo-level entry remains the frozen-profile trial path.",
+      "next_steps": [
+        "run PYTHONPATH=/Users/carwynmac/ai-cl python3 -m cli trial-run --scenario landing --base-url embedded://local --json",
+        "inspect the latest readiness snapshot and recorded trial batch before expanding scope"
+      ]
+    },
+    "recommended_release_action": "workspace_go",
+    "recommended_release_command": "PYTHONPATH=/Users/carwynmac/ai-cl python3 -m cli workspace go --base-url embedded://local --json",
+    "recommended_release_reason": "RC and readiness are both green; the highest-value next move is to use the unified workspace execution path.",
+    "artifacts": {
+      "rc_checks_json": "/Users/carwynmac/ai-cl/testing/results/rc_checks_results.json",
+      "readiness_snapshot_json": "/Users/carwynmac/ai-cl/testing/results/readiness_snapshot.json",
+      "latest_trial_batch_json": "/Users/carwynmac/ai-cl/testing/results/first_user_trial_batch_recorded_summary_20260317.json"
+    },
+    "next_steps": [
+      "run PYTHONPATH=/Users/carwynmac/ai-cl python3 -m cli workspace go --base-url embedded://local --json",
+      "review the latest RC and readiness summaries before expanding scope"
+    ]
+  },
+  "workspace_summary": {
+    "status": "ok",
+    "entrypoint": "workspace-summary",
+    "repo_root": "/Users/carwynmac/ai-cl",
+    "cwd": "/Users/carwynmac/ai-cl",
+    "inside_ail_project": false,
+    "product_surface": {
+      "frozen_profiles": [
+        "landing",
+        "ecom_min",
+        "after_sales"
+      ],
+      "experimental_profiles": [
+        "app_min"
+      ]
+    },
+    "current_project": null,
+    "readiness": {
+      "status": "ok",
+      "stage": "frozen_profile_product_closure",
+      "project_workbench_primary_action_converged": true,
+      "trial_entry_route_converged": true
+    },
+    "rc": {
+      "status": "ok",
+      "benchmark_ok": true,
+      "project_go_ok": true,
+      "project_workbench_primary_action_converged": true,
+      "trial_entry_route_converged": true
+    },
+    "latest_trial_batch": {
+      "status": "ok",
+      "record_count": 3,
+      "success_count": 3,
+      "repair_required_count": 0,
+      "recommended_primary_action_distribution": {
+        "project_continue_diagnose_compile_sync": 3
+      },
+      "route_taken_distribution": {
+        "trial_run_canonical_flow": 3
+      }
+    },
+    "recommended_workspace_action": "trial_run_landing",
+    "recommended_workspace_command": "PYTHONPATH=/Users/carwynmac/ai-cl python3 -m cli trial-run --scenario landing --base-url embedded://local --json",
+    "recommended_workspace_reason": "Workspace-level readiness is healthy; the fastest supported repo-level entry remains the frozen-profile trial path.",
+    "next_steps": [
+      "run PYTHONPATH=/Users/carwynmac/ai-cl python3 -m cli trial-run --scenario landing --base-url embedded://local --json",
+      "inspect the latest readiness snapshot and recorded trial batch before expanding scope"
+    ]
+  }
+}

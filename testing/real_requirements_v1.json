@@ -1,0 +1,372 @@
+{
+  "version": "v1",
+  "total": 60,
+  "groups": {
+    "landing": 20,
+    "ecom_min": 20,
+    "after_sales": 10,
+    "app_min": 10
+  },
+  "requirements": [
+    {
+      "id": "L1",
+      "category": "landing",
+      "title": "AI SaaS 官网",
+      "requirement": "做一个 AI SaaS 官网，包含首页、功能介绍、团队、FAQ、联系我们。"
+    },
+    {
+      "id": "L2",
+      "category": "landing",
+      "title": "科技公司官网",
+      "requirement": "做一个科技公司官网，包含首页、关于我们、团队介绍、联系我们。"
+    },
+    {
+      "id": "L3",
+      "category": "landing",
+      "title": "创业产品落地页",
+      "requirement": "做一个创业产品 landing page，包含 Hero、功能介绍、客户评价、CTA。"
+    },
+    {
+      "id": "L4",
+      "category": "landing",
+      "title": "产品营销页",
+      "requirement": "做一个产品 marketing page，包含功能、FAQ、联系我们。"
+    },
+    {
+      "id": "L5",
+      "category": "landing",
+      "title": "招聘官网",
+      "requirement": "做一个招聘官网，包含首页、团队介绍、职位展示、联系我们。"
+    },
+    {
+      "id": "L6",
+      "category": "landing",
+      "title": "个人介绍网站",
+      "requirement": "做一个个人介绍网站，包含首页、关于我、项目作品、联系方式。"
+    },
+    {
+      "id": "L7",
+      "category": "landing",
+      "title": "自动化平台官网",
+      "requirement": "做一个 AI 自动化平台官网，包含首页、功能介绍、数据统计、客户 Logo、团队、FAQ、联系我们、立即开始。"
+    },
+    {
+      "id": "L8",
+      "category": "landing",
+      "title": "企业官网增强版",
+      "requirement": "做一个科技公司官网，包含首页、关于我们、团队介绍、公司数据展示、合作伙伴 Logo、联系我们。"
+    },
+    {
+      "id": "L9",
+      "category": "landing",
+      "title": "B2B 营销页",
+      "requirement": "做一个 B2B 产品营销页，包含 Hero、功能亮点、FAQ、预约演示、联系我们。"
+    },
+    {
+      "id": "L10",
+      "category": "landing",
+      "title": "创业产品介绍页",
+      "requirement": "做一个创业产品 landing page，包含 Hero、功能介绍、客户 Logo、常见问题、立即体验。"
+    },
+    {
+      "id": "L11",
+      "category": "landing",
+      "title": "数据产品官网",
+      "requirement": "做一个数据分析产品官网，包含首页、功能模块、统计数字、客户 Logo、联系我们。"
+    },
+    {
+      "id": "L12",
+      "category": "landing",
+      "title": "AI 助手官网",
+      "requirement": "做一个 AI 助手官网，包含 Hero、功能介绍、团队、FAQ、开始试用。"
+    },
+    {
+      "id": "L13",
+      "category": "landing",
+      "title": "咨询公司官网",
+      "requirement": "做一个咨询公司官网，包含首页、服务介绍、团队、联系我们。"
+    },
+    {
+      "id": "L14",
+      "category": "landing",
+      "title": "品牌官网",
+      "requirement": "做一个品牌官网，包含首页、品牌故事、团队、FAQ、联系我们。"
+    },
+    {
+      "id": "L15",
+      "category": "landing",
+      "title": "SaaS 留资页",
+      "requirement": "做一个 SaaS 留资页面，包含 Hero、功能亮点、客户 Logo、立即预约演示。"
+    },
+    {
+      "id": "L16",
+      "category": "landing",
+      "title": "教育平台介绍页",
+      "requirement": "做一个在线教育平台官网，包含首页、课程亮点、数据展示、FAQ、联系我们。"
+    },
+    {
+      "id": "L17",
+      "category": "landing",
+      "title": "金融科技官网",
+      "requirement": "做一个金融科技官网，包含首页、功能介绍、团队、客户 Logo、联系我们。"
+    },
+    {
+      "id": "L18",
+      "category": "landing",
+      "title": "产品发布页",
+      "requirement": "做一个产品发布页面，包含 Hero、功能介绍、用户评价、CTA、联系我们。"
+    },
+    {
+      "id": "L19",
+      "category": "landing",
+      "title": "工作室官网",
+      "requirement": "做一个设计工作室官网，包含首页、团队、案例展示、FAQ、联系方式。"
+    },
+    {
+      "id": "L20",
+      "category": "landing",
+      "title": "开发者工具官网",
+      "requirement": "做一个开发者工具官网，包含首页、功能介绍、统计数据、合作伙伴 Logo、开始使用。"
+    },
+    {
+      "id": "E1",
+      "category": "ecom_min",
+      "title": "服装独立站",
+      "requirement": "做一个服装商城，包含首页商品列表、商品详情页、购物车、结算页。"
+    },
+    {
+      "id": "E2",
+      "category": "ecom_min",
+      "title": "数码商城",
+      "requirement": "做一个数码商品商城，包含首页推荐商品、商品详情、购物车、结算。"
+    },
+    {
+      "id": "E3",
+      "category": "ecom_min",
+      "title": "分类商城",
+      "requirement": "做一个电商网站，包含首页、商品分类页、商品详情页、购物车。"
+    },
+    {
+      "id": "E4",
+      "category": "ecom_min",
+      "title": "搜索商城",
+      "requirement": "做一个电商网站，支持商品搜索、搜索结果页、商品详情。"
+    },
+    {
+      "id": "E5",
+      "category": "ecom_min",
+      "title": "店铺商城",
+      "requirement": "做一个电商网站，包含店铺页、商品列表、商品详情、购物车。"
+    },
+    {
+      "id": "E6",
+      "category": "ecom_min",
+      "title": "下单流程测试",
+      "requirement": "做一个电商流程，包含商品详情、加入购物车、购物车、结算。"
+    },
+    {
+      "id": "E7",
+      "category": "ecom_min",
+      "title": "服装站增强版",
+      "requirement": "做一个服装独立站，包含首页横幅、分类导航、商品列表、商品详情、购物车、结算。"
+    },
+    {
+      "id": "E8",
+      "category": "ecom_min",
+      "title": "搜索型数码商城",
+      "requirement": "做一个数码商城，包含首页商品列表、搜索结果页、商品详情、购物车。"
+    },
+    {
+      "id": "E9",
+      "category": "ecom_min",
+      "title": "店铺型商城增强版",
+      "requirement": "做一个店铺型电商网站，包含首页、店铺页、商品详情、购物车、结算。"
+    },
+    {
+      "id": "E10",
+      "category": "ecom_min",
+      "title": "分类电商网站",
+      "requirement": "做一个分类电商网站，包含首页横幅、分类导航、分类商品列表、商品详情、结算。"
+    },
+    {
+      "id": "E11",
+      "category": "ecom_min",
+      "title": "家居商城",
+      "requirement": "做一个家居商城，包含首页横幅、商品列表、商品详情、购物车。"
+    },
+    {
+      "id": "E12",
+      "category": "ecom_min",
+      "title": "美妆独立站",
+      "requirement": "做一个美妆独立站，包含首页商品列表、商品详情、购物车、结算。"
+    },
+    {
+      "id": "E13",
+      "category": "ecom_min",
+      "title": "图书商城",
+      "requirement": "做一个图书商城，包含首页商品列表、搜索结果页、商品详情、结算。"
+    },
+    {
+      "id": "E14",
+      "category": "ecom_min",
+      "title": "品牌店铺页",
+      "requirement": "做一个品牌店铺型商城，包含首页、店铺页、商品详情、购物车。"
+    },
+    {
+      "id": "E15",
+      "category": "ecom_min",
+      "title": "数码促销站",
+      "requirement": "做一个数码促销商城，包含首页横幅、商品列表、商品详情、结算。"
+    },
+    {
+      "id": "E16",
+      "category": "ecom_min",
+      "title": "宠物用品商城",
+      "requirement": "做一个宠物用品商城，包含首页分类导航、商品列表、商品详情、购物车。"
+    },
+    {
+      "id": "E17",
+      "category": "ecom_min",
+      "title": "运动用品商城",
+      "requirement": "做一个运动用品商城，包含首页横幅、分类导航、商品详情、购物车、结算。"
+    },
+    {
+      "id": "E18",
+      "category": "ecom_min",
+      "title": "厨房用品商城",
+      "requirement": "做一个厨房用品商城，包含首页、商品搜索结果、商品详情、购物车。"
+    },
+    {
+      "id": "E19",
+      "category": "ecom_min",
+      "title": "礼品商城",
+      "requirement": "做一个礼品商城，包含首页横幅、商品列表、店铺页、商品详情、结算。"
+    },
+    {
+      "id": "E20",
+      "category": "ecom_min",
+      "title": "鞋靴商城",
+      "requirement": "做一个鞋靴商城，包含首页分类导航、商品列表、商品详情、购物车、结算。"
+    },
+    {
+      "id": "A1",
+      "category": "after_sales",
+      "title": "退款流程",
+      "requirement": "做一个退款流程页，包含填写退款原因、提交申请、客服审核、退款结果通知。"
+    },
+    {
+      "id": "A2",
+      "category": "after_sales",
+      "title": "换货流程",
+      "requirement": "做一个换货流程页，包含填写换货原因、提交申请、客服审核、重新发货。"
+    },
+    {
+      "id": "A3",
+      "category": "after_sales",
+      "title": "售后入口",
+      "requirement": "做一个售后入口页，包含退款、换货、联系客服。"
+    },
+    {
+      "id": "A4",
+      "category": "after_sales",
+      "title": "客服投诉",
+      "requirement": "做一个客服投诉页面，包含投诉提交、客服介入、升级处理。"
+    },
+    {
+      "id": "A5",
+      "category": "after_sales",
+      "title": "退款进度场景",
+      "requirement": "做一个售后入口，用户可以提交退款申请、查看退款处理进度，并联系客服。"
+    },
+    {
+      "id": "A6",
+      "category": "after_sales",
+      "title": "换货与投诉场景",
+      "requirement": "做一个售后页面，包含换货申请、投诉提交、升级处理入口。"
+    },
+    {
+      "id": "A7",
+      "category": "after_sales",
+      "title": "退款入口简版",
+      "requirement": "做一个售后页面，包含退款申请、退款原因填写、结果反馈。"
+    },
+    {
+      "id": "A8",
+      "category": "after_sales",
+      "title": "换货入口简版",
+      "requirement": "做一个售后页面，包含换货申请、换货原因、处理结果。"
+    },
+    {
+      "id": "A9",
+      "category": "after_sales",
+      "title": "投诉升级页",
+      "requirement": "做一个售后投诉页面，包含投诉提交、客服介入、升级处理。"
+    },
+    {
+      "id": "A10",
+      "category": "after_sales",
+      "title": "售后总入口",
+      "requirement": "做一个售后总入口，包含退款、换货、投诉、联系客服。"
+    },
+    {
+      "id": "P1",
+      "category": "app_min",
+      "title": "AI Chat App",
+      "requirement": "做一个 AI Chat App 原型，包含聊天、联系人、发现、我的。"
+    },
+    {
+      "id": "P2",
+      "category": "app_min",
+      "title": "待办 App",
+      "requirement": "做一个 todo app 原型，包含任务列表、新增任务、完成任务。"
+    },
+    {
+      "id": "P3",
+      "category": "app_min",
+      "title": "联系人 App",
+      "requirement": "做一个联系人 app 原型，包含联系人列表、搜索联系人、联系人详情。"
+    },
+    {
+      "id": "P4",
+      "category": "app_min",
+      "title": "笔记 App",
+      "requirement": "做一个笔记 app 原型，包含笔记列表、新增笔记、编辑笔记。"
+    },
+    {
+      "id": "P5",
+      "category": "app_min",
+      "title": "AI Chat 原型增强版",
+      "requirement": "做一个 AI Chat App 原型，包含顶部栏、底部 tab、聊天列表、发现页、我的页、聊天窗口。"
+    },
+    {
+      "id": "P6",
+      "category": "app_min",
+      "title": "联系人原型",
+      "requirement": "做一个联系人 App 原型，包含顶部栏、底部 tab、联系人列表、个人卡片。"
+    },
+    {
+      "id": "P7",
+      "category": "app_min",
+      "title": "卡片式工具 App",
+      "requirement": "做一个工具 App 原型，包含顶部栏、底部 tab、功能列表、信息卡片。"
+    },
+    {
+      "id": "P8",
+      "category": "app_min",
+      "title": "消息原型",
+      "requirement": "做一个消息 App 原型，包含顶部栏、底部 tab、消息列表、聊天窗口。"
+    },
+    {
+      "id": "P9",
+      "category": "app_min",
+      "title": "个人主页原型",
+      "requirement": "做一个个人主页 App 原型，包含顶部栏、底部 tab、列表和个人信息卡片。"
+    },
+    {
+      "id": "P10",
+      "category": "app_min",
+      "title": "联系人增强原型",
+      "requirement": "做一个联系人原型，包含顶部栏、底部 tab、联系人列表、聊天窗口。"
+    }
+  ]
+}

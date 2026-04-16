@@ -1,0 +1,7 @@
+#PROFILE[landing]
+@PAGE[Home,/]
+#UI[landing:Header]
+#UI[landing:Hero]
+#UI[landing:FeatureGrid]
+#UI[landing:Testimonials]
+#UI[landing:Footer]

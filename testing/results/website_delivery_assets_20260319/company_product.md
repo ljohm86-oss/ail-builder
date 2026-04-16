@@ -1,0 +1,43 @@
+# Company / Product Website Pack Delivery Asset
+
+## Core
+
+- support_level: `Supported`
+- expected_profile: `landing`
+- expected_primary_route: `project_continue_diagnose_compile_sync`
+- expected_primary_preview_target: `artifact_root`
+- expected_export_primary_target: `artifact_root`
+
+## Requirements
+
+- canonical_requirement: `做一个 AI SaaS 官网，包含首页、功能介绍、FAQ、联系我们。`
+- demo_requirement: `做一个企业产品官网，包含首页、产品优势、团队介绍、客户评价、FAQ、数据展示、合作伙伴 Logo、联系我们。`
+- best_entry_command: `PYTHONPATH=/Users/carwynmac/ai-cl python3 -m cli trial-run --scenario landing --base-url embedded://local --json`
+
+## Validated Behavior
+
+- detected_profile: `landing`
+- trial_status: `ok`
+- repair_used: `False`
+- managed_files_written: `6`
+- project_go_route: `project_continue_diagnose_compile_sync`
+- preview_primary_target: `artifact_root`
+- export_primary_target_label: `artifact_root`
+- delivery_ready: `True`
+
+## Safe Talking Points
+
+- Supported as a company introduction and product website.
+- Strongest current website-oriented surface.
+- Best fit for SaaS, brand, and product marketing sites.
+
+## Avoid Promising
+
+- complete business system
+- internal enterprise portal
+- application dashboard
+
+## Evidence
+
+- delivery_validation_json: `/Users/carwynmac/ai-cl/testing/results/website_delivery_validation_20260319.json`
+- demo_pack_run_json: `/Users/carwynmac/ai-cl/testing/results/website_demo_pack_run_20260319.json`

@@ -1,0 +1,11 @@
+^SYS[LandingPortfolioPatch]
+#PROFILE[landing]
+#LIB[tailwind]
+
+@PAGE[Home,/]
+#UI[landing:Header]{brand:"Studio One",links:"Works|Contact"}
+#UI[landing:Hero]{title:"项目作品",subtitle:"展示我们交付过的代表项目"}
+#UI[landing:FeatureGrid]{title:"服务能力",items:"品牌官网|SaaS 控制台|营销落地页"}
+#UI[landing:Portfolio]{title:"作品展示",items:"企业官网|数据控制台|活动专题页"}
+#UI[landing:CTA]{title:"联系合作",button:"联系我们"}
+#UI[landing:Footer]{brand:"Studio One",links:"Works|Contact"}

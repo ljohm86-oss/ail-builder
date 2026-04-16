@@ -1,0 +1,69 @@
+{
+  "status": "ok",
+  "scenario_count": 3,
+  "record_count": 3,
+  "completed_count": 3,
+  "repair_required_count": 0,
+  "success_count": 3,
+  "scenarios": [
+    "landing",
+    "ecom_min",
+    "after_sales"
+  ],
+  "records": [
+    {
+      "scenario": "landing",
+      "path": "/Users/carwynmac/ai-cl/testing/results/first_user_trial_results_024.md",
+      "selected_profile": "landing",
+      "completed": "yes",
+      "reached_repair": "no",
+      "trial_result": "success",
+      "main_reason": "trial-run completed and recorded successfully",
+      "doctor_status": "ok",
+      "recommended_action": "continue_iteration",
+      "recommended_primary_action": "project_continue_diagnose_compile_sync",
+      "recommended_primary_command": "PYTHONPATH=/Users/carwynmac/ai-cl python3 -m cli project continue --diagnose-compile-sync --base-url embedded://local --json",
+      "recommended_primary_reason": "Project is healthy; use the safe continue path as the default next iteration action after source changes.",
+      "route_taken": "trial_run_canonical_flow",
+      "route_reason": "Trial entry uses the canonical frozen-profile flow: generate, diagnose, repair if needed, compile, and sync."
+    },
+    {
+      "scenario": "ecom_min",
+      "path": "/Users/carwynmac/ai-cl/testing/results/first_user_trial_results_025.md",
+      "selected_profile": "ecom_min",
+      "completed": "yes",
+      "reached_repair": "no",
+      "trial_result": "success",
+      "main_reason": "trial-run completed and recorded successfully",
+      "doctor_status": "ok",
+      "recommended_action": "continue_iteration",
+      "recommended_primary_action": "project_continue_diagnose_compile_sync",
+      "recommended_primary_command": "PYTHONPATH=/Users/carwynmac/ai-cl python3 -m cli project continue --diagnose-compile-sync --base-url embedded://local --json",
+      "recommended_primary_reason": "Project is healthy; use the safe continue path as the default next iteration action after source changes.",
+      "route_taken": "trial_run_canonical_flow",
+      "route_reason": "Trial entry uses the canonical frozen-profile flow: generate, diagnose, repair if needed, compile, and sync."
+    },
+    {
+      "scenario": "after_sales",
+      "path": "/Users/carwynmac/ai-cl/testing/results/first_user_trial_results_026.md",
+      "selected_profile": "after_sales",
+      "completed": "yes",
+      "reached_repair": "no",
+      "trial_result": "success",
+      "main_reason": "trial-run completed and recorded successfully",
+      "doctor_status": "ok",
+      "recommended_action": "continue_iteration",
+      "recommended_primary_action": "project_continue_diagnose_compile_sync",
+      "recommended_primary_command": "PYTHONPATH=/Users/carwynmac/ai-cl python3 -m cli project continue --diagnose-compile-sync --base-url embedded://local --json",
+      "recommended_primary_reason": "Project is healthy; use the safe continue path as the default next iteration action after source changes.",
+      "route_taken": "trial_run_canonical_flow",
+      "route_reason": "Trial entry uses the canonical frozen-profile flow: generate, diagnose, repair if needed, compile, and sync."
+    }
+  ],
+  "recommended_primary_action_distribution": {
+    "project_continue_diagnose_compile_sync": 3
+  },
+  "route_taken_distribution": {
+    "trial_run_canonical_flow": 3
+  }
+}

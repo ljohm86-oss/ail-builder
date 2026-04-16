@@ -1,0 +1,45 @@
+{
+  "asset_version": "2026-03-19",
+  "pack_id": "ecom_storefront",
+  "pack": "Ecommerce Independent Storefront Pack",
+  "support_level": "Supported",
+  "canonical_requirement": "做一个数码商城，包含首页商品列表、商品详情、购物车、结算。",
+  "demo_requirement": "做一个服装独立站，包含首页横幅、分类导航、商品列表、商品详情、购物车、结算。",
+  "expected_profile": "ecom_min",
+  "expected_primary_route": "project_continue_diagnose_compile_sync",
+  "expected_primary_preview_target": "artifact_root",
+  "expected_export_primary_target": "artifact_root",
+  "best_entry_command": "PYTHONPATH=/Users/carwynmac/ai-cl python3 -m cli trial-run --scenario ecom_min --base-url embedded://local --json",
+  "recommended_validation_flow": "trial-run -> project go -> project preview -> project export-handoff",
+  "safe_talking_points": [
+    "Supported as a minimal ecommerce independent storefront.",
+    "Strong fit for simple storefront funnels.",
+    "Good for homepage, catalog, product detail, cart, and checkout."
+  ],
+  "avoid_promises": [
+    "ecommerce platform",
+    "merchant backend",
+    "inventory, operations, and payment platform"
+  ],
+  "validated_behavior": {
+    "detected_profile": "ecom_min",
+    "trial_status": "ok",
+    "repair_used": false,
+    "managed_files_written": 10,
+    "project_go_route": "project_continue_diagnose_compile_sync",
+    "preview_primary_target": "artifact_root",
+    "export_primary_target_label": "artifact_root",
+    "delivery_ready": true
+  },
+  "demo_behavior": {
+    "demo_ready": true,
+    "flow_ok": true
+  },
+  "evidence": {
+    "delivery_validation_json": "/Users/carwynmac/ai-cl/testing/results/website_delivery_validation_20260319.json",
+    "demo_pack_run_json": "/Users/carwynmac/ai-cl/testing/results/website_demo_pack_run_20260319.json",
+    "website_frontier_summary": "/Users/carwynmac/ai-cl/WEBSITE_FRONTIER_SUMMARY_20260319.md",
+    "website_demo_pack": "/Users/carwynmac/ai-cl/WEBSITE_DEMO_PACK_20260319.md",
+    "website_delivery_checklist": "/Users/carwynmac/ai-cl/WEBSITE_DELIVERY_CHECKLIST_20260319.md"
+  }
+}

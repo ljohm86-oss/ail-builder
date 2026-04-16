@@ -1,0 +1,11 @@
+^SYS[LandingJobsPatch]
+#PROFILE[landing]
+#LIB[tailwind]
+
+@PAGE[Home,/]
+#UI[landing:Header]{brand:"Talent AI",links:"Features|Contact"}
+#UI[landing:Hero]{title:"加入我们",subtitle:"和团队一起构建下一代产品"}
+#UI[landing:FeatureGrid]{title:"为什么加入",items:"远程协作|成长空间|真实影响"}
+#UI[landing:Jobs]{title:"职位展示",items:"前端工程师|产品经理|设计师"}
+#UI[landing:CTA]{title:"立即投递",button:"查看职位"}
+#UI[landing:Footer]{brand:"Talent AI",links:"Features|Contact"}

@@ -1,0 +1,34 @@
+{
+  "status": "ok",
+  "checks": {
+    "landing_ok": true,
+    "ecom_min_ok": true,
+    "after_sales_ok": true
+  },
+  "scenarios": [
+    {
+      "scenario": "landing",
+      "status": "ok",
+      "detected_profile": "landing",
+      "repair_used": false,
+      "managed_files_written": 6,
+      "project_path": "/private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.v0jqulj1"
+    },
+    {
+      "scenario": "ecom_min",
+      "status": "ok",
+      "detected_profile": "ecom_min",
+      "repair_used": false,
+      "managed_files_written": 9,
+      "project_path": "/private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.b0yos9fh"
+    },
+    {
+      "scenario": "after_sales",
+      "status": "ok",
+      "detected_profile": "after_sales",
+      "repair_used": false,
+      "managed_files_written": 7,
+      "project_path": "/private/var/folders/z1/8_xtqy596xz8gj7c9ry1llwm0000gn/T/ail_trial_run.ioynbdh5"
+    }
+  ]
+}

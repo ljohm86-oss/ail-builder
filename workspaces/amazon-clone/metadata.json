@@ -1,0 +1,5 @@
+{
+  "name": "Amazon Clone",
+  "description": "A fully functional e-commerce replica of Amazon featuring product browsing, search, shopping cart, and checkout flow.",
+  "requestFramePermissions": []
+}

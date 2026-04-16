@@ -1,0 +1,302 @@
+{
+  "summary": {
+    "raw_samples": 23,
+    "real_requirements": 30,
+    "benchmark_release_decision": "pass",
+    "active_suggested_tokens": 0,
+    "closed_gaps_detected": 6,
+    "alias_normalized_entries": 5
+  },
+  "unknown_components_by_profile": {},
+  "unknown_flows_by_profile": {},
+  "alias_normalized_by_profile": {
+    "after_sales": [
+      {
+        "name": "SUPPORT_ESCALATE->COMPLAINT_DEESCALATE",
+        "count": 1,
+        "sample_ids": [
+          "RAW_A3"
+        ]
+      }
+    ],
+    "app_min": [],
+    "ecom_min": [
+      {
+        "name": "ADD_CART->ADD_TO_CART",
+        "count": 1,
+        "sample_ids": [
+          "RAW_E5"
+        ]
+      },
+      {
+        "name": "ecom:Search->ecom:SearchResultGrid",
+        "count": 1,
+        "sample_ids": [
+          "RAW_E3"
+        ]
+      }
+    ],
+    "landing": [
+      {
+        "name": "landing:Testimonials->landing:Testimonial",
+        "count": 2,
+        "sample_ids": [
+          "RAW_L3",
+          "RAW_L9"
+        ]
+      },
+      {
+        "name": "SUBMIT_CONTACT->CONTACT_SUBMIT",
+        "count": 1,
+        "sample_ids": [
+          "RAW_L6"
+        ]
+      }
+    ]
+  },
+  "under_specified_patterns": {
+    "after_sales": [
+      {
+        "phrase": "客服",
+        "count": 7,
+        "sample_ids": [
+          "RAW_A1",
+          "RAW_A4"
+        ],
+        "raw_count": 2,
+        "real_count": 5,
+        "real_requirement_ids": [
+          "A1",
+          "A2",
+          "A3",
+          "A4",
+          "A5"
+        ],
+        "suggested_token": "after_sales:Support",
+        "token_type": "ui"
+      },
+      {
+        "phrase": "联系客服",
+        "count": 4,
+        "sample_ids": [
+          "RAW_A1",
+          "RAW_A4"
+        ],
+        "raw_count": 2,
+        "real_count": 2,
+        "real_requirement_ids": [
+          "A3",
+          "A5"
+        ],
+        "suggested_token": "after_sales:Support",
+        "token_type": "ui"
+      }
+    ],
+    "landing": [
+      {
+        "phrase": "客户评价",
+        "count": 2,
+        "sample_ids": [
+          "RAW_L9"
+        ],
+        "raw_count": 1,
+        "real_count": 1,
+        "real_requirement_ids": [
+          "L3"
+        ],
+        "suggested_token": "landing:Testimonial",
+        "token_type": "ui"
+      },
+      {
+        "phrase": "职位展示",
+        "count": 1,
+        "sample_ids": [],
+        "raw_count": 0,
+        "real_count": 1,
+        "real_requirement_ids": [
+          "L5"
+        ],
+        "suggested_token": "landing:Jobs",
+        "token_type": "ui"
+      },
+      {
+        "phrase": "项目作品",
+        "count": 1,
+        "sample_ids": [],
+        "raw_count": 0,
+        "real_count": 1,
+        "real_requirement_ids": [
+          "L6"
+        ],
+        "suggested_token": "landing:Portfolio",
+        "token_type": "ui"
+      }
+    ],
+    "app_min": [
+      {
+        "phrase": "新增任务",
+        "count": 2,
+        "sample_ids": [
+          "RAW_P4"
+        ],
+        "raw_count": 1,
+        "real_count": 1,
+        "real_requirement_ids": [
+          "P2"
+        ],
+        "suggested_token": "app:Composer",
+        "token_type": "ui"
+      },
+      {
+        "phrase": "搜索联系人",
+        "count": 1,
+        "sample_ids": [],
+        "raw_count": 0,
+        "real_count": 1,
+        "real_requirement_ids": [
+          "P3"
+        ],
+        "suggested_token": "app:SearchBar",
+        "token_type": "ui"
+      },
+      {
+        "phrase": "编辑笔记",
+        "count": 1,
+        "sample_ids": [],
+        "raw_count": 0,
+        "real_count": 1,
+        "real_requirement_ids": [
+          "P4"
+        ],
+        "suggested_token": "app:Composer",
+        "token_type": "ui"
+      }
+    ]
+  },
+  "boundary_pressure": {
+    "after_sales": [
+      {
+        "reason": "after_sales lacks support/contact block",
+        "count": 4,
+        "sample_ids": [
+          "RAW_A1",
+          "RAW_A4"
+        ]
+      }
+    ],
+    "app_min": [
+      {
+        "reason": "app_min boundary auth/login/api pressure",
+        "count": 2,
+        "sample_ids": [
+          "RAW_P1",
+          "RAW_P2"
+        ]
+      }
+    ],
+    "landing": [
+      {
+        "reason": "landing lacks testimonial/review block",
+        "count": 1,
+        "sample_ids": [
+          "RAW_L9"
+        ]
+      }
+    ]
+  },
+  "closed_gaps": [
+    {
+      "profile": "after_sales",
+      "token_type": "ui",
+      "suggested_token": "after_sales:Support",
+      "reason": "High frequency requirement phrase '联系客服' appears in under_specified samples",
+      "evidence_count": 11,
+      "source_issue_types": [
+        "under_specified"
+      ],
+      "priority": "high",
+      "sample_ids": [
+        "A1",
+        "A2",
+        "A3",
+        "A4",
+        "A5",
+        "RAW_A1",
+        "RAW_A4"
+      ]
+    },
+    {
+      "profile": "app_min",
+      "token_type": "ui",
+      "suggested_token": "app:Composer",
+      "reason": "High frequency requirement phrase '新增任务' appears in under_specified samples",
+      "evidence_count": 3,
+      "source_issue_types": [
+        "under_specified"
+      ],
+      "priority": "medium",
+      "sample_ids": [
+        "P2",
+        "P4",
+        "RAW_P4"
+      ]
+    },
+    {
+      "profile": "landing",
+      "token_type": "ui",
+      "suggested_token": "landing:Testimonial",
+      "reason": "High frequency requirement phrase '客户评价' appears in under_specified samples",
+      "evidence_count": 2,
+      "source_issue_types": [
+        "under_specified"
+      ],
+      "priority": "medium",
+      "sample_ids": [
+        "L3",
+        "RAW_L9"
+      ]
+    },
+    {
+      "profile": "app_min",
+      "token_type": "ui",
+      "suggested_token": "app:SearchBar",
+      "reason": "High frequency requirement phrase '搜索联系人' appears in under_specified samples",
+      "evidence_count": 1,
+      "source_issue_types": [
+        "under_specified"
+      ],
+      "priority": "low",
+      "sample_ids": [
+        "P3"
+      ]
+    },
+    {
+      "profile": "landing",
+      "token_type": "ui",
+      "suggested_token": "landing:Jobs",
+      "reason": "High frequency requirement phrase '职位展示' appears in under_specified samples",
+      "evidence_count": 1,
+      "source_issue_types": [
+        "under_specified"
+      ],
+      "priority": "low",
+      "sample_ids": [
+        "L5"
+      ]
+    },
+    {
+      "profile": "landing",
+      "token_type": "ui",
+      "suggested_token": "landing:Portfolio",
+      "reason": "High frequency requirement phrase '项目作品' appears in under_specified samples",
+      "evidence_count": 1,
+      "source_issue_types": [
+        "under_specified"
+      ],
+      "priority": "low",
+      "sample_ids": [
+        "L6"
+      ]
+    }
+  ]
+}

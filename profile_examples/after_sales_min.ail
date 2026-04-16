@@ -1,0 +1,4 @@
+^SYS[AfterSalesLite]
+#PROFILE[after_sales]
+@PAGE[AfterSales,/after-sales]
+#UI[ecom:AfterSalesEntry]{title:"售后服务中心"}
