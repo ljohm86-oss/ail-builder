@@ -61,7 +61,7 @@ The most important practical outcome is:
 - the page now feels more deliberately edited
 - the closure path is clearer than before
 - the final CTA now sounds more like the start of an authored collaboration than a generic contact action
-- the current slice has already survived one small consolidation pass without losing its authored feel
+- the current slice has already survived two small consolidation passes without losing its authored feel
 - the contact region now moves closer to an authored collaboration invitation than a generic intake handoff
 
 This is enough to treat the slice as a successful first complete personal-line pass.
@@ -144,7 +144,7 @@ rather than being distributed across as many section-level narrative cues as the
 
 ### 2. The Contact Region Still Carries Slightly More “Form” Energy Than “Editorial” Energy
 
-The new `CONTACT FILTER` improves this, and one small consolidation pass has already tightened the surrounding authored closure copy.
+The new `CONTACT FILTER` improves this, and two small consolidation passes have already tightened the surrounding authored closure copy.
 
 The added contact-copy patch improves this further by making:
 
@@ -157,7 +157,7 @@ feel more like the start of an authored collaboration.
 
 But the managed contact block is still structurally closer to a standard intake panel than to a strongly authored collaboration invitation.
 
-That is currently the clearest place where the personal line still feels a little more conventional than the surrounding language.
+That is still the clearest place where the personal line feels a little more conventional than the surrounding language, but the latest pass narrowed the gap by tightening the portfolio/contact/CTA bridge copy without adding more framing.
 
 ### 3. Restraint Should Remain A Guardrail
 
