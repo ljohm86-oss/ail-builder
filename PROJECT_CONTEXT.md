@@ -10,6 +10,7 @@ When the project reaches a new stable phase, this file should be updated.
 
 Current packaging and review reference:
 
+- `/Users/carwynmac/ai-cl/BRAND_DISTINCTION_PHASE_REVIEW_20260417.md`
 - `/Users/carwynmac/ai-cl/BRAND_DISTINCTION_PHASE_REVIEW_20260416.md`
 - `/Users/carwynmac/ai-cl/BRAND_DISTINCTION_PHASE_REVIEW_20260409.md`
 - `/Users/carwynmac/ai-cl/BRAND_DISTINCTION_PERSONAL_SLICE_EVALUATION_20260409.md`
@@ -188,6 +189,7 @@ What is already true:
 
 For day-to-day use, the shortest references are now:
 
+- `/Users/carwynmac/ai-cl/BRAND_DISTINCTION_PHASE_REVIEW_20260417.md`
 - `/Users/carwynmac/ai-cl/BRAND_DISTINCTION_REVIEW_20260409.md`
 - `/Users/carwynmac/ai-cl/BRAND_DISTINCTION_PHASE_REVIEW_20260416.md`
 - `/Users/carwynmac/ai-cl/BRAND_DISTINCTION_PHASE_REVIEW_20260409.md`
@@ -212,7 +214,7 @@ Current managed / unmanaged milestone reference:
 
 ## Current Date Anchor
 
-- 2026-04-09
+- 2026-04-17
 
 ## Current Product Stage
 
