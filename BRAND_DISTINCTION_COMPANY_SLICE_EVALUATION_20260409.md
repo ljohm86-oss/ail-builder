@@ -143,7 +143,7 @@ That means the phase is still building on the customization milestone rather tha
 
 ### 1. The Page Still Carries Many Framing Labels
 
-The distinction additions are working, and one small copy-tightening pass has already improved this slightly, but the page still carries many named frames:
+The distinction additions are working, and two small copy-tightening passes have already improved this slightly, but the page still carries many named frames:
 
 - posture notes
 - bridge notes
@@ -189,6 +189,8 @@ If work continues on this line, the highest-value next move is:
 3. prefer copy consolidation over more new explanatory layers
 
 That would improve fit without pushing the page into over-articulation.
+
+The latest pass followed that rule by tightening the middle-section posture notes rather than adding new framed elements.
 
 ## Current Reset Point
 
