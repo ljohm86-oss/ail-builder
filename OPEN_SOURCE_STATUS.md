@@ -6,6 +6,8 @@ AIL Builder is ready to be shared as a **public alpha / builder preview**.
 
 It is not yet ready to be positioned as a stable, polished, broadly self-serve product.
 
+It is also now reasonable to position it as a **skill-ready workflow surface** for agent and IDE environments, as long as that claim stays narrower than a full MCP or plugin product promise.
+
 ## Why It Is Ready For Alpha
 
 The repository already has:
@@ -31,6 +33,7 @@ External testers can already:
 - explore durable customization workflows
 - inspect proof baselines for company and personal distinction work
 - build the bundled proof frontends locally
+- load the repository as a structured workflow reference for skill-style agent or IDE usage
 
 ## What This Release Should Be Called
 
@@ -39,6 +42,7 @@ Recommended wording:
 - alpha
 - builder preview
 - experimental open-source release
+- skill-ready workflow surface
 
 Avoid claiming:
 
@@ -76,7 +80,7 @@ Before a later beta-like release, the repo will still need:
 - a cleaner GitHub-first README experience
 - broader product normalization for brand distinction
 - clearer public support boundaries
-- a final license decision
+- a more explicit skill package and then MCP packaging pass
 - more explicit public contribution expectations
 
 ## Current Publishing Advice
@@ -85,6 +89,7 @@ If you want to publish soon, the safest framing is:
 
 - publish now as alpha
 - invite technical testers and contributors
+- invite agent / IDE experimenters to use the repo as a skill-oriented workflow layer
 - ask for setup, workflow, and clarity feedback
 - avoid promising stability or completeness
 

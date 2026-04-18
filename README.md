@@ -11,12 +11,13 @@ AIL Builder is the current AIL platform mainline. It is best understood today as
 - structured website generation workflows
 - CLI-first website evaluation and handoff
 - durable managed / unmanaged customization
+- skill-ready agent / IDE workflow packaging
 - sample-level brand distinction experiments
 
 This repository is already strong enough for external testers to run, inspect, and give feedback on.
 It is **not** yet packaged as a stable end-user product.
 
-**Start here:** [`OPEN_SOURCE_STATUS.md`](OPEN_SOURCE_STATUS.md) · [`QUICKSTART_OPEN_SOURCE.md`](QUICKSTART_OPEN_SOURCE.md) · [`KNOWN_LIMITATIONS.md`](KNOWN_LIMITATIONS.md)
+**Start here:** [`OPEN_SOURCE_STATUS.md`](OPEN_SOURCE_STATUS.md) · [`QUICKSTART_OPEN_SOURCE.md`](QUICKSTART_OPEN_SOURCE.md) · [`KNOWN_LIMITATIONS.md`](KNOWN_LIMITATIONS.md) · [`SKILL_PACKAGING_PLAN_20260418.md`](SKILL_PACKAGING_PLAN_20260418.md)
 
 ## Current Status
 
@@ -44,6 +45,7 @@ AIL Builder is a good fit today for:
 - builders who are comfortable using a CLI
 - contributors who want to inspect and extend generation workflows
 - testers evaluating website generation, customization, and handoff surfaces
+- agent / IDE users who want to load a structured workflow surface as a skill
 - collaborators interested in structured product-building workflows rather than one-shot site scaffolds
 
 It is not yet optimized for:
@@ -98,6 +100,7 @@ Current open-source / packaging docs:
 - [`OPEN_SOURCE_STATUS.md`](OPEN_SOURCE_STATUS.md)
 - [`QUICKSTART_OPEN_SOURCE.md`](QUICKSTART_OPEN_SOURCE.md)
 - [`KNOWN_LIMITATIONS.md`](KNOWN_LIMITATIONS.md)
+- [`SKILL_PACKAGING_PLAN_20260418.md`](SKILL_PACKAGING_PLAN_20260418.md)
 
 Current phase and review docs:
 
