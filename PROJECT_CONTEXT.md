@@ -10,6 +10,7 @@ When the project reaches a new stable phase, this file should be updated.
 
 Current packaging and review reference:
 
+- `/Users/carwynmac/ai-cl/MCP_TOOL_SURFACE_SPEC_20260418.md`
 - `/Users/carwynmac/ai-cl/SKILL.md`
 - `/Users/carwynmac/ai-cl/SKILL_PACKAGING_PLAN_20260418.md`
 - `/Users/carwynmac/ai-cl/BRAND_DISTINCTION_PHASE_REVIEW_20260417.md`
@@ -191,6 +192,7 @@ What is already true:
 
 For day-to-day use, the shortest references are now:
 
+- `/Users/carwynmac/ai-cl/MCP_TOOL_SURFACE_SPEC_20260418.md`
 - `/Users/carwynmac/ai-cl/SKILL.md`
 - `/Users/carwynmac/ai-cl/SKILL_PACKAGING_PLAN_20260418.md`
 - `/Users/carwynmac/ai-cl/BRAND_DISTINCTION_PHASE_REVIEW_20260417.md`

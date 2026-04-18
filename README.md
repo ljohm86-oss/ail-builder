@@ -17,7 +17,7 @@ AIL Builder is the current AIL platform mainline. It is best understood today as
 This repository is already strong enough for external testers to run, inspect, and give feedback on.
 It is **not** yet packaged as a stable end-user product.
 
-**Start here:** [`OPEN_SOURCE_STATUS.md`](OPEN_SOURCE_STATUS.md) · [`QUICKSTART_OPEN_SOURCE.md`](QUICKSTART_OPEN_SOURCE.md) · [`KNOWN_LIMITATIONS.md`](KNOWN_LIMITATIONS.md) · [`SKILL_PACKAGING_PLAN_20260418.md`](SKILL_PACKAGING_PLAN_20260418.md) · [`SKILL.md`](SKILL.md)
+**Start here:** [`OPEN_SOURCE_STATUS.md`](OPEN_SOURCE_STATUS.md) · [`QUICKSTART_OPEN_SOURCE.md`](QUICKSTART_OPEN_SOURCE.md) · [`KNOWN_LIMITATIONS.md`](KNOWN_LIMITATIONS.md) · [`SKILL_PACKAGING_PLAN_20260418.md`](SKILL_PACKAGING_PLAN_20260418.md) · [`SKILL.md`](SKILL.md) · [`MCP_TOOL_SURFACE_SPEC_20260418.md`](MCP_TOOL_SURFACE_SPEC_20260418.md)
 
 ## Current Status
 
@@ -102,6 +102,7 @@ Current open-source / packaging docs:
 - [`KNOWN_LIMITATIONS.md`](KNOWN_LIMITATIONS.md)
 - [`SKILL_PACKAGING_PLAN_20260418.md`](SKILL_PACKAGING_PLAN_20260418.md)
 - [`SKILL.md`](SKILL.md)
+- [`MCP_TOOL_SURFACE_SPEC_20260418.md`](MCP_TOOL_SURFACE_SPEC_20260418.md)
 
 Current phase and review docs:
 

@@ -12,6 +12,10 @@ The repository now also includes a first repository-level skill entry:
 
 - `SKILL.md`
 
+And an initial MCP design reference:
+
+- `MCP_TOOL_SURFACE_SPEC_20260418.md`
+
 ## Why It Is Ready For Alpha
 
 The repository already has:
