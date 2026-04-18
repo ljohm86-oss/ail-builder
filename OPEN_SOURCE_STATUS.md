@@ -1,8 +1,8 @@
-# Open Source Status
+# AIL Builder Open Source Status
 
 ## Current Recommendation
 
-AI-CL is ready to be shared as a **public alpha / builder preview**.
+AIL Builder is ready to be shared as a **public alpha / builder preview**.
 
 It is not yet ready to be positioned as a stable, polished, broadly self-serve product.
 

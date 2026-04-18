@@ -1,8 +1,8 @@
-# Known Limitations
+# AIL Builder Known Limitations
 
 ## Current Positioning
 
-AI-CL should currently be treated as an **alpha / builder preview**.
+AIL Builder should currently be treated as an **alpha / builder preview**.
 
 It is already useful for testing and contribution.
 It is not yet packaged as a polished, general-audience product.

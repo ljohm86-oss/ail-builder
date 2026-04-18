@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This guide is the shortest path for external testers to verify that AI-CL runs locally and exposes its main CLI surfaces.
+This guide is the shortest path for external testers to verify that AIL Builder runs locally and exposes its main CLI surfaces.
 
 ## Prerequisites
 
@@ -19,8 +19,8 @@ Helpful but optional:
 ## 1. Clone And Enter The Repo
 
 ```bash
-git clone <your-github-url> ai-cl
-cd ai-cl
+git clone <your-github-url> ail-builder
+cd ail-builder
 export REPO_ROOT="$PWD"
 ```
 

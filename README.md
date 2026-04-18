@@ -1,4 +1,4 @@
-# AI-CL
+# AIL Builder
 
 ![Status](https://img.shields.io/badge/status-alpha%20builder%20preview-cf6f2e)
 ![CLI Checks](https://img.shields.io/badge/cli%20checks-207%2F207%20passing-2f855a)
@@ -6,7 +6,7 @@
 
 **CLI-first website generation, durable customization, and structured handoff workflows for AIL.**
 
-AI-CL is the current AIL platform mainline. It is best understood today as an **alpha / builder preview** for:
+AIL Builder is the current AIL platform mainline. It is best understood today as an **alpha / builder preview** for:
 
 - structured website generation workflows
 - CLI-first website evaluation and handoff
@@ -39,7 +39,7 @@ Current strongest proof baselines:
 
 ## Who This Is For
 
-AI-CL is a good fit today for:
+AIL Builder is a good fit today for:
 
 - builders who are comfortable using a CLI
 - contributors who want to inspect and extend generation workflows
@@ -114,7 +114,7 @@ More detailed implementation docs remain in:
 
 ## License
 
-AI-CL is now released under the **MIT License**.
+AIL Builder is now released under the **MIT License**.
 
 See:
 
