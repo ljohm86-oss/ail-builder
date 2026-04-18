@@ -868,7 +868,7 @@ PY
 ok_ecom_home_surface_json=true
 
 website_check_json="$TMP_ROOT/website_check_ok.json"
-AIL_CLOUD_BASE_URL=embedded://local python3 -m cli website check '做一个企业产品官网，包含首页、功能介绍、FAQ、联系我们。' --json > "$website_check_json"
+AIL_CLOUD_BASE_URL=embedded://local python3 -m cli website check 'Create a company product website with a home page, features, FAQ, and contact page.' --json > "$website_check_json"
 python3 - "$website_check_json" <<'PY'
 import json, sys
 from pathlib import Path

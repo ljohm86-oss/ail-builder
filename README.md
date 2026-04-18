@@ -66,7 +66,7 @@ Then use the shortest verified entry:
 
 ```bash
 REPO_ROOT="$PWD"
-PYTHONPATH="$REPO_ROOT" python3 -m cli website check '做一个企业产品官网，包含首页、功能介绍、FAQ、联系我们。' --base-url embedded://local --json
+PYTHONPATH="$REPO_ROOT" python3 -m cli website check 'Create a company product website with a home page, features, FAQ, and contact page.' --base-url embedded://local --json
 ```
 
 If you want a higher-level repository view first:

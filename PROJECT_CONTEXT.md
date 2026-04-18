@@ -52,7 +52,7 @@ Current packaging and review reference:
 Current website-oriented delivery entry:
 
 ```bash
-PYTHONPATH=/Users/carwynmac/ai-cl python3 -m cli website check '做一个企业产品官网，包含首页、功能介绍、FAQ、联系我们。' --base-url embedded://local --json
+PYTHONPATH=/Users/carwynmac/ai-cl python3 -m cli website check 'Create a company product website with a home page, features, FAQ, and contact page.' --base-url embedded://local --json
 ```
 
 This is now the thinnest CLI entry for evaluating whether one requirement stays inside the current supported website surface, which pack it belongs to, and whether the canonical trial flow validates it as deliverable.
