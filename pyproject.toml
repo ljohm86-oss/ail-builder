@@ -7,6 +7,7 @@ name = "ail-cli"
 version = "0.1.0"
 description = "Minimal AIL CLI v1 skeleton"
 requires-python = ">=3.10"
+license = { text = "MIT" }
 
 [project.scripts]
 ail = "cli.ail_cli:main"
