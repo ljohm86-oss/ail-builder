@@ -8,6 +8,10 @@ It is not yet ready to be positioned as a stable, polished, broadly self-serve p
 
 It is also now reasonable to position it as a **skill-ready workflow surface** for agent and IDE environments, as long as that claim stays narrower than a full MCP or plugin product promise.
 
+The repository now also includes a first repository-level skill entry:
+
+- `SKILL.md`
+
 ## Why It Is Ready For Alpha
 
 The repository already has:
