@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT="/Users/carwynmac/ai-cl"
+ROOT="${AIL_REPO_ROOT:-$(cd -- "$(dirname -- "$0")/.." && pwd)}"
+export AIL_REPO_ROOT="$ROOT"
 RESULTS_DIR="$ROOT/testing/results"
 BASE_URL="embedded://local"
 SCENARIO=""
@@ -44,7 +45,7 @@ NEXT_ID=$(python3 - <<'PY'
 from pathlib import Path
 import re
 
-results_dir = Path("/Users/carwynmac/ai-cl/testing/results")
+results_dir = Path(__import__("os").environ["AIL_REPO_ROOT"]) / "testing" / "results"
 ids = []
 for path in results_dir.glob("first_user_trial_results_*.md"):
     match = re.search(r"first_user_trial_results_(\d+)\.md$", path.name)

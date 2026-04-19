@@ -1,7 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
-ROOT_DIR="/Users/carwynmac/ai-cl"
+SCRIPT_DIR="$(cd -- "$(dirname -- "$0")" && pwd)"
+ROOT_DIR="${AIL_REPO_ROOT:-$SCRIPT_DIR}"
 PROJECT_ROOT="${ROOT_DIR}/output_projects/AIChatMini"
 ARTIFACT_DIR="${ROOT_DIR}/output/playwright/app_min_smoke"
 LOG_PATH="${ARTIFACT_DIR}/start.log"

@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT="/Users/carwynmac/ai-cl"
+ROOT="${AIL_REPO_ROOT:-$(cd -- "$(dirname -- "$0")/.." && pwd)}"
+export AIL_REPO_ROOT="$ROOT"
 RESULTS_DIR="$ROOT/testing/results"
 BASE_URL="embedded://local"
 INCLUDE_PARTIAL="false"
@@ -49,28 +50,28 @@ cases = [
         "id": "company_product",
         "pack": "Company / Product Website Pack",
         "support_level": "Supported",
-        "requirement": "做一个企业产品官网，包含首页、产品优势、团队介绍、客户评价、FAQ、数据展示、合作伙伴 Logo、联系我们。",
+        "requirement": "Create a company product website with a home page, product advantages, team intro, customer testimonials, FAQ, metrics, partner logos, and contact page.",
         "expected_profile": "landing",
     },
     {
         "id": "personal_independent",
         "pack": "Personal Independent Site Pack",
         "support_level": "Supported",
-        "requirement": "做一个个人独立站，包含首页、个人介绍、服务介绍、作品展示、联系方式。",
+        "requirement": "Create a personal independent website with a home page, about section, services, portfolio, and contact page.",
         "expected_profile": "landing",
     },
     {
         "id": "ecom_storefront",
         "pack": "Ecommerce Independent Storefront Pack",
         "support_level": "Supported",
-        "requirement": "做一个服装独立站，包含首页横幅、分类导航、商品列表、商品详情、购物车、结算。",
+        "requirement": "Create a clothing storefront with a home banner, category navigation, product listing, product detail, cart, and checkout.",
         "expected_profile": "ecom_min",
     },
     {
         "id": "after_sales",
         "pack": "After-Sales Service Website Pack",
         "support_level": "Supported",
-        "requirement": "做一个品牌售后服务网站，包含退款申请、换货申请、投诉提交、进度查询说明、联系客服。",
+        "requirement": "Create an after-sales service website with refund requests, exchange requests, complaint submission, status lookup guidance, and contact support.",
         "expected_profile": "after_sales",
     },
 ]
@@ -81,7 +82,7 @@ if include_partial:
             "id": "blog_style_partial",
             "pack": "Personal Blog-Style Site Pack",
             "support_level": "Partial",
-            "requirement": "做一个个人博客风格网站，包含首页、文章列表、关于我、联系方式。",
+            "requirement": "Create a personal blog-style website with a home page, article list, about page, and contact page.",
             "expected_profile": "landing",
         }
     )

@@ -1,2 +1,9 @@
 #!/bin/zsh
-python3 /Users/carwynmac/ai-cl/testing/real_requirements_runner.py
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "$0")" && pwd)"
+ROOT="${AIL_REPO_ROOT:-$(cd -- "${SCRIPT_DIR}/.." && pwd)}"
+export AIL_REPO_ROOT="$ROOT"
+
+python3 "$ROOT/testing/real_requirements_runner.py"

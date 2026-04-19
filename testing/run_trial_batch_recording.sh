@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT="/Users/carwynmac/ai-cl"
+ROOT="${AIL_REPO_ROOT:-$(cd -- "$(dirname -- "$0")/.." && pwd)}"
+export AIL_REPO_ROOT="$ROOT"
 RESULTS_DIR="$ROOT/testing/results"
 BASE_URL="embedded://local"
 SCENARIOS=()
@@ -211,12 +212,12 @@ lines.extend(
         "## Artifacts",
         "",
         f"- summary_json: `{summary_json}`",
-        f"- results_dir: `/Users/carwynmac/ai-cl/testing/results`",
+        f"- results_dir: `{Path(__import__("os").environ["AIL_REPO_ROOT"]) / "testing" / "results"}`",
         "",
         "## Command",
         "",
         "```bash",
-        "bash /Users/carwynmac/ai-cl/testing/run_trial_batch_recording.sh",
+        f"bash {Path(__import__("os").environ["AIL_REPO_ROOT"]) / "testing" / "run_trial_batch_recording.sh"}",
         "```",
     ]
 )

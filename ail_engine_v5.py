@@ -11,6 +11,8 @@ from typing import Any
 from ail_engine_v4 import AILParserV4, AILProjectGeneratorV4
 from ail_engine_v5_ecom import AILEcomGeneratorMixin
 
+REPO_ROOT = Path(__file__).resolve().parent
+
 
 class AILParserV5(AILParserV4):
     """AIL V5 parser keeps V4 syntax unchanged."""
@@ -120,7 +122,7 @@ class AILProjectGeneratorV5(AILEcomGeneratorMixin, AILProjectGeneratorV4):
         self,
         ast: dict[str, Any],
         base_dir: str = "./output_projects",
-        template_dir: str = "/Users/carwynmac/ai-cl/output_projects/ail_vue_base",
+        template_dir: str = str(REPO_ROOT / "output_projects" / "ail_vue_base"),
     ) -> None:
         super().__init__(ast, base_dir=base_dir)
         self.template_dir = Path(template_dir).expanduser()

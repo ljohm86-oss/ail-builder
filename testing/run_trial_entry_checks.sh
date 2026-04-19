@@ -1,7 +1,8 @@
 #!/bin/zsh
 set -euo pipefail
 
-ROOT_DIR="/Users/carwynmac/ai-cl"
+SCRIPT_DIR="$(cd -- "$(dirname -- "$0")" && pwd)"
+ROOT_DIR="${AIL_REPO_ROOT:-$(cd -- "${SCRIPT_DIR}/.." && pwd)}"
 RESULTS_DIR="$ROOT_DIR/testing/results"
 OUTPUT_JSON="$RESULTS_DIR/trial_run_smoke_results.json"
 TMP_DIR=$(mktemp -d /tmp/ail_trial_entry_checks.XXXXXX)

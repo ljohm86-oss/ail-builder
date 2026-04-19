@@ -1,5 +1,6 @@
 #!/bin/zsh
 set -euo pipefail
 
-ROOT_DIR="/Users/carwynmac/ai-cl"
+SCRIPT_DIR="$(cd -- "$(dirname -- "$0")" && pwd)"
+ROOT_DIR="${AIL_REPO_ROOT:-$SCRIPT_DIR}"
 PYTHONPATH="$ROOT_DIR" python3 -m cli trial-run "$@"

@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT="/Users/carwynmac/ai-cl"
+SCRIPT_DIR="$(cd -- "$(dirname -- "$0")" && pwd)"
+ROOT="${AIL_REPO_ROOT:-$(cd -- "${SCRIPT_DIR}/.." && pwd)}"
+export AIL_REPO_ROOT="$ROOT"
 RESULTS_DIR="$ROOT/testing/results"
 OUT_DIR="$RESULTS_DIR/website_delivery_assets_20260319"
 SUMMARY_JSON="$RESULTS_DIR/website_delivery_assets_20260319.json"
@@ -29,6 +31,8 @@ demo = json.loads(demo_json.read_text(encoding='utf-8'))
 validation_cases = {item['pack']: item for item in validation['cases']}
 demo_cases = {item['pack']: item for item in demo['cases']}
 
+pythonpath_prefix = f'PYTHONPATH="{root}"'
+
 packs = [
     {
         'id': 'company_product',
@@ -40,7 +44,7 @@ packs = [
         'expected_primary_route': 'project_continue_diagnose_compile_sync',
         'expected_primary_preview_target': 'artifact_root',
         'expected_export_primary_target': 'artifact_root',
-        'best_entry_command': 'PYTHONPATH=/Users/carwynmac/ai-cl python3 -m cli trial-run --scenario landing --base-url embedded://local --json',
+        'best_entry_command': f'{pythonpath_prefix} python3 -m cli trial-run --scenario landing --base-url embedded://local --json',
         'safe_talking_points': [
             'Supported as a company introduction and product website.',
             'Strongest current website-oriented surface.',
@@ -62,7 +66,7 @@ packs = [
         'expected_primary_route': 'project_continue_diagnose_compile_sync',
         'expected_primary_preview_target': 'artifact_root',
         'expected_export_primary_target': 'artifact_root',
-        'best_entry_command': 'PYTHONPATH=/Users/carwynmac/ai-cl python3 -m cli trial-run --requirement "做一个个人独立站，包含首页、个人介绍、服务介绍、作品展示、联系方式。" --base-url embedded://local --json',
+        'best_entry_command': f'{pythonpath_prefix} python3 -m cli trial-run --requirement "Create a personal independent website with a home page, personal introduction, service overview, portfolio, and contact page." --base-url embedded://local --json',
         'safe_talking_points': [
             'Supported as a personal independent site.',
             'Strong fit for creator, freelancer, and portfolio-like websites.',
@@ -84,7 +88,7 @@ packs = [
         'expected_primary_route': 'project_continue_diagnose_compile_sync',
         'expected_primary_preview_target': 'artifact_root',
         'expected_export_primary_target': 'artifact_root',
-        'best_entry_command': 'PYTHONPATH=/Users/carwynmac/ai-cl python3 -m cli trial-run --scenario ecom_min --base-url embedded://local --json',
+        'best_entry_command': f'{pythonpath_prefix} python3 -m cli trial-run --scenario ecom_min --base-url embedded://local --json',
         'safe_talking_points': [
             'Supported as a minimal ecommerce independent storefront.',
             'Strong fit for simple storefront funnels.',
@@ -106,7 +110,7 @@ packs = [
         'expected_primary_route': 'project_continue_diagnose_compile_sync',
         'expected_primary_preview_target': 'artifact_root',
         'expected_export_primary_target': 'artifact_root',
-        'best_entry_command': 'PYTHONPATH=/Users/carwynmac/ai-cl python3 -m cli trial-run --scenario after_sales --base-url embedded://local --json',
+        'best_entry_command': f'{pythonpath_prefix} python3 -m cli trial-run --scenario after_sales --base-url embedded://local --json',
         'safe_talking_points': [
             'Supported as an after-sales service website.',
             'Strong fit for refund, exchange, and complaint intake surfaces.',
@@ -128,7 +132,7 @@ packs = [
         'expected_primary_route': 'project_continue_diagnose_compile_sync',
         'expected_primary_preview_target': 'artifact_root',
         'expected_export_primary_target': 'artifact_root',
-        'best_entry_command': 'PYTHONPATH=/Users/carwynmac/ai-cl python3 -m cli trial-run --requirement "做一个个人博客风格网站，包含首页、文章列表、关于我、联系方式。" --base-url embedded://local --json',
+        'best_entry_command': f'{pythonpath_prefix} python3 -m cli trial-run --requirement "Create a personal blog-style website with a home page, article list, about page, and contact page." --base-url embedded://local --json',
         'safe_talking_points': [
             'Usable as a blog-style personal site.',
             'Position as a content-forward website, not a blog platform.',

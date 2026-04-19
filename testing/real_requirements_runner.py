@@ -2,12 +2,13 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import os
 from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
 
 
-ROOT = Path("/Users/carwynmac/ai-cl")
+ROOT = Path(os.environ.get("AIL_REPO_ROOT", Path(__file__).resolve().parents[1])).expanduser().resolve()
 INPUT_PATH = ROOT / "testing" / "real_requirements_v1.json"
 RESULTS_DIR = ROOT / "testing" / "results"
 RESULTS_JSON = RESULTS_DIR / "real_requirements_results.json"

@@ -1,7 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
-ROOT_DIR="/Users/carwynmac/ai-cl"
+SCRIPT_DIR="$(cd -- "$(dirname -- "$0")" && pwd)"
+ROOT_DIR="${AIL_REPO_ROOT:-$SCRIPT_DIR}"
 AIL_FILE="${ROOT_DIR}/profile_examples/ecom_min.ail"
 
 if [ ! -f "${AIL_FILE}" ]; then

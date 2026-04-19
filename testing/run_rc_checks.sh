@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 set -u
 
-ROOT="/Users/carwynmac/ai-cl"
+SCRIPT_DIR="$(cd -- "$(dirname -- "$0")" && pwd)"
+ROOT="${AIL_REPO_ROOT:-$(cd -- "${SCRIPT_DIR}/.." && pwd)}"
+export AIL_REPO_ROOT="$ROOT"
 RESULTS_DIR="$ROOT/testing/results"
 OUTPUT_JSON="$RESULTS_DIR/rc_checks_results.json"
 OUTPUT_MD="$RESULTS_DIR/rc_checks_report.md"
@@ -57,6 +59,7 @@ status = sys.argv[1]
 benchmark_command_ok = sys.argv[2] == "true"
 out_path = Path(sys.argv[3])
 report_path = Path(sys.argv[4])
+repo_root = Path(os.environ["AIL_REPO_ROOT"]).resolve()
 
 
 def load_json(path_str):
@@ -74,7 +77,7 @@ def latest_glob(pattern: str):
 def run_project_summary_probe():
     root = Path(tempfile.mkdtemp(prefix="ail_rc_summary."))
     env = dict(os.environ)
-    env["PYTHONPATH"] = "/Users/carwynmac/ai-cl"
+    env["PYTHONPATH"] = str(repo_root)
     env["AIL_CLOUD_BASE_URL"] = "embedded://local"
     try:
         subprocess.run(
@@ -132,15 +135,15 @@ def run_project_summary_probe():
         shutil.rmtree(root, ignore_errors=True)
 
 
-cli = load_json("/Users/carwynmac/ai-cl/testing/results/cli_smoke_results.json") or {}
-trial = load_json("/Users/carwynmac/ai-cl/testing/results/trial_run_smoke_results.json") or {}
-repair = load_json("/Users/carwynmac/ai-cl/testing/results/repair_smoke_results.json") or {}
-raw = load_json("/Users/carwynmac/ai-cl/testing/results/raw_model_outputs_results.json") or {}
-evolution = load_json("/Users/carwynmac/ai-cl/testing/results/patch_candidates_v3.json") or {}
-benchmark = load_json("/Users/carwynmac/ai-cl/benchmark/results/latest/benchmark_results.json") or {}
+cli = load_json(str(repo_root / "testing" / "results" / "cli_smoke_results.json")) or {}
+trial = load_json(str(repo_root / "testing" / "results" / "trial_run_smoke_results.json")) or {}
+repair = load_json(str(repo_root / "testing" / "results" / "repair_smoke_results.json")) or {}
+raw = load_json(str(repo_root / "testing" / "results" / "raw_model_outputs_results.json")) or {}
+evolution = load_json(str(repo_root / "testing" / "results" / "patch_candidates_v3.json")) or {}
+benchmark = load_json(str(repo_root / "benchmark" / "results" / "latest" / "benchmark_results.json")) or {}
 previous_rc = load_json(str(out_path)) or {}
 project_summary_probe = run_project_summary_probe()
-trial_batch_path = latest_glob("/Users/carwynmac/ai-cl/testing/results/first_user_trial_batch_recorded_summary_*.json")
+trial_batch_path = latest_glob(str(repo_root / "testing" / "results" / "first_user_trial_batch_recorded_summary_*.json"))
 trial_batch = load_json(trial_batch_path) if trial_batch_path else {}
 trial_primary_distribution = trial_batch.get("recommended_primary_action_distribution") or {}
 trial_primary_actions = [key for key, value in trial_primary_distribution.items() if value]
@@ -338,13 +341,13 @@ payload = {
         "benchmark_failed_count": benchmark_failed_count,
     },
     "artifacts": {
-        "cli_smoke_results": "/Users/carwynmac/ai-cl/testing/results/cli_smoke_results.json",
-        "trial_run_smoke_results": "/Users/carwynmac/ai-cl/testing/results/trial_run_smoke_results.json",
-        "repair_smoke_results": "/Users/carwynmac/ai-cl/testing/results/repair_smoke_results.json",
-        "raw_model_outputs_results": "/Users/carwynmac/ai-cl/testing/results/raw_model_outputs_results.json",
-        "patch_candidates_v3": "/Users/carwynmac/ai-cl/testing/results/patch_candidates_v3.json",
-        "benchmark_results": "/Users/carwynmac/ai-cl/benchmark/results/latest/benchmark_results.json",
-        "benchmark_log": "/Users/carwynmac/ai-cl/testing/results/rc_benchmark.log",
+        "cli_smoke_results": str(repo_root / "testing" / "results" / "cli_smoke_results.json"),
+        "trial_run_smoke_results": str(repo_root / "testing" / "results" / "trial_run_smoke_results.json"),
+        "repair_smoke_results": str(repo_root / "testing" / "results" / "repair_smoke_results.json"),
+        "raw_model_outputs_results": str(repo_root / "testing" / "results" / "raw_model_outputs_results.json"),
+        "patch_candidates_v3": str(repo_root / "testing" / "results" / "patch_candidates_v3.json"),
+        "benchmark_results": str(repo_root / "benchmark" / "results" / "latest" / "benchmark_results.json"),
+        "benchmark_log": str(repo_root / "testing" / "results" / "rc_benchmark.log"),
     },
     "project_workbench_primary_action": {
         "recommended_primary_action": project_summary_probe.get("recommended_primary_action"),
@@ -516,7 +519,7 @@ report_lines.extend(
         "## Command",
         "",
         "```bash",
-        "bash /Users/carwynmac/ai-cl/testing/run_rc_checks.sh",
+        f"bash {repo_root / 'testing' / 'run_rc_checks.sh'}",
         "```",
     ]
 )

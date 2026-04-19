@@ -1,5 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-ROOT_DIR="/Users/carwynmac/ai-cl"
+SCRIPT_DIR="$(cd -- "$(dirname -- "$0")" && pwd)"
+ROOT_DIR="${AIL_REPO_ROOT:-$(cd -- "${SCRIPT_DIR}/.." && pwd)}"
 python3 "${ROOT_DIR}/benchmark/run_benchmark.py"

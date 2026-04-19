@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any, Optional
 
 
-ROOT_DIR = Path("/Users/carwynmac/ai-cl")
+ROOT_DIR = Path(os.environ.get("AIL_REPO_ROOT", Path(__file__).resolve().parents[1])).expanduser().resolve()
 BENCH_DIR = ROOT_DIR / "benchmark"
 TASKS_PATH = BENCH_DIR / "tasks_v0_1.json"
 POLICY_PATH = BENCH_DIR / "benchmark_baseline.json"

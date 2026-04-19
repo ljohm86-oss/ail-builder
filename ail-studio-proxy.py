@@ -16,7 +16,8 @@ from flask import Flask, Response, jsonify, request, stream_with_context
 
 app = Flask(__name__)
 
-BASE_PROJECTS_ROOT = Path("/Users/carwynmac/ai-cl/output_projects").resolve()
+REPO_ROOT = Path(os.environ.get("AIL_REPO_ROOT", Path(__file__).resolve().parent)).expanduser().resolve()
+BASE_PROJECTS_ROOT = (REPO_ROOT / "output_projects").resolve()
 MAX_TAIL_LINES = 200
 MAX_LINE_CHARS = 2048
 DETECT_TIMEOUT_SECONDS = 30
@@ -109,7 +110,7 @@ def _validate_project_root(raw_root: str, require_existing: bool = True) -> Tupl
         return None, "project_root must be inside output_projects"
 
     if common != str(BASE_PROJECTS_ROOT):
-        return None, "project_root must be inside /Users/carwynmac/ai-cl/output_projects"
+        return None, f"project_root must be inside {BASE_PROJECTS_ROOT}"
 
     if require_existing and not resolved.exists():
         return None, "project_root does not exist"

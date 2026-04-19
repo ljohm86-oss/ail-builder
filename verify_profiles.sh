@@ -1,7 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
-ROOT_DIR="/Users/carwynmac/ai-cl"
+SCRIPT_DIR="$(cd -- "$(dirname -- "$0")" && pwd)"
+ROOT_DIR="${AIL_REPO_ROOT:-$SCRIPT_DIR}"
 
 echo "[1/3] verify landing profile"
 "${ROOT_DIR}/verify_landing_profile.sh"

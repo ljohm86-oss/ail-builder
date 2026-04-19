@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 from pathlib import Path
 from typing import Any
 
 
-ROOT = Path("/Users/carwynmac/ai-cl")
+ROOT = Path(os.environ.get("AIL_REPO_ROOT", Path(__file__).resolve().parents[1])).expanduser().resolve()
 CASES_PATH = ROOT / "testing" / "repair_smoke_cases_v1.md"
 RESULTS_DIR = ROOT / "testing" / "results"
 RESULTS_PATH = RESULTS_DIR / "repair_smoke_results.json"
