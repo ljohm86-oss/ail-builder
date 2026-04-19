@@ -54,7 +54,19 @@ The current repo is better suited to:
 
 than to fully non-technical users.
 
-### 6. This Is Still An Alpha, Even With A License
+### 6. Cross-Platform Support Is Improving, Not Finished
+
+The repository is no longer tied to one developer macOS path, and the main CLI flows now resolve the repo root dynamically.
+
+That said, Windows and broader cross-platform usage should still be treated as actively improving rather than fully normalized.
+
+The most useful reports here are:
+
+- remaining path assumptions
+- shell-specific setup friction
+- places where PowerShell or Windows behavior still diverges from the documented Quickstart
+
+### 7. This Is Still An Alpha, Even With A License
 
 The repository now includes an MIT license, so the main legal packaging blocker has been removed.
 
