@@ -10,11 +10,18 @@ Minimum assumptions:
 
 - Python `3.10+`
 - Git
-- a Unix-like shell
+- a shell environment such as `bash`, `zsh`, or PowerShell
 
 Helpful but optional:
 
 - Node.js and npm if you want to build the bundled frontend sample projects
+
+## Cross-Platform Notes
+
+- The examples below use Unix shell syntax with `python3` and `export`.
+- On Windows PowerShell, use `$env:REPO_ROOT = $PWD.Path` instead of `export REPO_ROOT="$PWD"`.
+- On Windows, if `python3` is unavailable, try `py -3` or `python`.
+- The CLI now resolves the repository root dynamically, so you should not need to edit hardcoded macOS paths.
 
 ## 1. Clone And Enter The Repo
 
@@ -24,11 +31,26 @@ cd ail-builder
 export REPO_ROOT="$PWD"
 ```
 
+PowerShell equivalent:
+
+```powershell
+git clone <your-github-url> ail-builder
+cd ail-builder
+$env:REPO_ROOT = $PWD.Path
+```
+
 ## 2. Optional: Create A Virtual Environment
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
+```
+
+PowerShell equivalent:
+
+```powershell
+py -3 -m venv .venv
+.venv\Scripts\Activate.ps1
 ```
 
 ## 3. Install The Local Python Package
@@ -37,10 +59,23 @@ source .venv/bin/activate
 pip install -e .
 ```
 
+If PowerShell does not have `pip` on PATH yet, use:
+
+```powershell
+py -3 -m pip install -e .
+```
+
 ## 4. Sanity-Check The CLI
 
 ```bash
 PYTHONPATH="$REPO_ROOT" python3 -m cli --help
+```
+
+PowerShell equivalent:
+
+```powershell
+$env:PYTHONPATH = $env:REPO_ROOT
+py -3 -m cli --help
 ```
 
 If that works, the CLI entry surface is available.
@@ -49,6 +84,13 @@ If that works, the CLI entry surface is available.
 
 ```bash
 PYTHONPATH="$REPO_ROOT" python3 -m cli website check 'Create a company product website with a home page, features, FAQ, and contact page.' --base-url embedded://local --json
+```
+
+PowerShell equivalent:
+
+```powershell
+$env:PYTHONPATH = $env:REPO_ROOT
+py -3 -m cli website check "Create a company product website with a home page, features, FAQ, and contact page." --base-url embedded://local --json
 ```
 
 What you should expect:
