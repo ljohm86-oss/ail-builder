@@ -21,6 +21,8 @@ It is **not** yet packaged as a stable end-user product.
 
 Windows testers are supported too: see [`QUICKSTART_OPEN_SOURCE.md`](QUICKSTART_OPEN_SOURCE.md) for PowerShell equivalents and current cross-platform notes.
 
+Recent outward-facing changes are tracked in [`CHANGELOG.md`](CHANGELOG.md).
+
 ## Current Status
 
 Current high-level state:
@@ -102,6 +104,7 @@ Current open-source / packaging docs:
 - [`OPEN_SOURCE_STATUS.md`](OPEN_SOURCE_STATUS.md)
 - [`QUICKSTART_OPEN_SOURCE.md`](QUICKSTART_OPEN_SOURCE.md)
 - [`KNOWN_LIMITATIONS.md`](KNOWN_LIMITATIONS.md)
+- [`CHANGELOG.md`](CHANGELOG.md)
 - [`SKILL_PACKAGING_PLAN_20260418.md`](SKILL_PACKAGING_PLAN_20260418.md)
 - [`SKILL.md`](SKILL.md)
 - [`MCP_TOOL_SURFACE_SPEC_20260418.md`](MCP_TOOL_SURFACE_SPEC_20260418.md)
