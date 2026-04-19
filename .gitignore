@@ -34,6 +34,8 @@ archive/generated_or_cache_20260316/studio_web_generated/
 
 # Output projects: ignore by default, whitelist proof baselines
 output_projects/*
+!output_projects/ail_vue_base/
+!output_projects/ail_vue_base/**
 !output_projects/CompanyProductSiteBrandPostureReview/
 !output_projects/CompanyProductSiteBrandPostureReview/**
 !output_projects/PersonalIndependentSiteSignatureReview/

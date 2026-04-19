@@ -16,6 +16,7 @@ This changelog is intentionally lightweight for now. The repository already has 
 
 - switched the main CLI runtime path to dynamic repository-root resolution
 - removed the most important developer-specific macOS path dependency from the main execution path
+- added `output_projects/ail_vue_base` to the tracked repository contents so fresh clones include the frontend template baseline
 - updated `/Users/carwynmac/ai-cl/QUICKSTART_OPEN_SOURCE.md` with PowerShell equivalents for Windows testers
 - updated `/Users/carwynmac/ai-cl/README.md` with a short Windows note at the repository entrypoint
 - updated `/Users/carwynmac/ai-cl/KNOWN_LIMITATIONS.md` to clarify that cross-platform support is improving, but not fully normalized yet
