@@ -58,6 +58,11 @@ than to fully non-technical users.
 
 The repository is no longer tied to one developer macOS path, and the main CLI flows now resolve the repo root dynamically.
 
+We now also have a confirmed Windows success path for:
+
+- `workspace summary`
+- `website check`
+
 That said, Windows and broader cross-platform usage should still be treated as actively improving rather than fully normalized.
 
 The most useful reports here are:
@@ -65,6 +70,7 @@ The most useful reports here are:
 - remaining path assumptions
 - shell-specific setup friction
 - places where PowerShell or Windows behavior still diverges from the documented Quickstart
+- managed-file drift messaging that may still feel too internal on first generation
 
 ### 7. This Is Still An Alpha, Even With A License
 
