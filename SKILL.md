@@ -11,6 +11,7 @@ Use this skill when the task is about operating AIL Builder itself, or when an a
 
 - understanding the current AIL Builder repository state
 - checking whether a website request fits the current supported surface
+- serving a generated project's frontend for local preview
 - navigating repo-root and project-level CLI entrypoints
 - starting or continuing durable customization safely
 - inspecting proof baselines before changing anything
@@ -55,7 +56,16 @@ Use when you are at repo root and want the safest durable customization entry.
 PYTHONPATH="$PWD" python3 -m cli workspace hook-guide --json
 ```
 
-### 4. Project-Level Customization Guidance
+### 4. Serve A Generated Project
+
+Use when a project has already been generated and the user wants to see the frontend locally.
+
+```bash
+PYTHONPATH="$REPO_ROOT" python3 -m cli project serve --dry-run --json
+PYTHONPATH="$REPO_ROOT" python3 -m cli project serve --install-if-needed
+```
+
+### 5. Project-Level Customization Guidance
 
 Use when you are already inside one generated project or proof baseline.
 
@@ -63,7 +73,7 @@ Use when you are already inside one generated project or proof baseline.
 PYTHONPATH="$REPO_ROOT" python3 -m cli project hook-guide --json
 ```
 
-### 5. Safe Preview Before Writing
+### 6. Safe Preview Before Writing
 
 Use when you already know a hook and want to preview the next step.
 
@@ -102,6 +112,13 @@ Use before writing files.
 - `project hook-init ... --dry-run`
 - `workspace hook-init ... --dry-run`
 - `workspace hook-continue --dry-run`
+
+### Serve
+
+Use after generation when the user wants a browser-accessible local frontend.
+
+- `project serve --dry-run --json`
+- `project serve --install-if-needed`
 
 ### Explain
 
@@ -146,6 +163,7 @@ These are good for:
 AIL Builder is currently best understood as:
 
 - an alpha / builder preview
+- a static presentation-site generator
 - a CLI-first workflow engine
 - a skill-ready workflow surface
 

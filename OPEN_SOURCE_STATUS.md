@@ -39,6 +39,7 @@ External testers can already:
 - run core CLI entrypoints
 - inspect website-oriented evaluation flows
 - generate static presentation-style site projects
+- serve a generated project's frontend locally with `project serve`
 - explore durable customization workflows
 - inspect proof baselines for company and personal distinction work
 - build the bundled proof frontends locally

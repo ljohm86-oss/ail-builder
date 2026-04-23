@@ -57,7 +57,7 @@ This is important because AIL Builder already has a meaningful distinction betwe
 
 The first tool set should be small.
 
-It is better to expose 8 to 12 coherent tools than 40 thin one-flag wrappers.
+It is better to expose a small set of coherent tools than 40 thin one-flag wrappers.
 
 ### 4. Preserve Managed / Unmanaged Boundaries
 
@@ -324,6 +324,35 @@ This tool is not the same as `hook_execute`.
 
 `hook_run_next` means "execute the guided next command already suggested by the system."
 
+## 12. `project_serve`
+
+### Use For
+
+- starting or dry-running the local frontend dev server for one generated project
+
+### CLI Mapping
+
+```bash
+python3 -m cli project serve --dry-run --json
+python3 -m cli project serve --install-if-needed --json
+```
+
+### Input
+
+- optional `host`
+- optional `port`
+- optional `install_if_needed`
+- optional `dry_run`
+
+### Output
+
+- project root
+- frontend root
+- local URL
+- command
+- npm/dependency status
+- pid and log path when a server is started
+
 ## Suggested Tool Groups
 
 The first MCP tool menu should be grouped like this:
@@ -341,6 +370,7 @@ The first MCP tool menu should be grouped like this:
 ### Project
 
 - `project_hook_guide`
+- `project_serve`
 
 ### Hook Preview And Explain
 

@@ -122,6 +122,27 @@ What you should expect:
 
 ## 8. Optional: Build A Proof Baseline Frontend
 
+You can preview a generated frontend through the CLI:
+
+```bash
+cd "$REPO_ROOT/output_projects/CompanyProductSiteBrandPostureReview"
+PYTHONPATH="$REPO_ROOT" python3 -m cli project serve --dry-run --json
+PYTHONPATH="$REPO_ROOT" python3 -m cli project serve --install-if-needed
+```
+
+PowerShell equivalent:
+
+```powershell
+cd "$env:REPO_ROOT\output_projects\CompanyProductSiteBrandPostureReview"
+$env:PYTHONPATH = $env:REPO_ROOT
+py -3 -m cli project serve --dry-run --json
+py -3 -m cli project serve --install-if-needed
+```
+
+The command starts the frontend dev server in the background and returns a local URL such as `http://127.0.0.1:5173`.
+
+You can also build the proof frontends manually.
+
 Company line:
 
 ```bash

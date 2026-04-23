@@ -106,11 +106,19 @@ The most useful reports here are:
 - places where PowerShell or Windows behavior still diverges from the documented Quickstart
 - managed-file drift messaging that may still feel too internal on first generation
 
-### 10. Local Preview Still Requires Manual Frontend Commands
+### 10. Local Preview Is Project-Level, Not Yet One-Step From A Prompt
 
-AIL Builder currently generates website project files, but it does not yet automatically serve the generated site.
+AIL Builder now includes a project-level frontend serve command:
 
-After generation, users should run the frontend manually:
+```bash
+python3 -m cli project serve --install-if-needed
+```
+
+Run it from a generated project directory after `website check` has created output under `output_projects/`.
+
+AIL Builder does not yet provide one command that takes a raw website prompt, generates the project, and serves it automatically.
+
+If needed, users can still run the frontend manually:
 
 ```bash
 cd output_projects/<generated-project>/frontend

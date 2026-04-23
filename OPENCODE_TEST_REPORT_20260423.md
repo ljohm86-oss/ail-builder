@@ -93,7 +93,16 @@ This should be clarified or softened in future UX work.
 
 Generated frontend projects are SPA-style Vite projects.
 
-Opening `index.html` directly can show a blank page. Users should run the frontend through Vite:
+Opening `index.html` directly can show a blank page. Users should run the frontend through Vite.
+
+AIL Builder now includes a project-level helper:
+
+```bash
+cd output_projects/<generated-project>
+python3 -m cli project serve --install-if-needed
+```
+
+Manual frontend commands still work:
 
 ```bash
 cd output_projects/<generated-project>/frontend
@@ -108,13 +117,11 @@ npm run build
 npm run preview
 ```
 
-AIL Builder does not yet provide a single CLI command that both generates and serves the website.
+AIL Builder does not yet provide a single CLI command that both generates from a raw prompt and serves the website.
 
 ## Recommended Next Fixes
 
-1. Add a direct preview / serve workflow.
-   - Suggested first command: `project serve`
-   - Later command: `website serve`
+1. Add a one-step `website serve` workflow that generates and serves from one raw prompt.
 2. Improve first-run managed-file drift messaging.
 3. Make static presentation-page scope clearer in `website check` output.
 4. Make blog/CMS boundaries more explicit.
@@ -134,4 +141,4 @@ Avoid claiming:
 - CMS/blog publishing support
 - app/dashboard generation
 - production-ready full-stack website generation
-- one-command local website serving
+- one-command generate-and-serve from a raw prompt
