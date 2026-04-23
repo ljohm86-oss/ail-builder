@@ -38,10 +38,19 @@ External testers can already:
 
 - run core CLI entrypoints
 - inspect website-oriented evaluation flows
+- generate static presentation-style site projects
 - explore durable customization workflows
 - inspect proof baselines for company and personal distinction work
 - build the bundled proof frontends locally
 - load the repository as a structured workflow reference for skill-style agent or IDE usage
+
+The strongest supported generation cases today are:
+
+- personal portfolio / resume-style pages
+- company product pages
+- simple landing pages
+
+The current website surface should not be presented as ecommerce, CMS, dashboard, authentication, or database-backed app generation.
 
 ## What This Release Should Be Called
 
@@ -63,6 +72,8 @@ Avoid claiming:
 ### 1. Website-Oriented CLI Mainline
 
 The repository already supports meaningful website-oriented checks, summaries, previews, and handoff surfaces.
+
+The most reliable generation scope today is static presentation-style websites, not full-stack web applications.
 
 ### 2. Durable Customization
 

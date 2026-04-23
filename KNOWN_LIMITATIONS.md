@@ -9,11 +9,45 @@ It is not yet packaged as a polished, general-audience product.
 
 ## Main Limitations
 
-### 1. Onboarding Is Still Too Internal In Places
+### 1. Current Website Generation Scope Is Static And Presentation-Oriented
+
+AIL Builder currently works best for:
+
+- personal portfolio / resume-style pages
+- company product pages
+- simple landing pages
+- static brochure-style websites
+
+It does not currently support:
+
+- ecommerce cart / checkout flows
+- login or authentication systems
+- dashboards or admin panels
+- CMS or publishing-system behavior
+- database-backed applications
+
+Requests that cross into app, platform, CMS, ecommerce, or back-office behavior may be rejected by the current website boundary checks.
+
+### 2. Blog Support Is Partial
+
+Blog-like requests may be classified as a blog-style site, but AIL Builder does not currently generate a real blog publishing system.
+
+Current blog support should be understood as:
+
+- blog-like presentation: partial
+- CMS, post editor, archive, publishing backend: out of scope
+
+### 3. Generated Sites Are Usually Single-Page Presentation Structures
+
+Requests for pages such as `features`, `pricing`, `about`, or `blog` may be represented as page sections rather than independent routes.
+
+The generated frontend may only include basic routes such as `/` and `/403`.
+
+### 4. Onboarding Is Still Too Internal In Places
 
 The repository is much more understandable than before, but some commands, docs, and workflows still assume internal project context.
 
-### 2. Brand Distinction Is Mid-Phase, Not Finished
+### 5. Brand Distinction Is Mid-Phase, Not Finished
 
 Current reference:
 
@@ -25,7 +59,7 @@ Current judgment:
 
 That means the direction is proven, but broader normalization and closeout are still ahead.
 
-### 3. The Strongest Proof Is Still Sample-Led
+### 6. The Strongest Proof Is Still Sample-Led
 
 The repository has strong proof baselines, especially:
 
@@ -34,7 +68,7 @@ The repository has strong proof baselines, especially:
 
 But some of the strongest distinction work still lives in sample-level overrides rather than broader generator-level normalization.
 
-### 4. Public API / Behavior Stability Is Not Guaranteed
+### 7. Public API / Behavior Stability Is Not Guaranteed
 
 CLI surfaces are real and tested, but this repository is still evolving quickly.
 
@@ -44,7 +78,7 @@ You should expect:
 - docs to tighten over time
 - some flows to be renamed or simplified later
 
-### 5. Setup Is More Comfortable For Technical Testers
+### 8. Setup Is More Comfortable For Technical Testers
 
 The current repo is better suited to:
 
@@ -54,7 +88,7 @@ The current repo is better suited to:
 
 than to fully non-technical users.
 
-### 6. Cross-Platform Support Is Improving, Not Finished
+### 9. Cross-Platform Support Is Improving, Not Finished
 
 The repository is no longer tied to one developer macOS path, and the main CLI flows now resolve the repo root dynamically.
 
@@ -72,7 +106,27 @@ The most useful reports here are:
 - places where PowerShell or Windows behavior still diverges from the documented Quickstart
 - managed-file drift messaging that may still feel too internal on first generation
 
-### 7. This Is Still An Alpha, Even With A License
+### 10. Local Preview Still Requires Manual Frontend Commands
+
+AIL Builder currently generates website project files, but it does not yet automatically serve the generated site.
+
+After generation, users should run the frontend manually:
+
+```bash
+cd output_projects/<generated-project>/frontend
+npm install
+npm run dev
+```
+
+Opening the generated `index.html` directly may show a blank page because the frontend is a Vite SPA.
+
+### 11. Localization And Content Variation Are Still Limited
+
+Some generated or customized pages may contain mixed-language labels, especially in brand-posture or distinction sections.
+
+Generated content can also still feel template-like across different sites. More design and content variation is future work.
+
+### 12. This Is Still An Alpha, Even With A License
 
 The repository now includes an MIT license, so the main legal packaging blocker has been removed.
 
@@ -86,6 +140,7 @@ These are currently strong enough to rely on for testing:
   - `status = ok`
   - `207 / 207` checks passing
 - website-oriented CLI mainline
+- static presentation-site generation for portfolio, company/product, and landing-style pages
 - durable customization workflow
 - proof baselines for company and personal distinction work
 
