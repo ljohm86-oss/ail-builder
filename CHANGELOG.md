@@ -16,6 +16,7 @@ This changelog is intentionally lightweight for now. The repository already has 
 
 - clarified public positioning around static presentation-site generation
 - documented ecommerce, CMS, blog-publishing, routing, localization, managed-drift, and local-preview limitations more explicitly
+- improved managed-file drift messaging so CLI output explains it as a sync safety guard, not necessarily a website generation failure
 
 ## 2026-04-19
 

@@ -104,7 +104,7 @@ The most useful reports here are:
 - remaining path assumptions
 - shell-specific setup friction
 - places where PowerShell or Windows behavior still diverges from the documented Quickstart
-- managed-file drift messaging that may still feel too internal on first generation
+- managed-file drift edge cases where users need help choosing whether to preserve or overwrite local generated-file changes
 
 ### 10. Local Preview Is Project-Level, Not Yet One-Step From A Prompt
 

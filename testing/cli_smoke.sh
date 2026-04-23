@@ -4832,6 +4832,9 @@ assert exit_code == 4, exit_code
 assert payload['status'] == 'error', payload
 assert payload['error']['code'] == 'sync_conflict', payload
 assert payload['error']['exit_code'] == 4, payload
+assert payload['error']['details']['blocks_safe_sync'] is True, payload
+assert payload['error']['details']['blocks_existing_output_review'] is False, payload
+assert 'not necessarily a website generation failure' in payload['error']['details']['message'], payload
 PY
 ok_sync_conflict_json=true
 
@@ -4852,6 +4855,11 @@ assert payload['status'] == 'conflict', payload
 assert payload['checks']['sync_conflicts_detected'] is True, payload
 assert payload['checks']['ready_for_sync'] is False, payload
 assert len(payload['sync_conflicts']) >= 1, payload
+assert payload['sync_conflict_summary']['blocks_safe_sync'] is True, payload
+assert payload['sync_conflict_summary']['blocks_existing_output_review'] is False, payload
+assert 'not necessarily a website generation failure' in payload['sync_conflict_summary']['message'], payload
+assert payload['sync_conflicts'][0]['category'] == 'managed_file_drift', payload
+assert payload['sync_conflicts'][0]['user_message'], payload
 PY
 ok_project_check_conflict_json=true
 

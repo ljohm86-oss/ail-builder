@@ -92,7 +92,12 @@ def main(argv: list[str] | None = None) -> int:
         return EXIT_REMOTE
     except SyncError as exc:
         if _json_enabled(args):
-            _print_json_error("sync_conflict", str(exc), exit_code=EXIT_CONFLICT)
+            _print_json_error(
+                "sync_conflict",
+                str(exc),
+                exit_code=EXIT_CONFLICT,
+                details=getattr(exc, "details", None) or None,
+            )
         else:
             print(f"error: {exc}", file=sys.stderr)
         return EXIT_CONFLICT
@@ -2440,6 +2445,7 @@ def cmd_project(args: argparse.Namespace) -> int:
             last_build_summary = payload["last_build_summary"]
             cloud_status_error = payload["cloud_status_error"]
             sync_conflict_error = payload["sync_conflict_error"]
+            sync_conflict_summary = payload["sync_conflict_summary"]
             sync_conflicts = payload["sync_conflicts"]
             print(
                 "- checks: "
@@ -2469,9 +2475,12 @@ def cmd_project(args: argparse.Namespace) -> int:
             if sync_conflict_error:
                 print(f"- sync_conflict_error: {sync_conflict_error}")
             if sync_conflicts:
-                print("Conflicts:")
+                if sync_conflict_summary:
+                    print(f"- sync_conflict_message: {sync_conflict_summary['message']}")
+                    print(f"- blocks_existing_output_review: {str(sync_conflict_summary['blocks_existing_output_review']).lower()}")
+                print("Managed-file drift:")
                 for item in sync_conflicts:
-                    print(f"- {item['path']} | Level {item['level']} | {item['reason']}")
+                    print(f"- {item['path']} | Level {item['level']} | {item.get('summary') or item['reason']}")
             print(f"- preview_hint: {payload['preview_hint']}")
             print("Next:")
             for step in payload["next_steps"]:
@@ -3611,11 +3620,13 @@ def cmd_conflicts(args: argparse.Namespace) -> int:
         return EXIT_OK
 
     if args.json:
+        conflict_help = SyncEngine.explain_conflicts(conflicts)
         print(
             json.dumps(
                 {
                     "status": "conflict",
                     "build_id": last_build.get("build_id", ""),
+                    **conflict_help,
                     "conflicts": conflicts,
                 },
                 indent=2,
@@ -3623,9 +3634,14 @@ def cmd_conflicts(args: argparse.Namespace) -> int:
             )
         )
     else:
-        print("Conflicts detected:")
+        conflict_help = SyncEngine.explain_conflicts(conflicts)
+        print("Managed-file drift detected:")
+        print(f"- meaning: {conflict_help['message']}")
+        print(f"- blocks_safe_sync: {str(conflict_help['blocks_safe_sync']).lower()}")
+        print(f"- blocks_existing_output_review: {str(conflict_help['blocks_existing_output_review']).lower()}")
+        print("Conflicts:")
         for item in conflicts:
-            print(f"- {item['path']} | Level {item['level']} | {item['reason']}")
+            print(f"- {item['path']} | Level {item['level']} | {item.get('summary') or item['reason']}")
     return EXIT_CONFLICT
 
 
@@ -8720,7 +8736,7 @@ def _build_project_check_payload(ctx: ProjectContext, *, base_url: str | None) -
     cached_files = list((last_build or {}).get("files") or [])
     deleted_files = list((last_build or {}).get("deleted_files") or [])
 
-    sync_conflicts: list[dict[str, str]] = []
+    sync_conflicts: list[dict[str, Any]] = []
     sync_conflict_error = ""
     if manifest_exists and last_build_exists and (cached_files or deleted_files):
         try:
@@ -8782,6 +8798,7 @@ def _build_project_check_payload(ctx: ProjectContext, *, base_url: str | None) -
         "cloud_status": cloud_status,
         "cloud_status_error": cloud_status_error or None,
         "sync_conflicts": sync_conflicts,
+        "sync_conflict_summary": SyncEngine.explain_conflicts(sync_conflicts) if sync_conflicts else None,
         "sync_conflict_error": sync_conflict_error or None,
         "preview_handoff": handoff,
         "preview_hint": handoff["preview_hint"],
@@ -8794,7 +8811,7 @@ def _project_check_next_steps(
     ctx: ProjectContext,
     status: str,
     checks: dict[str, bool],
-    sync_conflicts: list[dict[str, str]],
+    sync_conflicts: list[dict[str, Any]],
     cloud_status_available: bool,
 ) -> list[str]:
     if not checks["source_exists"]:
@@ -8809,9 +8826,10 @@ def _project_check_next_steps(
         ]
     if sync_conflicts:
         return [
-            "inspect the conflicting managed files listed above",
+            "read the drift as a managed sync safety warning, not necessarily a failed website generation",
             f"run PYTHONPATH={REPO_ROOT_STR} python3 -m cli conflicts --json",
-            f"run PYTHONPATH={REPO_ROOT_STR} python3 -m cli sync --backup-and-overwrite if the drift should be preserved",
+            "preview the existing output if it already looks useful",
+            f"run PYTHONPATH={REPO_ROOT_STR} python3 -m cli sync --backup-and-overwrite only when you want backup copies before overwrite",
         ]
     if not checks["last_build_exists"] or not checks["cached_build_files_present"]:
         return [
@@ -8894,7 +8912,7 @@ def _project_summary_recommendation(
         return {
             "recommended_primary_action": "project_doctor",
             "recommended_primary_command": f"PYTHONPATH={REPO_ROOT_STR} python3 -m cli project doctor --fix-plan --base-url embedded://local --json",
-            "recommended_primary_reason": "Managed-file drift needs an explicit conflict-resolution decision before any safe continue path.",
+            "recommended_primary_reason": "Managed-file drift is a sync safety guard. Existing output can still be inspected, but make an explicit conflict-resolution decision before overwriting managed files.",
         }
     if recommended_action == "repair_source":
         return {
@@ -10238,7 +10256,7 @@ def _build_project_doctor_fix_plan(ctx: ProjectContext, recommended_action: str)
                 "step": "1",
                 "title": "Inspect the managed-file drift",
                 "command": f"PYTHONPATH={REPO_ROOT_STR} python3 -m cli conflicts --json",
-                "rationale": "Confirm which generated files have local drift before overwriting anything.",
+                "rationale": "Confirm which generated files changed locally. This protects local edits and does not by itself mean generation failed.",
             },
             {
                 "step": "2",
@@ -10550,16 +10568,25 @@ def _emit_command_error(args: argparse.Namespace, exit_code: int, code: str, mes
     return exit_code
 
 
-def _print_json_error(code: str, message: str, *, exit_code: int) -> None:
+def _print_json_error(
+    code: str,
+    message: str,
+    *,
+    exit_code: int,
+    details: dict[str, Any] | None = None,
+) -> None:
+    error = {
+        "code": code,
+        "message": message,
+        "exit_code": exit_code,
+    }
+    if details:
+        error["details"] = details
     print(
         json.dumps(
             {
                 "status": "error",
-                "error": {
-                    "code": code,
-                    "message": message,
-                    "exit_code": exit_code,
-                },
+                "error": error,
             },
             indent=2,
             ensure_ascii=False,

@@ -85,9 +85,15 @@ These labels are currently part of the distinction / posture layer and are not f
 
 First-generation runs can report managed-file drift or local drift warnings.
 
-The current behavior does not necessarily block generation, but the messaging still feels too internal for new users.
+AIL Builder now labels this as a sync safety guard rather than a generation failure.
 
-This should be clarified or softened in future UX work.
+The important distinction is:
+
+- it blocks silent overwrite of generated managed files
+- it does not necessarily block inspecting or previewing the website output that already exists
+- `conflicts --json` includes a human-readable explanation, whether safe sync is blocked, whether output review is blocked, and suggested next steps
+
+Users should inspect the listed files first. If local changes matter, move durable source/content changes into `.ail/source.ail`, move visual overrides into `frontend/src/ail-overrides/`, or run `sync --backup-and-overwrite` to preserve local copies before overwrite.
 
 ### Local Preview Requires A Frontend Server
 
@@ -122,7 +128,7 @@ AIL Builder does not yet provide a single CLI command that both generates from a
 ## Recommended Next Fixes
 
 1. Add a one-step `website serve` workflow that generates and serves from one raw prompt.
-2. Improve first-run managed-file drift messaging.
+2. Add a guided conflict-resolution command that helps users choose preserve, overwrite, or move-to-overrides.
 3. Make static presentation-page scope clearer in `website check` output.
 4. Make blog/CMS boundaries more explicit.
 5. Improve localization of posture labels.
