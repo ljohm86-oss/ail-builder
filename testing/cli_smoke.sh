@@ -1174,6 +1174,13 @@ assert payload['support_level'] == 'Experimental', payload
 assert payload['delivery_decision'] == 'experimental', payload
 assert payload['experimental_dynamic_enabled'] is True, payload
 assert payload['expected_profile'] == 'ecom_min', payload
+assert payload['delivery_contract']['surface'] == 'experimental_dynamic_storefront', payload
+assert 'product detail pages' in payload['delivery_contract']['supported_capabilities'], payload
+assert 'cart views' in payload['delivery_contract']['supported_capabilities'], payload
+assert 'checkout handoff pages' in payload['delivery_contract']['supported_capabilities'], payload
+assert 'account login or registration' in payload['delivery_contract']['unsupported_capabilities'], payload
+assert 'real payment capture' in payload['delivery_contract']['unsupported_capabilities'], payload
+assert 'experimental storefront prototype' in payload['delivery_contract']['operator_positioning'], payload
 assert payload['trial_result']['status'] == 'ok', payload
 assert payload['trial_result']['detected_profile'] == 'ecom_min', payload
 PY

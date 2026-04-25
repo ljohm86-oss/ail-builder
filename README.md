@@ -73,6 +73,17 @@ Experimental dynamic lane:
 - `website check --experimental-dynamic` can opt into the current experimental ecommerce / after-sales lane
 - this lane is not part of the stable public website promise yet
 - treat generated output there as exploratory, not productized
+- current ecommerce experimental lane is best positioned as:
+  - catalog / shop entry
+  - product detail
+  - cart
+  - checkout handoff
+- do not position the ecommerce lane as:
+  - login / account system
+  - payment capture stack
+  - merchant backend
+  - order-management platform
+  - database-backed production commerce system
 
 Current realization expectation for most landing-style website requests:
 

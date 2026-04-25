@@ -329,6 +329,11 @@ def cmd_website(args: argparse.Namespace) -> int:
         print(f"- expected_profile: {payload['expected_profile']}")
         print(f"- delivery_decision: {payload['delivery_decision']}")
         print(f"- website_reason: {payload['website_reason']}")
+        delivery_contract = payload.get("delivery_contract") or {}
+        if delivery_contract:
+            print(f"- delivery_surface: {delivery_contract.get('surface', '')}")
+            print(f"- operator_positioning: {delivery_contract.get('operator_positioning', '')}")
+            print(f"- stability_note: {delivery_contract.get('stability_note', '')}")
         print(f"- page_realization_mode: {payload['page_realization_mode']}")
         print(f"- routing_expectation: {payload['routing_expectation']}")
         print(f"- route_expectation_detail: {payload['route_expectation_detail']}")
@@ -337,6 +342,14 @@ def cmd_website(args: argparse.Namespace) -> int:
         if payload.get("boundary_findings"):
             print("Boundary findings:")
             for item in payload["boundary_findings"]:
+                print(f"- {item}")
+        if delivery_contract.get("supported_capabilities"):
+            print("Supported capabilities:")
+            for item in delivery_contract["supported_capabilities"]:
+                print(f"- {item}")
+        if delivery_contract.get("unsupported_capabilities"):
+            print("Unsupported capabilities:")
+            for item in delivery_contract["unsupported_capabilities"]:
                 print(f"- {item}")
         trial = payload.get("trial_result") or {}
         if trial:
@@ -4651,6 +4664,119 @@ def _build_website_check_next_steps(
     return steps
 
 
+def _website_delivery_contract(
+    classification_key: str,
+    *,
+    expected_profile: str,
+) -> dict[str, Any]:
+    if classification_key == "ecommerce_storefront":
+        return {
+            "surface": "experimental_dynamic_storefront",
+            "supported_capabilities": [
+                "catalog-style landing or shop entry pages",
+                "product detail pages",
+                "cart views",
+                "checkout handoff pages",
+                "category or search discovery routes when the generated profile includes them",
+            ],
+            "unsupported_capabilities": [
+                "account login or registration",
+                "real payment capture",
+                "order management back-office",
+                "inventory or merchant operations tooling",
+                "database-backed commerce workflows",
+            ],
+            "operator_positioning": "Position this as an experimental storefront prototype, not as a production ecommerce stack.",
+            "stability_note": "The ecommerce lane is still experimental. Treat route coverage and generated flow continuity as something to verify in each output.",
+            "validation_focus": [
+                "inspect the generated router before promising exact route coverage",
+                "confirm product to cart to checkout continuity in the generated frontend",
+                "avoid promising account, payment, or merchant-backend behavior",
+            ],
+            "expected_profile": expected_profile,
+        }
+    if classification_key == "after_sales":
+        return {
+            "surface": "experimental_after_sales_workflow",
+            "supported_capabilities": [
+                "refund request pages",
+                "exchange request pages",
+                "complaint or contact submission pages",
+                "service-policy or support-entry presentation flows",
+            ],
+            "unsupported_capabilities": [
+                "agent console workflows",
+                "ticket routing backends",
+                "internal approvals",
+                "account login or case-management systems",
+                "database-backed service operations",
+            ],
+            "operator_positioning": "Position this as an experimental after-sales website flow, not as a support platform or internal tool.",
+            "stability_note": "The after-sales lane is still experimental. Generated workflow coverage should be verified per output before promising delivery behavior.",
+            "validation_focus": [
+                "inspect generated routes and forms before promising exact workflow coverage",
+                "avoid promising internal operations or support-console behavior",
+                "keep the requirement in a customer-facing website surface",
+            ],
+            "expected_profile": expected_profile,
+        }
+    if classification_key == "blog_style":
+        return {
+            "surface": "partial_blog_presentation",
+            "supported_capabilities": [
+                "blog-style landing or article presentation pages",
+                "static sections for posts, writing themes, or archives",
+            ],
+            "unsupported_capabilities": [
+                "CMS editing",
+                "publishing backend behavior",
+                "comments systems",
+                "user accounts",
+            ],
+            "operator_positioning": "Position this as a presentation-oriented blog-style site only.",
+            "stability_note": "Blog-like presentation is partial support. Treat anything requiring publishing operations as out of scope.",
+            "validation_focus": [
+                "avoid promising CMS or publishing workflows",
+                "inspect generated routes if you need blog navigation beyond one main page",
+            ],
+            "expected_profile": expected_profile,
+        }
+    if classification_key in {"company_product", "personal_independent"}:
+        return {
+            "surface": "static_presentation_site",
+            "supported_capabilities": [
+                "landing-style homepage composition",
+                "feature, pricing, FAQ, or about sections",
+                "contact or CTA sections",
+                "static brand or portfolio presentation",
+            ],
+            "unsupported_capabilities": [
+                "login flows",
+                "CMS behavior",
+                "dashboard or admin behavior",
+                "database-backed app workflows",
+            ],
+            "operator_positioning": "Position this as a static presentation website inside the current supported public surface.",
+            "stability_note": "This is the strongest supported lane today, but most requests still realize as single-page section structures first.",
+            "validation_focus": [
+                "inspect the router before promising independent multi-page coverage",
+                "keep the request in a presentation-oriented website surface",
+            ],
+            "expected_profile": expected_profile,
+        }
+    return {
+        "surface": "out_of_scope",
+        "supported_capabilities": [],
+        "unsupported_capabilities": [],
+        "operator_positioning": "Narrow the requirement back to a supported website surface before positioning it as deliverable.",
+        "stability_note": "No delivery contract is available because the request is currently out of scope.",
+        "validation_focus": [
+            "remove app, CMS, dashboard, or back-office behavior from the request",
+        ],
+        "expected_profile": expected_profile,
+    }
+
+
 def _website_realization_expectation(classification_key: str, expected_profile: str) -> dict[str, str]:
     if classification_key in {"company_product", "personal_independent", "blog_style"}:
         return {
@@ -4682,6 +4808,10 @@ def _build_website_check_payload(
     analysis = _analyze_website_requirement(
         requirement,
         include_experimental_dynamic=include_experimental_dynamic,
+    )
+    delivery_contract = _website_delivery_contract(
+        analysis["classification_key"],
+        expected_profile=analysis["expected_profile"],
     )
     realization = _website_realization_expectation(
         analysis["classification_key"],
@@ -4735,6 +4865,7 @@ def _build_website_check_payload(
         "website_reason": analysis["website_reason"],
         "safe_positioning": analysis["safe_positioning"],
         "experimental_dynamic_enabled": include_experimental_dynamic,
+        "delivery_contract": delivery_contract,
         "page_realization_mode": realization["page_realization_mode"],
         "routing_expectation": realization["routing_expectation"],
         "route_expectation_detail": realization["route_expectation_detail"],

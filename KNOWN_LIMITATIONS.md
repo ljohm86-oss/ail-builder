@@ -31,6 +31,21 @@ Requests that cross into app, platform, CMS, ecommerce, or back-office behavior 
 
 If you intentionally want to explore the current ecommerce or after-sales prototypes, use the explicit experimental CLI lane instead of treating them as stable supported website behavior.
 
+Today, the experimental ecommerce lane is best understood as:
+
+- product-listing or shop-entry pages
+- product detail pages
+- cart pages
+- checkout handoff pages
+
+It should not currently be positioned as:
+
+- account or login behavior
+- real payment processing
+- merchant backend or inventory tooling
+- order-management systems
+- production-grade database-backed ecommerce
+
 ### 2. Blog Support Is Partial
 
 Blog-like requests may be classified as a blog-style site, but AIL Builder does not currently generate a real blog publishing system.
