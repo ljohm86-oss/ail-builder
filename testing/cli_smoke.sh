@@ -824,6 +824,13 @@ assert 'const normalizedQuantity = computed(() =>' in content, content
 assert 'const selectionTotal = computed(() =>' in content, content
 assert 'media-gallery' in content, content
 assert 'STYLE VIEW' in content, content
+assert 'thumb-rail' in content, content
+assert 'GALLERY MODE' in content, content
+assert 'variant-selector' in content, content
+assert 'quantity-stepper' in content, content
+assert 'SPEC TABLE' in content, content
+assert 'REVIEW LIST' in content, content
+assert 'SERVICE ASSURANCE' in content, content
 assert 'NEXT PICKS' in content, content
 assert 'related-card-flow' in content, content
 assert 'action-hint' in content, content
