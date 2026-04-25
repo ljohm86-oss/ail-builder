@@ -1025,9 +1025,18 @@ assert '确认收货' in account_content, account_content
 assert 'ORDER EMPTY STATE' in account_content, account_content
 assert 'ADDRESS MODULE' in account_content, account_content
 assert 'CHECKOUT REUSE' in account_content, account_content
+assert 'DEFAULT ADDRESS CARD' in account_content, account_content
+assert 'SYNCED TO CHECKOUT' in account_content, account_content
+assert '设为结算默认' in account_content, account_content
+assert '编辑地址' in account_content, account_content
 assert '默认地址卡' in account_content, account_content
 assert '常用地址列表' in account_content, account_content
 assert '结算同步位' in account_content, account_content
+assert 'ADDRESS ITEM / Office' in account_content, account_content
+assert 'ADDRESS ITEM / Warehouse' in account_content, account_content
+assert 'DEFAULT' in account_content, account_content
+assert 'ALT ADDRESS' in account_content, account_content
+assert 'ADDRESS EMPTY STATE' in account_content, account_content
 assert 'WISHLIST FLOW' in account_content, account_content
 assert 'RETURN FLOW' in account_content, account_content
 assert 'EMPTY STATE READY' in account_content, account_content
