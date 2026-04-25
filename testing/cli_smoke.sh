@@ -1039,6 +1039,23 @@ assert 'ALT ADDRESS' in account_content, account_content
 assert 'ADDRESS EMPTY STATE' in account_content, account_content
 assert 'WISHLIST FLOW' in account_content, account_content
 assert 'RETURN FLOW' in account_content, account_content
+assert 'ALL SAVED' in account_content, account_content
+assert 'PRICE DROP' in account_content, account_content
+assert 'SHOP FOLLOW' in account_content, account_content
+assert 'RECENT VIEWED' in account_content, account_content
+assert 'SAVED ITEM / Air Mesh Runner' in account_content, account_content
+assert 'SAVED ITEM / Walnut Floor Lamp' in account_content, account_content
+assert 'SHOP FOLLOW / Orange Select' in account_content, account_content
+assert '回到商品详情' in account_content, account_content
+assert '回到搜索结果' in account_content, account_content
+assert '回到店铺页' in account_content, account_content
+assert 'RECENT VIEW / Product' in account_content, account_content
+assert 'RECENT VIEW / Search' in account_content, account_content
+assert 'RECENT VIEW / Shop' in account_content, account_content
+assert 'RETURN TO PRODUCT' in account_content, account_content
+assert 'RETURN TO SEARCH' in account_content, account_content
+assert 'RETURN TO CATEGORY' in account_content, account_content
+assert 'RETURN TO SHOP' in account_content, account_content
 assert 'EMPTY STATE READY' in account_content, account_content
 assert 'SECURITY DETAIL' in account_content, account_content
 assert 'AUTH LATER' in account_content, account_content
