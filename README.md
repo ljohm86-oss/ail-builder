@@ -63,6 +63,12 @@ Current tested generation scope:
 - partial: blog-style presentation pages, without CMS or publishing-system behavior
 - out of scope: ecommerce, login systems, dashboards, CMS, back-office workflows, and database-backed applications
 
+Current realization expectation for most landing-style website requests:
+
+- asks for `about`, `features`, `pricing`, `FAQ`, or `blog` are often implemented as sections on one main page
+- generated routes may remain minimal, often centered on `/` plus fallback routes such as `/403`
+- do not promise independent multi-page routing unless the generated router actually shows it
+
 ## Who This Is For
 
 AIL Builder is a good fit today for:

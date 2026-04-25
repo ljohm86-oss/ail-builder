@@ -43,6 +43,8 @@ Requests for pages such as `features`, `pricing`, `about`, or `blog` may be repr
 
 The generated frontend may only include basic routes such as `/` and `/403`.
 
+This is now called out directly in `website check`, so operators can see the routing expectation before over-promising multi-page behavior.
+
 ### 4. Onboarding Is Still Too Internal In Places
 
 The repository is much more understandable than before, but some commands, docs, and workflows still assume internal project context.

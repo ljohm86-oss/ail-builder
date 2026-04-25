@@ -929,6 +929,9 @@ assert payload['support_level'] == 'Supported', payload
 assert payload['website_pack'] == 'Company / Product Website Pack', payload
 assert payload['expected_profile'] == 'landing', payload
 assert payload['delivery_decision'] == 'supported', payload
+assert payload['page_realization_mode'] == 'single_page_sections_bias', payload
+assert 'sections on one main page' in payload['routing_expectation'], payload
+assert '/403' in payload['route_expectation_detail'], payload
 assert payload['trial_result']['status'] == 'ok', payload
 assert payload['trial_result']['detected_profile'] == 'landing', payload
 assert payload['trial_project_path'], payload

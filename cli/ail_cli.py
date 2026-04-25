@@ -302,6 +302,9 @@ def cmd_website(args: argparse.Namespace) -> int:
         print(f"- expected_profile: {payload['expected_profile']}")
         print(f"- delivery_decision: {payload['delivery_decision']}")
         print(f"- website_reason: {payload['website_reason']}")
+        print(f"- page_realization_mode: {payload['page_realization_mode']}")
+        print(f"- routing_expectation: {payload['routing_expectation']}")
+        print(f"- route_expectation_detail: {payload['route_expectation_detail']}")
         if payload.get("matched_signals"):
             print(f"- matched_signals: {', '.join(payload['matched_signals'])}")
         if payload.get("boundary_findings"):
@@ -4459,6 +4462,26 @@ def _build_website_check_next_steps(
     return steps
 
 
+def _website_realization_expectation(classification_key: str, expected_profile: str) -> dict[str, str]:
+    if classification_key in {"company_product", "personal_independent", "blog_style"}:
+        return {
+            "page_realization_mode": "single_page_sections_bias",
+            "routing_expectation": "Requests for pages like features, pricing, about, or blog are currently often realized as sections on one main page rather than independent routes.",
+            "route_expectation_detail": "Expect a single-page presentation structure first. Generated routes may stay minimal, such as `/` plus fallback routes like `/403`.",
+        }
+    if classification_key in {"ecommerce_storefront", "after_sales"}:
+        return {
+            "page_realization_mode": "profile_driven_routes",
+            "routing_expectation": "This website pack can use dedicated route structures, but you should still inspect the generated router before promising exact page coverage.",
+            "route_expectation_detail": f"Current expected profile is `{expected_profile}`.",
+        }
+    return {
+        "page_realization_mode": "not_applicable",
+        "routing_expectation": "No routing expectation is available because the requirement does not currently fit one supported website pack.",
+        "route_expectation_detail": "Narrow the request to a supported website-oriented surface first.",
+    }
+
+
 def _build_website_check_payload(
     *,
     requirement: str,
@@ -4467,6 +4490,10 @@ def _build_website_check_payload(
     keep_existing: bool,
 ) -> tuple[dict[str, Any], int]:
     analysis = _analyze_website_requirement(requirement)
+    realization = _website_realization_expectation(
+        analysis["classification_key"],
+        analysis["expected_profile"],
+    )
     support_level = analysis["support_level"]
     delivery_decision = "out_of_scope" if support_level == "Out of Scope" else ("partial" if support_level == "Partial" else "supported")
     trial_result: dict[str, Any] | None = None
@@ -4508,6 +4535,9 @@ def _build_website_check_payload(
         "delivery_decision": delivery_decision,
         "website_reason": analysis["website_reason"],
         "safe_positioning": analysis["safe_positioning"],
+        "page_realization_mode": realization["page_realization_mode"],
+        "routing_expectation": realization["routing_expectation"],
+        "route_expectation_detail": realization["route_expectation_detail"],
         "matched_signals": analysis.get("matched_signals", []),
         "boundary_findings": analysis.get("boundary_findings", []),
         "trial_project_path": trial_project_path,
