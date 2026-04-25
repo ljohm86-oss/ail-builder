@@ -881,6 +881,18 @@ assert '先看详情' in content, content
 assert '再决定是否加入购物车' in content, content
 assert 'banner-flow' in content, content
 assert '01 先逛热销' in content, content
+assert 'ec-promo-strip' in content, content
+assert 'PROMO EVENT' in content, content
+assert 'category-shortcut-grid' in content, content
+assert 'QUICK ENTRY' in content, content
+assert '新品上架' in content, content
+assert 'NEW ARRIVAL' in content, content
+assert 'ec-brand-story' in content, content
+assert 'BRAND / FACTORY STORY' in content, content
+assert 'ec-testimonial-strip' in content, content
+assert 'BUYER VOICE' in content, content
+assert 'ec-trust-strip' in content, content
+assert 'PAYMENT READY' in content, content
 assert 'section-lead' in content, content
 assert 'CURRENT FILTER' in content, content
 assert '可见商品' in content, content

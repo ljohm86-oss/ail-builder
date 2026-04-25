@@ -24,6 +24,7 @@ This changelog is intentionally lightweight for now. The repository already has 
 - added an explicit `--experimental-dynamic` website lane so ecommerce and after-sales packs can be explored without reopening them as part of the stable public static-site surface
 - expanded `website check` with delivery-contract guidance so the experimental ecommerce lane now reports supported capabilities, unsupported capabilities, and operator positioning more explicitly
 - upgraded the experimental ecommerce storefront shell with a shared announcement bar, top navigation, floating tools, footer, storefront theme base, and reusable product-card styling across generated ecommerce pages
+- expanded the experimental ecommerce home page with Phase 2 storefront modules, including a promo strip, category shortcut cards, new-arrival shelf, brand/factory story block, buyer testimonial strip, and payment/logistics trust cards
 
 ## 2026-04-19
 
