@@ -1000,10 +1000,28 @@ assert 'storefront-nav' in account_content, account_content
 assert 'MEMBER CENTER' in account_content, account_content
 assert 'STATIC MEMBER SHELL' in account_content, account_content
 assert 'PROFILE CARD' in account_content, account_content
+assert 'ACCOUNT OVERVIEW' in account_content, account_content
+assert 'PROFILE READY' in account_content, account_content
 assert 'ORDER HUB' in account_content, account_content
 assert 'ADDRESS BOOK' in account_content, account_content
 assert 'WISHLIST' in account_content, account_content
 assert 'SECURITY' in account_content, account_content
+assert 'ORDER DETAILS' in account_content, account_content
+assert 'ORDER STATES' in account_content, account_content
+assert '待付款 / 待确认' in account_content, account_content
+assert '待发货 / 待收货' in account_content, account_content
+assert '已完成 / 售后中' in account_content, account_content
+assert 'ADDRESS MODULE' in account_content, account_content
+assert 'CHECKOUT REUSE' in account_content, account_content
+assert '默认地址卡' in account_content, account_content
+assert '常用地址列表' in account_content, account_content
+assert '结算同步位' in account_content, account_content
+assert 'WISHLIST FLOW' in account_content, account_content
+assert 'RETURN FLOW' in account_content, account_content
+assert 'EMPTY STATE READY' in account_content, account_content
+assert 'SECURITY DETAIL' in account_content, account_content
+assert 'AUTH LATER' in account_content, account_content
+assert '双重验证与设备管理' in account_content, account_content
 assert 'DYNAMIC BOUNDARY' in account_content, account_content
 routes_generated = (project_dir / 'src/router/generated/routes.generated.ts').read_text(encoding='utf-8')
 assert '/about' in routes_generated, routes_generated
