@@ -68,6 +68,12 @@ Current public website boundary:
 - optimized for static presentation-style websites
 - intentionally not positioned as ecommerce, account, order, after-sales workflow, or other dynamic product behavior
 
+Experimental dynamic lane:
+
+- `website check --experimental-dynamic` can opt into the current experimental ecommerce / after-sales lane
+- this lane is not part of the stable public website promise yet
+- treat generated output there as exploratory, not productized
+
 Current realization expectation for most landing-style website requests:
 
 - asks for `about`, `features`, `pricing`, `FAQ`, or `blog` are often implemented as sections on one main page

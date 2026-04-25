@@ -29,6 +29,8 @@ It does not currently support:
 
 Requests that cross into app, platform, CMS, ecommerce, or back-office behavior may be rejected by the current website boundary checks.
 
+If you intentionally want to explore the current ecommerce or after-sales prototypes, use the explicit experimental CLI lane instead of treating them as stable supported website behavior.
+
 ### 2. Blog Support Is Partial
 
 Blog-like requests may be classified as a blog-style site, but AIL Builder does not currently generate a real blog publishing system.

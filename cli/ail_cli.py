@@ -146,7 +146,10 @@ def cmd_generate(args: argparse.Namespace) -> int:
 
 def cmd_website(args: argparse.Namespace) -> int:
     if getattr(args, "website_command", None) == "preview":
-        payload, exit_code = _build_website_preview_payload(pack_id=getattr(args, "pack_id", None))
+        payload, exit_code = _build_website_preview_payload(
+            pack_id=getattr(args, "pack_id", None),
+            include_experimental_dynamic=bool(getattr(args, "experimental_dynamic", False)),
+        )
         if args.json:
             _print_json_payload(payload)
         else:
@@ -161,7 +164,10 @@ def cmd_website(args: argparse.Namespace) -> int:
         return exit_code
 
     if getattr(args, "website_command", None) == "run-inspect-command":
-        payload, exit_code = _build_website_run_inspect_command_payload(pack_id=getattr(args, "pack_id", None))
+        payload, exit_code = _build_website_run_inspect_command_payload(
+            pack_id=getattr(args, "pack_id", None),
+            include_experimental_dynamic=bool(getattr(args, "experimental_dynamic", False)),
+        )
         if args.json:
             _print_json_payload(payload)
         else:
@@ -179,7 +185,10 @@ def cmd_website(args: argparse.Namespace) -> int:
         return exit_code
 
     if getattr(args, "website_command", None) == "export-handoff":
-        payload, exit_code = _build_website_export_handoff_payload(pack_id=getattr(args, "pack_id", None))
+        payload, exit_code = _build_website_export_handoff_payload(
+            pack_id=getattr(args, "pack_id", None),
+            include_experimental_dynamic=bool(getattr(args, "experimental_dynamic", False)),
+        )
         if args.json:
             _print_json_payload(payload)
         else:
@@ -194,7 +203,10 @@ def cmd_website(args: argparse.Namespace) -> int:
         return exit_code
 
     if getattr(args, "website_command", None) == "inspect-asset":
-        payload, exit_code = _build_website_inspect_asset_payload(pack_id=getattr(args, "pack_id", None))
+        payload, exit_code = _build_website_inspect_asset_payload(
+            pack_id=getattr(args, "pack_id", None),
+            include_experimental_dynamic=bool(getattr(args, "experimental_dynamic", False)),
+        )
         if args.json:
             _print_json_payload(payload)
         else:
@@ -212,7 +224,10 @@ def cmd_website(args: argparse.Namespace) -> int:
         return exit_code
 
     if getattr(args, "website_command", None) == "open-asset":
-        payload, exit_code = _build_website_open_asset_payload(pack_id=getattr(args, "pack_id", None))
+        payload, exit_code = _build_website_open_asset_payload(
+            pack_id=getattr(args, "pack_id", None),
+            include_experimental_dynamic=bool(getattr(args, "experimental_dynamic", False)),
+        )
         if args.json:
             _print_json_payload(payload)
         else:
@@ -229,7 +244,9 @@ def cmd_website(args: argparse.Namespace) -> int:
         return exit_code
 
     if getattr(args, "website_command", None) == "go":
-        payload, exit_code = _run_website_go()
+        payload, exit_code = _run_website_go(
+            include_experimental_dynamic=bool(getattr(args, "experimental_dynamic", False))
+        )
         if args.json:
             _print_json_payload(payload)
         else:
@@ -244,7 +261,9 @@ def cmd_website(args: argparse.Namespace) -> int:
         return exit_code
 
     if getattr(args, "website_command", None) == "summary":
-        payload, exit_code = _build_website_summary_payload()
+        payload, exit_code = _build_website_summary_payload(
+            include_experimental_dynamic=bool(getattr(args, "experimental_dynamic", False))
+        )
         if args.json:
             _print_json_payload(payload)
         else:
@@ -265,7 +284,10 @@ def cmd_website(args: argparse.Namespace) -> int:
         return exit_code
 
     if getattr(args, "website_command", None) == "assets":
-        payload, exit_code = _build_website_assets_payload(pack_id=getattr(args, "pack_id", None))
+        payload, exit_code = _build_website_assets_payload(
+            pack_id=getattr(args, "pack_id", None),
+            include_experimental_dynamic=bool(getattr(args, "experimental_dynamic", False)),
+        )
         if args.json:
             _print_json_payload(payload)
         else:
@@ -295,6 +317,7 @@ def cmd_website(args: argparse.Namespace) -> int:
         base_url=args.base_url,
         project_dir=getattr(args, "project_dir", None),
         keep_existing=bool(getattr(args, "keep_existing", False)),
+        include_experimental_dynamic=bool(getattr(args, "experimental_dynamic", False)),
     )
 
     if args.json:
@@ -3824,28 +3847,37 @@ def _build_parser() -> argparse.ArgumentParser:
     website_check_parser.add_argument("--base-url", default=None, help="Cloud API base URL, defaults to AIL_CLOUD_BASE_URL or embedded://local")
     website_check_parser.add_argument("--project-dir", help="Optional target project directory for the validation run; default is a temp directory")
     website_check_parser.add_argument("--keep-existing", action="store_true", help="Reuse an already initialized validation project directory")
+    website_check_parser.add_argument("--experimental-dynamic", action="store_true", help="Opt into experimental dynamic packs such as ecommerce or after-sales")
     website_check_parser.add_argument("--json", action="store_true", help="Print website check result as JSON")
     website_assets_parser = website_subparsers.add_parser("assets", help="Read the reusable website delivery asset bundles")
     website_assets_parser.add_argument("pack_id", nargs="?", help="Optional website pack id such as company_product or ecom_storefront")
+    website_assets_parser.add_argument("--experimental-dynamic", action="store_true", help="Include experimental dynamic packs such as ecommerce or after-sales")
     website_assets_parser.add_argument("--json", action="store_true", help="Print website asset summary or one selected pack asset as JSON")
     website_open_asset_parser = website_subparsers.add_parser("open-asset", help="Resolve one concrete website delivery asset target")
     website_open_asset_parser.add_argument("pack_id", nargs="?", help="Optional website pack id such as company_product or ecom_storefront")
+    website_open_asset_parser.add_argument("--experimental-dynamic", action="store_true", help="Include experimental dynamic packs such as ecommerce or after-sales")
     website_open_asset_parser.add_argument("--json", action="store_true", help="Print website open-asset result as JSON")
     website_inspect_asset_parser = website_subparsers.add_parser("inspect-asset", help="Inspect one resolved website delivery asset target")
     website_inspect_asset_parser.add_argument("pack_id", nargs="?", help="Optional website pack id such as company_product or ecom_storefront")
+    website_inspect_asset_parser.add_argument("--experimental-dynamic", action="store_true", help="Include experimental dynamic packs such as ecommerce or after-sales")
     website_inspect_asset_parser.add_argument("--json", action="store_true", help="Print website inspect-asset result as JSON")
     website_preview_parser = website_subparsers.add_parser("preview", help="Show the current website-level preview and handoff targets")
     website_preview_parser.add_argument("pack_id", nargs="?", help="Optional website pack id such as company_product or ecom_storefront")
+    website_preview_parser.add_argument("--experimental-dynamic", action="store_true", help="Include experimental dynamic packs such as ecommerce or after-sales")
     website_preview_parser.add_argument("--json", action="store_true", help="Print website preview as JSON")
     website_run_inspect_command_parser = website_subparsers.add_parser("run-inspect-command", help="Execute the inspect command implied by the current website delivery asset handoff")
     website_run_inspect_command_parser.add_argument("pack_id", nargs="?", help="Optional website pack id such as company_product or ecom_storefront")
+    website_run_inspect_command_parser.add_argument("--experimental-dynamic", action="store_true", help="Include experimental dynamic packs such as ecommerce or after-sales")
     website_run_inspect_command_parser.add_argument("--json", action="store_true", help="Print website run-inspect-command result as JSON")
     website_export_handoff_parser = website_subparsers.add_parser("export-handoff", help="Export one consolidated website-oriented handoff bundle for operators, IDEs, and agents")
     website_export_handoff_parser.add_argument("pack_id", nargs="?", help="Optional website pack id such as company_product or ecom_storefront")
+    website_export_handoff_parser.add_argument("--experimental-dynamic", action="store_true", help="Include experimental dynamic packs such as ecommerce or after-sales")
     website_export_handoff_parser.add_argument("--json", action="store_true", help="Print website export-handoff result as JSON")
     website_summary_parser = website_subparsers.add_parser("summary", help="Show the current website-oriented frontier, assets, validation, and demo state")
+    website_summary_parser.add_argument("--experimental-dynamic", action="store_true", help="Include experimental dynamic packs such as ecommerce or after-sales")
     website_summary_parser.add_argument("--json", action="store_true", help="Print website summary as JSON")
     website_go_parser = website_subparsers.add_parser("go", help="Execute the current recommended website-oriented action")
+    website_go_parser.add_argument("--experimental-dynamic", action="store_true", help="Include experimental dynamic packs such as ecommerce or after-sales")
     website_go_parser.add_argument("--json", action="store_true", help="Print website go as JSON")
 
     rc_check_parser = subparsers.add_parser("rc-check", help="Show the current RC and readiness state")
@@ -4325,12 +4357,29 @@ def _public_static_website_pack_names() -> set[str]:
     }
 
 
-def _filter_public_website_assets_summary(summary: dict[str, Any]) -> dict[str, Any]:
+def _website_visible_pack_ids(include_experimental_dynamic: bool) -> set[str]:
+    visible = set(_public_static_website_pack_ids())
+    if include_experimental_dynamic:
+        visible.update({"ecom_storefront", "after_sales"})
+    return visible
+
+
+def _website_visible_pack_names(include_experimental_dynamic: bool) -> set[str]:
+    visible = set(_public_static_website_pack_names())
+    if include_experimental_dynamic:
+        visible.update({
+            "Ecommerce Independent Storefront Pack",
+            "After-Sales Service Website Pack",
+        })
+    return visible
+
+
+def _filter_website_assets_summary(summary: dict[str, Any], *, include_experimental_dynamic: bool) -> dict[str, Any]:
     if not summary:
         return {}
     filtered_assets = [
         item for item in list(summary.get("assets") or [])
-        if str(item.get("pack_id") or "") in _public_static_website_pack_ids()
+        if str(item.get("pack_id") or "") in _website_visible_pack_ids(include_experimental_dynamic)
     ]
     supported_count = sum(1 for item in filtered_assets if str(item.get("support_level") or "") == "Supported")
     partial_count = sum(1 for item in filtered_assets if str(item.get("support_level") or "") == "Partial")
@@ -4352,18 +4401,21 @@ def _filter_public_website_assets_summary(summary: dict[str, Any]) -> dict[str, 
         "delivery_ready_partial_count": delivery_ready_partial_count,
         "assets": filtered_assets,
         "public_surface_note": (
+            "Experimental ecommerce and after-sales packs are included in this view."
+            if include_experimental_dynamic else
             "Only static presentation-style website packs are exposed on the current public surface. "
             "Legacy ecommerce and after-sales packs are not part of the active public website scope."
         ),
+        "experimental_dynamic_enabled": include_experimental_dynamic,
     }
 
 
-def _filter_public_website_validation_payload(payload: dict[str, Any]) -> dict[str, Any]:
+def _filter_website_validation_payload(payload: dict[str, Any], *, include_experimental_dynamic: bool) -> dict[str, Any]:
     if not payload:
         return {}
     filtered_cases = [
         item for item in list(payload.get("cases") or [])
-        if str(item.get("pack") or "") in _public_static_website_pack_names()
+        if str(item.get("pack") or "") in _website_visible_pack_names(include_experimental_dynamic)
     ]
     summary = dict(payload.get("summary") or {})
     supported_ready_count = sum(
@@ -4389,12 +4441,12 @@ def _filter_public_website_validation_payload(payload: dict[str, Any]) -> dict[s
     }
 
 
-def _filter_public_website_demo_payload(payload: dict[str, Any]) -> dict[str, Any]:
+def _filter_website_demo_payload(payload: dict[str, Any], *, include_experimental_dynamic: bool) -> dict[str, Any]:
     if not payload:
         return {}
     filtered_cases = [
         item for item in list(payload.get("cases") or [])
-        if str(item.get("pack") or "") in _public_static_website_pack_names()
+        if str(item.get("pack") or "") in _website_visible_pack_names(include_experimental_dynamic)
     ]
     summary = dict(payload.get("summary") or {})
     supported_demo_ready_count = sum(
@@ -4420,7 +4472,7 @@ def _filter_public_website_demo_payload(payload: dict[str, Any]) -> dict[str, An
     }
 
 
-def _analyze_website_requirement(requirement: str) -> dict[str, Any]:
+def _analyze_website_requirement(requirement: str, *, include_experimental_dynamic: bool = False) -> dict[str, Any]:
     req = requirement.strip()
     req_lower = req.lower()
     matched_signals: list[str] = []
@@ -4483,6 +4535,15 @@ def _analyze_website_requirement(requirement: str) -> dict[str, Any]:
 
     if _contains_any(["售后", "退款", "换货", "投诉", "客服"]):
         matched_signals.extend([term for term in ["售后", "退款", "换货", "投诉", "客服"] if term in req_lower])
+        if include_experimental_dynamic:
+            return {
+                **meta["after_sales"],
+                "support_level": "Experimental",
+                "classification_key": "after_sales",
+                "website_reason": "Requirement maps to the experimental after-sales workflow lane.",
+                "matched_signals": matched_signals,
+                "boundary_findings": boundary_findings,
+            }
         return {
             **meta["out_of_scope"],
             "classification_key": "out_of_scope",
@@ -4495,6 +4556,15 @@ def _analyze_website_requirement(requirement: str) -> dict[str, Any]:
         matched_signals.extend(
             [term for term in ["电商", "商城", "商品", "购物车", "结算", "店铺", "分类导航", "商品详情", "storefront", "shop"] if term in req_lower]
         )
+        if include_experimental_dynamic:
+            return {
+                **meta["ecommerce_storefront"],
+                "support_level": "Experimental",
+                "classification_key": "ecommerce_storefront",
+                "website_reason": "Requirement maps to the experimental ecommerce storefront lane.",
+                "matched_signals": matched_signals,
+                "boundary_findings": boundary_findings,
+            }
         return {
             **meta["out_of_scope"],
             "classification_key": "out_of_scope",
@@ -4544,14 +4614,20 @@ def _build_website_check_next_steps(
     trial_result: dict[str, Any] | None,
     expected_profile: str,
     base_url: str | None,
+    include_experimental_dynamic: bool,
 ) -> list[str]:
     effective_base_url = _effective_base_url(base_url)
     if support_level == "Out of Scope":
-        return [
+        steps = [
             "narrow the requirement back to one website-oriented pack",
             "remove app, CMS, dashboard, or platform behavior from the request",
             f"run PYTHONPATH={REPO_ROOT_STR} python3 -m cli website check \"<narrowed website requirement>\" --base-url {effective_base_url} --json",
         ]
+        if not include_experimental_dynamic:
+            steps.append(
+                f"rerun with PYTHONPATH={REPO_ROOT_STR} python3 -m cli website check \"<dynamic requirement>\" --experimental-dynamic --base-url {effective_base_url} --json if you want the experimental ecommerce/after-sales lane"
+            )
+        return steps
 
     steps: list[str] = []
     if trial_project_path:
@@ -4566,6 +4642,8 @@ def _build_website_check_next_steps(
         )
     if delivery_decision == "partial":
         steps.append("position the result as Partial and avoid CMS or full blog promises")
+    elif delivery_decision == "experimental":
+        steps.append("treat the result as experimental and do not promise stable dynamic behavior yet")
     elif delivery_decision == "supported":
         steps.append(f"position the result as Supported inside the `{expected_profile}` website surface")
     elif trial_result and trial_result.get("status") != "ok":
@@ -4599,20 +4677,30 @@ def _build_website_check_payload(
     base_url: str | None,
     project_dir: str | None,
     keep_existing: bool,
+    include_experimental_dynamic: bool,
 ) -> tuple[dict[str, Any], int]:
-    analysis = _analyze_website_requirement(requirement)
+    analysis = _analyze_website_requirement(
+        requirement,
+        include_experimental_dynamic=include_experimental_dynamic,
+    )
     realization = _website_realization_expectation(
         analysis["classification_key"],
         analysis["expected_profile"],
     )
     support_level = analysis["support_level"]
-    delivery_decision = "out_of_scope" if support_level == "Out of Scope" else ("partial" if support_level == "Partial" else "supported")
+    delivery_decision = (
+        "out_of_scope" if support_level == "Out of Scope" else
+        ("partial" if support_level == "Partial" else ("experimental" if support_level == "Experimental" else "supported"))
+    )
     trial_result: dict[str, Any] | None = None
     trial_project_path = ""
-    exit_code = EXIT_OK if support_level in {"Supported", "Partial"} else EXIT_VALIDATION
-    status = "ok" if support_level in {"Supported", "Partial"} else "out_of_scope"
+    exit_code = EXIT_OK if support_level in {"Supported", "Partial", "Experimental"} else EXIT_VALIDATION
+    status = (
+        "experimental" if support_level == "Experimental" else
+        ("ok" if support_level in {"Supported", "Partial"} else "out_of_scope")
+    )
 
-    if support_level in {"Supported", "Partial"}:
+    if support_level in {"Supported", "Partial", "Experimental"}:
         root = Path(project_dir).resolve() if project_dir else Path(tempfile.mkdtemp(prefix="ail_website_check."))
         ctx = ProjectContext.discover(root, allow_uninitialized=True)
         if not keep_existing and ctx.ail_dir.exists():
@@ -4646,6 +4734,7 @@ def _build_website_check_payload(
         "delivery_decision": delivery_decision,
         "website_reason": analysis["website_reason"],
         "safe_positioning": analysis["safe_positioning"],
+        "experimental_dynamic_enabled": include_experimental_dynamic,
         "page_realization_mode": realization["page_realization_mode"],
         "routing_expectation": realization["routing_expectation"],
         "route_expectation_detail": realization["route_expectation_detail"],
@@ -4661,17 +4750,25 @@ def _build_website_check_payload(
         trial_result=trial_result,
         expected_profile=analysis["expected_profile"],
         base_url=base_url,
+        include_experimental_dynamic=include_experimental_dynamic,
     )
     return payload, exit_code
 
 
-def _build_website_assets_payload(*, pack_id: str | None) -> tuple[dict[str, Any], int]:
+def _build_website_assets_payload(
+    *,
+    pack_id: str | None,
+    include_experimental_dynamic: bool,
+) -> tuple[dict[str, Any], int]:
     results_dir = REPO_ROOT / "testing/results"
     summary_path = results_dir / "website_delivery_assets_20260319.json"
     summary_md_path = results_dir / "website_delivery_assets_20260319.md"
     asset_dir = results_dir / "website_delivery_assets_20260319"
 
-    summary = _filter_public_website_assets_summary(_load_json_optional(summary_path) or {})
+    summary = _filter_website_assets_summary(
+        _load_json_optional(summary_path) or {},
+        include_experimental_dynamic=include_experimental_dynamic,
+    )
     if not summary:
         payload = {
             "status": "missing_assets",
@@ -4760,6 +4857,7 @@ def _build_website_assets_payload(*, pack_id: str | None) -> tuple[dict[str, Any
         "selected_pack": selected_pack,
         "selected_payload": selected_payload,
         "public_surface_note": summary.get("public_surface_note", ""),
+        "experimental_dynamic_enabled": include_experimental_dynamic,
         "artifacts": {
             "assets_summary_json": str(summary_path),
             "assets_summary_md": str(summary_md_path),
@@ -4771,8 +4869,15 @@ def _build_website_assets_payload(*, pack_id: str | None) -> tuple[dict[str, Any
     return payload, exit_code
 
 
-def _build_website_open_asset_payload(*, pack_id: str | None) -> tuple[dict[str, Any], int]:
-    assets_payload, exit_code = _build_website_assets_payload(pack_id=pack_id)
+def _build_website_open_asset_payload(
+    *,
+    pack_id: str | None,
+    include_experimental_dynamic: bool,
+) -> tuple[dict[str, Any], int]:
+    assets_payload, exit_code = _build_website_assets_payload(
+        pack_id=pack_id,
+        include_experimental_dynamic=include_experimental_dynamic,
+    )
     available_pack_ids = assets_payload.get("available_pack_ids", [])
 
     if assets_payload.get("status") not in {"ok", "attention"}:
@@ -4895,8 +5000,15 @@ def _build_website_open_asset_payload(*, pack_id: str | None) -> tuple[dict[str,
     return payload, EXIT_OK
 
 
-def _build_website_inspect_asset_payload(*, pack_id: str | None) -> tuple[dict[str, Any], int]:
-    open_payload, exit_code = _build_website_open_asset_payload(pack_id=pack_id)
+def _build_website_inspect_asset_payload(
+    *,
+    pack_id: str | None,
+    include_experimental_dynamic: bool,
+) -> tuple[dict[str, Any], int]:
+    open_payload, exit_code = _build_website_open_asset_payload(
+        pack_id=pack_id,
+        include_experimental_dynamic=include_experimental_dynamic,
+    )
     if exit_code != EXIT_OK:
         payload = {
             "status": open_payload.get("status", "error"),
@@ -4941,11 +5053,26 @@ def _build_website_inspect_asset_payload(*, pack_id: str | None) -> tuple[dict[s
     return payload, (EXIT_OK if status == "ok" else EXIT_VALIDATION)
 
 
-def _build_website_export_handoff_payload(*, pack_id: str | None) -> tuple[dict[str, Any], int]:
-    summary_payload, summary_exit = _build_website_summary_payload()
-    assets_payload, assets_exit = _build_website_assets_payload(pack_id=pack_id)
-    open_payload, open_exit = _build_website_open_asset_payload(pack_id=pack_id)
-    inspect_payload, inspect_exit = _build_website_inspect_asset_payload(pack_id=pack_id)
+def _build_website_export_handoff_payload(
+    *,
+    pack_id: str | None,
+    include_experimental_dynamic: bool,
+) -> tuple[dict[str, Any], int]:
+    summary_payload, summary_exit = _build_website_summary_payload(
+        include_experimental_dynamic=include_experimental_dynamic
+    )
+    assets_payload, assets_exit = _build_website_assets_payload(
+        pack_id=pack_id,
+        include_experimental_dynamic=include_experimental_dynamic,
+    )
+    open_payload, open_exit = _build_website_open_asset_payload(
+        pack_id=pack_id,
+        include_experimental_dynamic=include_experimental_dynamic,
+    )
+    inspect_payload, inspect_exit = _build_website_inspect_asset_payload(
+        pack_id=pack_id,
+        include_experimental_dynamic=include_experimental_dynamic,
+    )
 
     exit_code = EXIT_OK
     status = "ok"
@@ -5001,8 +5128,15 @@ def _build_website_export_handoff_payload(*, pack_id: str | None) -> tuple[dict[
     return payload, exit_code
 
 
-def _build_website_run_inspect_command_payload(*, pack_id: str | None) -> tuple[dict[str, Any], int]:
-    inspect_payload, exit_code = _build_website_inspect_asset_payload(pack_id=pack_id)
+def _build_website_run_inspect_command_payload(
+    *,
+    pack_id: str | None,
+    include_experimental_dynamic: bool,
+) -> tuple[dict[str, Any], int]:
+    inspect_payload, exit_code = _build_website_inspect_asset_payload(
+        pack_id=pack_id,
+        include_experimental_dynamic=include_experimental_dynamic,
+    )
     target = inspect_payload.get("target") or {}
     inspection = inspect_payload.get("inspection") or {}
     next_steps = list(inspect_payload.get("next_steps", []))
@@ -5035,8 +5169,15 @@ def _build_website_run_inspect_command_payload(*, pack_id: str | None) -> tuple[
     return payload, exit_code
 
 
-def _build_website_preview_payload(*, pack_id: str | None) -> tuple[dict[str, Any], int]:
-    export_payload, exit_code = _build_website_export_handoff_payload(pack_id=pack_id)
+def _build_website_preview_payload(
+    *,
+    pack_id: str | None,
+    include_experimental_dynamic: bool,
+) -> tuple[dict[str, Any], int]:
+    export_payload, exit_code = _build_website_export_handoff_payload(
+        pack_id=pack_id,
+        include_experimental_dynamic=include_experimental_dynamic,
+    )
     requested_pack_id = export_payload.get("requested_pack_id", "")
     asset_scope = export_payload.get("asset_scope", "summary")
     primary_target = export_payload.get("primary_target") or {}
@@ -5093,7 +5234,7 @@ def _build_website_preview_payload(*, pack_id: str | None) -> tuple[dict[str, An
     return payload, exit_code
 
 
-def _build_website_summary_payload() -> tuple[dict[str, Any], int]:
+def _build_website_summary_payload(*, include_experimental_dynamic: bool) -> tuple[dict[str, Any], int]:
     results_dir = REPO_ROOT / "testing/results"
     assets_json_path = results_dir / "website_delivery_assets_20260319.json"
     assets_md_path = results_dir / "website_delivery_assets_20260319.md"
@@ -5107,9 +5248,18 @@ def _build_website_summary_payload() -> tuple[dict[str, Any], int]:
     requirement_templates_path = REPO_ROOT / "WEBSITE_REQUIREMENT_TEMPLATES_20260319.md"
     sales_positioning_path = REPO_ROOT / "WEBSITE_SALES_POSITIONING_20260319.md"
 
-    assets = _filter_public_website_assets_summary(_load_json_optional(assets_json_path) or {})
-    delivery_validation = _filter_public_website_validation_payload(_load_json_optional(delivery_validation_json_path) or {})
-    demo_pack_run = _filter_public_website_demo_payload(_load_json_optional(demo_pack_json_path) or {})
+    assets = _filter_website_assets_summary(
+        _load_json_optional(assets_json_path) or {},
+        include_experimental_dynamic=include_experimental_dynamic,
+    )
+    delivery_validation = _filter_website_validation_payload(
+        _load_json_optional(delivery_validation_json_path) or {},
+        include_experimental_dynamic=include_experimental_dynamic,
+    )
+    demo_pack_run = _filter_website_demo_payload(
+        _load_json_optional(demo_pack_json_path) or {},
+        include_experimental_dynamic=include_experimental_dynamic,
+    )
 
     supported_pack_count = int(assets.get("supported_count", 0) or 0)
     partial_pack_count = int(assets.get("partial_count", 0) or 0)
@@ -5168,6 +5318,7 @@ def _build_website_summary_payload() -> tuple[dict[str, Any], int]:
         "recommended_website_action": recommended_website_action,
         "recommended_website_command": recommended_website_command,
         "recommended_website_reason": recommended_website_reason,
+        "experimental_dynamic_enabled": include_experimental_dynamic,
         "next_steps": [
             f"run {recommended_website_command}",
             f"inspect {assets_md_path}",
@@ -5177,12 +5328,17 @@ def _build_website_summary_payload() -> tuple[dict[str, Any], int]:
     return payload, (EXIT_OK if status == "ok" else EXIT_VALIDATION)
 
 
-def _run_website_go() -> tuple[dict[str, Any], int]:
-    summary_payload, summary_exit = _build_website_summary_payload()
+def _run_website_go(*, include_experimental_dynamic: bool) -> tuple[dict[str, Any], int]:
+    summary_payload, summary_exit = _build_website_summary_payload(
+        include_experimental_dynamic=include_experimental_dynamic
+    )
     executed_website_action = summary_payload["recommended_website_action"]
 
     if executed_website_action == "website_assets":
-        result_payload, exit_code = _build_website_assets_payload(pack_id=None)
+        result_payload, exit_code = _build_website_assets_payload(
+            pack_id=None,
+            include_experimental_dynamic=include_experimental_dynamic,
+        )
     elif executed_website_action == "build_website_delivery_assets":
         command = ["bash", BUILD_WEBSITE_DELIVERY_ASSETS_SH]
         try:
@@ -5193,7 +5349,10 @@ def _run_website_go() -> tuple[dict[str, Any], int]:
                 text=True,
                 check=True,
             )
-            result_payload, exit_code = _build_website_assets_payload(pack_id=None)
+            result_payload, exit_code = _build_website_assets_payload(
+                pack_id=None,
+                include_experimental_dynamic=include_experimental_dynamic,
+            )
             result_payload = {
                 **result_payload,
                 "build_assets_result": {
@@ -5236,6 +5395,7 @@ def _run_website_go() -> tuple[dict[str, Any], int]:
         "route_taken": executed_website_action,
         "route_reason": summary_payload["recommended_website_reason"],
         "executed_website_action": executed_website_action,
+        "experimental_dynamic_enabled": include_experimental_dynamic,
         "recommended_website_action": summary_payload["recommended_website_action"],
         "recommended_website_command": summary_payload["recommended_website_command"],
         "recommended_website_reason": summary_payload["recommended_website_reason"],

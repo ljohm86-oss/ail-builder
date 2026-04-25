@@ -21,6 +21,7 @@ This changelog is intentionally lightweight for now. The repository already has 
 - changed the repository licensing posture from MIT to PolyForm Noncommercial 1.0.0 and updated public docs to describe the repo as source-available rather than OSI open source
 - clarified `website check` output so landing-style requests now explicitly warn that multi-page asks are often realized as single-page sections
 - narrowed the current public website surface to static presentation-style packs in `website check`, `website assets`, and `website summary`
+- added an explicit `--experimental-dynamic` website lane so ecommerce and after-sales packs can be explored without reopening them as part of the stable public static-site surface
 
 ## 2026-04-19
 

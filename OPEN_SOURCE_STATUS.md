@@ -57,6 +57,10 @@ The current public website surface should be presented as static presentation-si
 
 It should not be presented as ecommerce, after-sales workflow, CMS, dashboard, authentication, or database-backed app generation.
 
+There is now a narrower experimental lane for ecommerce and after-sales exploration behind an explicit CLI opt-in.
+
+That lane should still be described as experimental research or validation work, not as part of the stable public website promise.
+
 ## What This Release Should Be Called
 
 Recommended wording:

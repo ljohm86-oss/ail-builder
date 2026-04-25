@@ -15,7 +15,9 @@ ok_after_sales_flow_json=false
 ok_ecom_home_surface_json=false
 ok_website_check_json=false
 ok_website_check_out_of_scope_json=false
+ok_website_check_experimental_dynamic_json=false
 ok_website_assets_json=false
+ok_website_assets_experimental_dynamic_json=false
 ok_website_assets_pack_json=false
 ok_website_open_asset_json=false
 ok_website_open_asset_pack_json=false
@@ -1158,6 +1160,25 @@ assert payload['boundary_findings'], payload
 PY
 ok_website_check_out_of_scope_json=true
 
+website_check_experimental_dynamic_json="$TMP_ROOT/website_check_experimental_dynamic.json"
+AIL_CLOUD_BASE_URL=embedded://local python3 -m cli website check 'Create an ecommerce storefront with product detail, cart, and checkout.' --experimental-dynamic --json > "$website_check_experimental_dynamic_json"
+python3 - "$website_check_experimental_dynamic_json" <<'PY'
+import os
+ROOT = os.environ['AIL_REPO_ROOT']
+OUTPUT_PROJECTS_ROOT = f"{ROOT}/output_projects"
+import json, sys
+payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
+assert payload['entrypoint'] == 'website-check', payload
+assert payload['status'] == 'experimental', payload
+assert payload['support_level'] == 'Experimental', payload
+assert payload['delivery_decision'] == 'experimental', payload
+assert payload['experimental_dynamic_enabled'] is True, payload
+assert payload['expected_profile'] == 'ecom_min', payload
+assert payload['trial_result']['status'] == 'ok', payload
+assert payload['trial_result']['detected_profile'] == 'ecom_min', payload
+PY
+ok_website_check_experimental_dynamic_json=true
+
 website_assets_json="$TMP_ROOT/website_assets.json"
 python3 -m cli website assets --json > "$website_assets_json"
 python3 - "$website_assets_json" <<'PY'
@@ -1178,6 +1199,25 @@ assert 'Only static presentation-style website packs' in payload['public_surface
 assert payload['summary']['status'] == 'ok', payload
 PY
 ok_website_assets_json=true
+
+website_assets_experimental_dynamic_json="$TMP_ROOT/website_assets_experimental_dynamic.json"
+python3 -m cli website assets --experimental-dynamic --json > "$website_assets_experimental_dynamic_json"
+python3 - "$website_assets_experimental_dynamic_json" <<'PY'
+import os
+ROOT = os.environ['AIL_REPO_ROOT']
+OUTPUT_PROJECTS_ROOT = f"{ROOT}/output_projects"
+import json, sys
+payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
+assert payload['status'] == 'ok', payload
+assert payload['experimental_dynamic_enabled'] is True, payload
+assert 'company_product' in payload['available_pack_ids'], payload
+assert 'personal_independent' in payload['available_pack_ids'], payload
+assert 'blog_style_partial' in payload['available_pack_ids'], payload
+assert 'ecom_storefront' in payload['available_pack_ids'], payload
+assert 'after_sales' in payload['available_pack_ids'], payload
+assert 'Experimental ecommerce and after-sales packs are included' in payload['public_surface_note'], payload
+PY
+ok_website_assets_experimental_dynamic_json=true
 
 website_assets_pack_json="$TMP_ROOT/website_assets_pack.json"
 python3 -m cli website assets company_product --json > "$website_assets_pack_json"
@@ -4952,7 +4992,9 @@ export CLI_SMOKE_OK_ECOM_CART_FLOW_JSON="$ok_ecom_cart_flow_json"
 export CLI_SMOKE_OK_ECOM_PRODUCT_FEEDBACK_JSON="$ok_ecom_product_feedback_json"
 export CLI_SMOKE_OK_WEBSITE_CHECK_JSON="$ok_website_check_json"
 export CLI_SMOKE_OK_WEBSITE_CHECK_OUT_OF_SCOPE_JSON="$ok_website_check_out_of_scope_json"
+export CLI_SMOKE_OK_WEBSITE_CHECK_EXPERIMENTAL_DYNAMIC_JSON="$ok_website_check_experimental_dynamic_json"
 export CLI_SMOKE_OK_WEBSITE_ASSETS_JSON="$ok_website_assets_json"
+export CLI_SMOKE_OK_WEBSITE_ASSETS_EXPERIMENTAL_DYNAMIC_JSON="$ok_website_assets_experimental_dynamic_json"
 export CLI_SMOKE_OK_WEBSITE_ASSETS_PACK_JSON="$ok_website_assets_pack_json"
 export CLI_SMOKE_OK_WEBSITE_OPEN_ASSET_JSON="$ok_website_open_asset_json"
 export CLI_SMOKE_OK_WEBSITE_OPEN_ASSET_PACK_JSON="$ok_website_open_asset_pack_json"
@@ -5171,7 +5213,9 @@ payload = {
         'ecom_product_feedback_json_ok': os.environ['CLI_SMOKE_OK_ECOM_PRODUCT_FEEDBACK_JSON'] == 'true',
         'website_check_json_ok': os.environ['CLI_SMOKE_OK_WEBSITE_CHECK_JSON'] == 'true',
         'website_check_out_of_scope_json_ok': os.environ['CLI_SMOKE_OK_WEBSITE_CHECK_OUT_OF_SCOPE_JSON'] == 'true',
+        'website_check_experimental_dynamic_json_ok': os.environ['CLI_SMOKE_OK_WEBSITE_CHECK_EXPERIMENTAL_DYNAMIC_JSON'] == 'true',
         'website_assets_json_ok': os.environ['CLI_SMOKE_OK_WEBSITE_ASSETS_JSON'] == 'true',
+        'website_assets_experimental_dynamic_json_ok': os.environ['CLI_SMOKE_OK_WEBSITE_ASSETS_EXPERIMENTAL_DYNAMIC_JSON'] == 'true',
         'website_assets_pack_json_ok': os.environ['CLI_SMOKE_OK_WEBSITE_ASSETS_PACK_JSON'] == 'true',
         'website_open_asset_json_ok': os.environ['CLI_SMOKE_OK_WEBSITE_OPEN_ASSET_JSON'] == 'true',
         'website_open_asset_pack_json_ok': os.environ['CLI_SMOKE_OK_WEBSITE_OPEN_ASSET_PACK_JSON'] == 'true',
