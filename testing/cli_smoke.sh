@@ -1008,9 +1008,21 @@ assert 'WISHLIST' in account_content, account_content
 assert 'SECURITY' in account_content, account_content
 assert 'ORDER DETAILS' in account_content, account_content
 assert 'ORDER STATES' in account_content, account_content
+assert 'ALL ORDERS' in account_content, account_content
+assert 'PENDING PAYMENT' in account_content, account_content
+assert 'TO SHIP' in account_content, account_content
+assert 'TO RECEIVE' in account_content, account_content
+assert 'AFTER-SALES' in account_content, account_content
 assert '待付款 / 待确认' in account_content, account_content
 assert '待发货 / 待收货' in account_content, account_content
 assert '已完成 / 售后中' in account_content, account_content
+assert 'ORDER CARD / #A20260426-1001' in account_content, account_content
+assert 'ORDER CARD / #A20260426-0874' in account_content, account_content
+assert '继续支付' in account_content, account_content
+assert '查看订单详情' in account_content, account_content
+assert '查看物流' in account_content, account_content
+assert '确认收货' in account_content, account_content
+assert 'ORDER EMPTY STATE' in account_content, account_content
 assert 'ADDRESS MODULE' in account_content, account_content
 assert 'CHECKOUT REUSE' in account_content, account_content
 assert '默认地址卡' in account_content, account_content

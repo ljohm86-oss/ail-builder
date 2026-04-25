@@ -30,6 +30,7 @@ This changelog is intentionally lightweight for now. The repository already has 
 - expanded the experimental ecommerce transaction skeleton with cart-side delivery/payment prep cards, checkout-side address and payment selectors, and an inline success receipt that preserves order context after submit
 - expanded the experimental ecommerce storefront with Phase 6 auxiliary pages and member-shell routing, adding generated `/about`, `/contact`, `/policy`, and `/account` views plus storefront navigation/footer links to reach them
 - refined the experimental ecommerce `/account` member shell so it now separates order, address, wishlist, and security blocks more explicitly instead of presenting a single coarse placeholder panel
+- expanded the experimental ecommerce `/account` order area with a status filter strip, order-card skeletons, and an explicit order empty-state block so future account/order work can attach to a clearer UI contract
 
 ## 2026-04-19
 
