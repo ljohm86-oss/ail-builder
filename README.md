@@ -2,9 +2,20 @@
 
 ![Status](https://img.shields.io/badge/status-alpha%20builder%20preview-cf6f2e)
 ![CLI Checks](https://img.shields.io/badge/cli%20checks-207%2F207%20passing-2f855a)
-![License](https://img.shields.io/badge/license-MIT-1f6feb)
+![License](https://img.shields.io/badge/license-PolyForm%20Noncommercial-9c27b0)
 
 **CLI-first static website generation, durable customization, and structured handoff workflows for AIL.**
+
+## Use Notice
+
+This repository is published as a **source-available community release**.
+
+- free for learning, research, evaluation, and personal noncommercial use
+- not an OSI-approved open-source release
+- enterprise, team, client, hosted-service, and other commercial use require separate authorization from the author
+- provided as-is, without warranty
+
+See [`LICENSE`](LICENSE) and [`COMMERCIAL_LICENSE.md`](COMMERCIAL_LICENSE.md).
 
 AIL Builder is the current AIL platform mainline. It is best understood today as an **alpha / builder preview** for:
 
@@ -122,7 +133,7 @@ The repository already has real product truth in these areas:
 
 ## Main Documents
 
-Current open-source / packaging docs:
+Current public / packaging docs:
 
 - [`OPEN_SOURCE_STATUS.md`](OPEN_SOURCE_STATUS.md)
 - [`QUICKSTART_OPEN_SOURCE.md`](QUICKSTART_OPEN_SOURCE.md)
@@ -148,8 +159,15 @@ More detailed implementation docs remain in:
 
 ## License
 
-AIL Builder is now released under the **MIT License**.
+AIL Builder is released under **PolyForm Noncommercial 1.0.0**.
+
+That means:
+
+- personal and noncommercial use are allowed
+- enterprise and commercial use require separate authorization
+- this repository should be described as source-available, not OSI open source
 
 See:
 
 - `LICENSE`
+- `COMMERCIAL_LICENSE.md`

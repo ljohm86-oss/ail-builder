@@ -11,12 +11,14 @@ This changelog is intentionally lightweight for now. The repository already has 
 - initial public `CHANGELOG.md` for tracking outward-facing updates
 - added `/Users/carwynmac/ai-cl/OPENCODE_TEST_REPORT_20260423.md` to capture external opencode testing results
 - added `project serve` for launching or dry-running a generated project's local frontend dev server, including an `--install-if-needed` path
+- added `/Users/carwynmac/ai-cl/COMMERCIAL_LICENSE.md` to clarify commercial and enterprise use
 
 ### Changed
 
 - clarified public positioning around static presentation-site generation
 - documented ecommerce, CMS, blog-publishing, routing, localization, managed-drift, and local-preview limitations more explicitly
 - improved managed-file drift messaging so CLI output explains it as a sync safety guard, not necessarily a website generation failure
+- changed the repository licensing posture from MIT to PolyForm Noncommercial 1.0.0 and updated public docs to describe the repo as source-available rather than OSI open source
 
 ## 2026-04-19
 

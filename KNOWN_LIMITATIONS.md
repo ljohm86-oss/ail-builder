@@ -136,9 +136,15 @@ Generated content can also still feel template-like across different sites. More
 
 ### 12. This Is Still An Alpha, Even With A License
 
-The repository now includes an MIT license, so the main legal packaging blocker has been removed.
+The repository now includes a source-available noncommercial license, so the publishing posture is clearer than before.
 
-The remaining limitations are product and onboarding limitations, not licensing uncertainty.
+That does not make the repository OSI open source.
+
+The remaining limitations are still mostly product and onboarding limitations, but users should also understand the current usage boundary:
+
+- learning, research, evaluation, and personal noncommercial use are allowed
+- enterprise or commercial use requires separate authorization
+- third-party dependencies may carry their own licenses
 
 ## What Is Stable Enough To Trust
 

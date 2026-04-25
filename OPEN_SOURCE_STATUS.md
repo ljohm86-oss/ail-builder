@@ -1,12 +1,14 @@
-# AIL Builder Open Source Status
+# AIL Builder Source-Available Status
 
 ## Current Recommendation
 
-AIL Builder is ready to be shared as a **public alpha / builder preview**.
+AIL Builder is ready to be shared as a **public alpha / builder preview** in a source-available form.
 
 It is not yet ready to be positioned as a stable, polished, broadly self-serve product.
 
 It is also now reasonable to position it as a **skill-ready workflow surface** for agent and IDE environments, as long as that claim stays narrower than a full MCP or plugin product promise.
+
+It should not be described as an OSI-approved open-source release, because the repository license now restricts commercial use.
 
 The repository now also includes a first repository-level skill entry:
 
@@ -59,7 +61,7 @@ Recommended wording:
 
 - alpha
 - builder preview
-- experimental open-source release
+- experimental source-available release
 - skill-ready workflow surface
 
 Avoid claiming:
@@ -115,6 +117,11 @@ If you want to publish soon, the safest framing is:
 
 ## License Note
 
-The repository now includes an **MIT License**.
+The repository now includes **PolyForm Noncommercial 1.0.0** plus an additional commercial-use note.
 
-That removes the main remaining packaging blocker for a clean public GitHub release.
+That means:
+
+- personal learning and noncommercial use are allowed
+- commercial and enterprise use require separate authorization
+- public GitHub publishing is still fine
+- the correct legal description is source-available, not OSI open source
