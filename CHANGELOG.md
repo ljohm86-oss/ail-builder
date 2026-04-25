@@ -27,6 +27,7 @@ This changelog is intentionally lightweight for now. The repository already has 
 - expanded the experimental ecommerce home page with Phase 2 storefront modules, including a promo strip, category shortcut cards, new-arrival shelf, brand/factory story block, buyer testimonial strip, and payment/logistics trust cards
 - expanded experimental ecommerce listing pages with stronger discovery modules, including price-band filtering, richer sort controls, paginated result grids, and clearer empty-state handling across category and search pages
 - expanded the experimental ecommerce product page with a richer gallery flow, variant chips, quantity stepper, spec table, review strip, and after-sales assurance modules while keeping cart and discovery continuity intact
+- expanded the experimental ecommerce transaction skeleton with cart-side delivery/payment prep cards, checkout-side address and payment selectors, and an inline success receipt that preserves order context after submit
 
 ## 2026-04-19
 

@@ -759,6 +759,9 @@ assert 'purchase-axis-bridge' in content, content
 assert 'purchase-axis-flow' in content, content
 assert '01 保留发现与来源' in content, content
 assert '03 带着语境去结算' in content, content
+assert 'ADDRESS PREVIEW' in content, content
+assert 'PAYMENT PREVIEW' in content, content
+assert 'ORDER INTENT' in content, content
 assert '回到搜索结果' in content or '回到分类页' in content, content
 assert 'openDiscoverySource' in content, content
 assert '回到商品详情' in content, content
@@ -802,6 +805,12 @@ assert 'checkout-axis-flow' in checkout_content, checkout_content
 assert 'RETURN AXIS' in checkout_content, checkout_content
 assert 'completion-axis-bridge' in checkout_content, checkout_content
 assert 'completion-axis-flow' in checkout_content, checkout_content
+assert 'ADDRESS SELECTOR' in checkout_content, checkout_content
+assert 'PAYMENT SELECTOR' in checkout_content, checkout_content
+assert 'SUCCESS RECEIPT' in checkout_content, checkout_content
+assert 'addressOptions' in checkout_content, checkout_content
+assert 'paymentOptions' in checkout_content, checkout_content
+assert 'activeAddress' in checkout_content, checkout_content
 assert '回到搜索结果' in checkout_content or '回到分类页' in checkout_content, checkout_content
 assert 'source_discovery_kind' in checkout_content, checkout_content
 assert "nextParams.set('q', sourceQuery.value)" in checkout_content, checkout_content
