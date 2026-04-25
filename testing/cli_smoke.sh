@@ -906,8 +906,12 @@ assert 'store-card' in category_content, category_content
 assert 'CATEGORY VIEW' in category_content, category_content
 assert '01 先看分类' in category_content, category_content
 assert '02 再进店看' in category_content, category_content
+assert 'FILTER BAR' in category_content, category_content
 assert 'SORT RULE' in category_content, category_content
 assert 'RESULT COUNT' in category_content, category_content
+assert 'RESULT PAGE' in category_content, category_content
+assert '100以下' in category_content, category_content
+assert '上一页' in category_content, category_content
 assert '回到搜索结果' in category_content, category_content
 assert 'PRODUCT PICK' in category_content, category_content
 assert 'CONTINUE PICK' in category_content, category_content
@@ -922,6 +926,12 @@ assert '01 先搜关键词' in search_content, search_content
 assert '02 再进店看' in search_content, search_content
 assert 'CURRENT FILTER' in search_content, search_content
 assert 'QUICK NARROW' in search_content, search_content
+assert 'SORT RULE' in search_content, search_content
+assert 'PRICE BAND' in search_content, search_content
+assert 'RESULT PAGE' in search_content, search_content
+assert '默认相关度' in search_content, search_content
+assert '全部价格' in search_content, search_content
+assert '上一页' in search_content, search_content
 assert '更新结果' in search_content, search_content
 assert 'PRODUCT PICK' in search_content, search_content
 assert 'CONTINUE PICK' in search_content, search_content
