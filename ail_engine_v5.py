@@ -1143,6 +1143,26 @@ class AILProjectGeneratorV5(AILEcomGeneratorMixin, AILProjectGeneratorV4):
                 "path": "/search",
                 "components": [{"source": "ecom", "name": "SearchResultGrid", "config": ""}],
             },
+            {
+                "name": "About",
+                "path": "/about",
+                "components": [{"source": "ecom", "name": "AboutPage", "config": ""}],
+            },
+            {
+                "name": "Contact",
+                "path": "/contact",
+                "components": [{"source": "ecom", "name": "ContactPage", "config": ""}],
+            },
+            {
+                "name": "Policy",
+                "path": "/policy",
+                "components": [{"source": "ecom", "name": "PolicyPage", "config": ""}],
+            },
+            {
+                "name": "Account",
+                "path": "/account",
+                "components": [{"source": "ecom", "name": "AccountShell", "config": ""}],
+            },
         ]
         missing_pages = [
             page for page in implicit_pages
@@ -4315,6 +4335,14 @@ class AILProjectGeneratorV5(AILEcomGeneratorMixin, AILProjectGeneratorV4):
         if self._is_ecom_page(page):
             if page_path == "/":
                 return self._generate_ecom_home_view(page)
+            if page_path == "/about":
+                return self._generate_ecom_about_view(page)
+            if page_path == "/contact":
+                return self._generate_ecom_contact_view(page)
+            if page_path == "/policy":
+                return self._generate_ecom_policy_view(page)
+            if page_path == "/account":
+                return self._generate_ecom_account_view(page)
             if page_path == "/product/:id":
                 return self._generate_ecom_product_view(page)
             if page_path == "/cart":

@@ -52,7 +52,7 @@ if not routes_path.exists():
     sys.exit(15)
 
 routes_text = routes_path.read_text(encoding="utf-8")
-required_routes = ["/", "/product/:id", "/cart", "/checkout", "/category/:name", "/shop/:id", "/search"]
+required_routes = ["/", "/about", "/contact", "/policy", "/account", "/product/:id", "/cart", "/checkout", "/category/:name", "/shop/:id", "/search"]
 for route in required_routes:
     if route not in routes_text:
         print(f"FAIL: required ecom route missing: {route}")
