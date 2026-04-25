@@ -1170,6 +1170,11 @@ assert payload['status'] == 'ok', payload
 assert payload['entrypoint'] == 'website-assets', payload
 assert payload['asset_scope'] == 'summary', payload
 assert 'company_product' in payload['available_pack_ids'], payload
+assert 'personal_independent' in payload['available_pack_ids'], payload
+assert 'blog_style_partial' in payload['available_pack_ids'], payload
+assert 'ecom_storefront' not in payload['available_pack_ids'], payload
+assert 'after_sales' not in payload['available_pack_ids'], payload
+assert 'Only static presentation-style website packs' in payload['public_surface_note'], payload
 assert payload['summary']['status'] == 'ok', payload
 PY
 ok_website_assets_json=true
@@ -1376,9 +1381,10 @@ import json, sys
 payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
 assert payload['status'] == 'ok', payload
 assert payload['entrypoint'] == 'website-summary', payload
-assert payload['supported_pack_count'] == 4, payload
+assert payload['supported_pack_count'] == 2, payload
 assert payload['partial_pack_count'] == 1, payload
 assert payload['assets']['status'] == 'ok', payload
+assert 'Only static presentation-style website packs' in payload['assets']['public_surface_note'], payload
 assert payload['delivery_validation']['status'] == 'ok', payload
 assert payload['demo_pack_run']['status'] == 'ok', payload
 assert payload['recommended_website_action'] == 'website_assets', payload

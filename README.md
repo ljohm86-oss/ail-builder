@@ -63,6 +63,11 @@ Current tested generation scope:
 - partial: blog-style presentation pages, without CMS or publishing-system behavior
 - out of scope: ecommerce, login systems, dashboards, CMS, back-office workflows, and database-backed applications
 
+Current public website boundary:
+
+- optimized for static presentation-style websites
+- intentionally not positioned as ecommerce, account, order, after-sales workflow, or other dynamic product behavior
+
 Current realization expectation for most landing-style website requests:
 
 - asks for `about`, `features`, `pricing`, `FAQ`, or `blog` are often implemented as sections on one main page

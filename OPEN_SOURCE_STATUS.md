@@ -53,7 +53,9 @@ The strongest supported generation cases today are:
 - company product pages
 - simple landing pages
 
-The current website surface should not be presented as ecommerce, CMS, dashboard, authentication, or database-backed app generation.
+The current public website surface should be presented as static presentation-site generation only.
+
+It should not be presented as ecommerce, after-sales workflow, CMS, dashboard, authentication, or database-backed app generation.
 
 ## What This Release Should Be Called
 

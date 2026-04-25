@@ -20,6 +20,7 @@ This changelog is intentionally lightweight for now. The repository already has 
 - improved managed-file drift messaging so CLI output explains it as a sync safety guard, not necessarily a website generation failure
 - changed the repository licensing posture from MIT to PolyForm Noncommercial 1.0.0 and updated public docs to describe the repo as source-available rather than OSI open source
 - clarified `website check` output so landing-style requests now explicitly warn that multi-page asks are often realized as single-page sections
+- narrowed the current public website surface to static presentation-style packs in `website check`, `website assets`, and `website summary`
 
 ## 2026-04-19
 

@@ -253,6 +253,8 @@ def cmd_website(args: argparse.Namespace) -> int:
             print(f"- supported_pack_count: {payload['supported_pack_count']}")
             print(f"- partial_pack_count: {payload['partial_pack_count']}")
             print(f"- assets_status: {payload['assets'].get('status', '')}")
+            if payload["assets"].get("public_surface_note"):
+                print(f"- public_surface_note: {payload['assets']['public_surface_note']}")
             print(f"- delivery_validation_status: {payload['delivery_validation'].get('status', '')}")
             print(f"- demo_pack_status: {payload['demo_pack_run'].get('status', '')}")
             print(f"- recommended_website_action: {payload['recommended_website_action']}")
@@ -271,6 +273,8 @@ def cmd_website(args: argparse.Namespace) -> int:
             print(f"- status: {payload['status']}")
             print(f"- asset_scope: {payload['asset_scope']}")
             print(f"- available_pack_count: {len(payload.get('available_pack_ids', []))}")
+            if payload.get("public_surface_note"):
+                print(f"- public_surface_note: {payload['public_surface_note']}")
             if payload.get("selected_pack"):
                 print(f"- selected_pack: {payload['selected_pack'].get('pack')}")
                 print(f"- selected_support_level: {payload['selected_pack'].get('support_level')}")
@@ -3812,9 +3816,9 @@ def _build_parser() -> argparse.ArgumentParser:
     generate_parser.add_argument("--from-file", dest="from_file", help="Read requirement text from a file")
     generate_parser.add_argument("--base-url", default=None, help="Cloud API base URL, defaults to AIL_CLOUD_BASE_URL or http://127.0.0.1:5002")
 
-    website_parser = subparsers.add_parser("website", help="Evaluate and validate website-oriented delivery requests")
+    website_parser = subparsers.add_parser("website", help="Evaluate and validate static presentation-style website requests")
     website_subparsers = website_parser.add_subparsers(dest="website_command")
-    website_check_parser = website_subparsers.add_parser("check", help="Classify a website requirement against the current supported website surface and validate it through the canonical flow when in scope")
+    website_check_parser = website_subparsers.add_parser("check", help="Classify a static presentation-style website requirement against the current supported public website surface and validate it through the canonical flow when in scope")
     website_check_parser.add_argument("requirement", nargs="?", help="Website requirement text")
     website_check_parser.add_argument("--from-file", dest="from_file", help="Read requirement text from a file")
     website_check_parser.add_argument("--base-url", default=None, help="Cloud API base URL, defaults to AIL_CLOUD_BASE_URL or embedded://local")
@@ -4309,6 +4313,113 @@ def _website_pack_metadata() -> dict[str, dict[str, str]]:
     }
 
 
+def _public_static_website_pack_ids() -> set[str]:
+    return {"company_product", "personal_independent", "blog_style_partial"}
+
+
+def _public_static_website_pack_names() -> set[str]:
+    return {
+        "Company / Product Website Pack",
+        "Personal Independent Site Pack",
+        "Personal Blog-Style Site Pack",
+    }
+
+
+def _filter_public_website_assets_summary(summary: dict[str, Any]) -> dict[str, Any]:
+    if not summary:
+        return {}
+    filtered_assets = [
+        item for item in list(summary.get("assets") or [])
+        if str(item.get("pack_id") or "") in _public_static_website_pack_ids()
+    ]
+    supported_count = sum(1 for item in filtered_assets if str(item.get("support_level") or "") == "Supported")
+    partial_count = sum(1 for item in filtered_assets if str(item.get("support_level") or "") == "Partial")
+    delivery_ready_supported_count = sum(
+        1
+        for item in filtered_assets
+        if str(item.get("support_level") or "") == "Supported" and bool(item.get("delivery_ready"))
+    )
+    delivery_ready_partial_count = sum(
+        1
+        for item in filtered_assets
+        if str(item.get("support_level") or "") == "Partial" and bool(item.get("delivery_ready"))
+    )
+    return {
+        **summary,
+        "supported_count": supported_count,
+        "partial_count": partial_count,
+        "delivery_ready_supported_count": delivery_ready_supported_count,
+        "delivery_ready_partial_count": delivery_ready_partial_count,
+        "assets": filtered_assets,
+        "public_surface_note": (
+            "Only static presentation-style website packs are exposed on the current public surface. "
+            "Legacy ecommerce and after-sales packs are not part of the active public website scope."
+        ),
+    }
+
+
+def _filter_public_website_validation_payload(payload: dict[str, Any]) -> dict[str, Any]:
+    if not payload:
+        return {}
+    filtered_cases = [
+        item for item in list(payload.get("cases") or [])
+        if str(item.get("pack") or "") in _public_static_website_pack_names()
+    ]
+    summary = dict(payload.get("summary") or {})
+    supported_ready_count = sum(
+        1
+        for item in filtered_cases
+        if str(item.get("support_level") or "") == "Supported"
+        and str(((item.get("validation") or {}).get("delivery_ready") or "")).lower() in {"true", "yes", "ok"}
+    )
+    partial_ready_count = sum(
+        1
+        for item in filtered_cases
+        if str(item.get("support_level") or "") == "Partial"
+        and str(((item.get("validation") or {}).get("delivery_ready") or "")).lower() in {"true", "yes", "ok"}
+    )
+    summary["cases_total"] = len(filtered_cases)
+    summary["delivery_ready_count"] = supported_ready_count + partial_ready_count
+    summary["supported_ready_count"] = supported_ready_count
+    summary["partial_ready_count"] = partial_ready_count
+    return {
+        **payload,
+        "summary": summary,
+        "cases": filtered_cases,
+    }
+
+
+def _filter_public_website_demo_payload(payload: dict[str, Any]) -> dict[str, Any]:
+    if not payload:
+        return {}
+    filtered_cases = [
+        item for item in list(payload.get("cases") or [])
+        if str(item.get("pack") or "") in _public_static_website_pack_names()
+    ]
+    summary = dict(payload.get("summary") or {})
+    supported_demo_ready_count = sum(
+        1
+        for item in filtered_cases
+        if str(item.get("support_level") or "") == "Supported"
+        and str(((item.get("validation") or {}).get("delivery_ready") or "")).lower() in {"true", "yes", "ok"}
+    )
+    partial_demo_ready_count = sum(
+        1
+        for item in filtered_cases
+        if str(item.get("support_level") or "") == "Partial"
+        and str(((item.get("validation") or {}).get("delivery_ready") or "")).lower() in {"true", "yes", "ok"}
+    )
+    summary["case_count"] = len(filtered_cases)
+    summary["demo_ready_count"] = supported_demo_ready_count + partial_demo_ready_count
+    summary["supported_demo_ready_count"] = supported_demo_ready_count
+    summary["partial_demo_ready_count"] = partial_demo_ready_count
+    return {
+        **payload,
+        "summary": summary,
+        "cases": filtered_cases,
+    }
+
+
 def _analyze_website_requirement(requirement: str) -> dict[str, Any]:
     req = requirement.strip()
     req_lower = req.lower()
@@ -4373,11 +4484,11 @@ def _analyze_website_requirement(requirement: str) -> dict[str, Any]:
     if _contains_any(["售后", "退款", "换货", "投诉", "客服"]):
         matched_signals.extend([term for term in ["售后", "退款", "换货", "投诉", "客服"] if term in req_lower])
         return {
-            **meta["after_sales"],
-            "classification_key": "after_sales",
-            "website_reason": "Requirement maps cleanly to the current after-sales website surface.",
+            **meta["out_of_scope"],
+            "classification_key": "out_of_scope",
+            "website_reason": "Requirement asks for after-sales workflow behavior that exceeds the current public static website surface.",
             "matched_signals": matched_signals,
-            "boundary_findings": boundary_findings,
+            "boundary_findings": boundary_findings + ["request includes after-sales workflow behavior outside the current static presentation scope"],
         }
 
     if _contains_any(["电商", "商城", "商品", "购物车", "结算", "店铺", "分类导航", "商品详情", "storefront", "shop"]):
@@ -4385,11 +4496,11 @@ def _analyze_website_requirement(requirement: str) -> dict[str, Any]:
             [term for term in ["电商", "商城", "商品", "购物车", "结算", "店铺", "分类导航", "商品详情", "storefront", "shop"] if term in req_lower]
         )
         return {
-            **meta["ecommerce_storefront"],
-            "classification_key": "ecommerce_storefront",
-            "website_reason": "Requirement maps cleanly to the current minimal ecommerce storefront surface.",
+            **meta["out_of_scope"],
+            "classification_key": "out_of_scope",
+            "website_reason": "Requirement asks for ecommerce behavior that exceeds the current public static website surface.",
             "matched_signals": matched_signals,
-            "boundary_findings": boundary_findings,
+            "boundary_findings": boundary_findings + ["request includes ecommerce behavior outside the current static presentation scope"],
         }
 
     if _contains_any(["个人", "自由职业", "设计师", "作品集", "摄影师", "创作者", "个人独立站", "portfolio"]):
@@ -4560,7 +4671,7 @@ def _build_website_assets_payload(*, pack_id: str | None) -> tuple[dict[str, Any
     summary_md_path = results_dir / "website_delivery_assets_20260319.md"
     asset_dir = results_dir / "website_delivery_assets_20260319"
 
-    summary = _load_json_optional(summary_path)
+    summary = _filter_public_website_assets_summary(_load_json_optional(summary_path) or {})
     if not summary:
         payload = {
             "status": "missing_assets",
@@ -4608,8 +4719,8 @@ def _build_website_assets_payload(*, pack_id: str | None) -> tuple[dict[str, Any
                     "assets_dir": str(asset_dir),
                 },
                 "next_steps": [
-                    "list available website delivery asset pack ids",
-                    "rerun website assets with one supported pack id",
+                    "list available static-website pack ids",
+                    "rerun website assets with one supported static-website pack id",
                     f"inspect {summary_md_path}",
                 ],
             }
@@ -4648,6 +4759,7 @@ def _build_website_assets_payload(*, pack_id: str | None) -> tuple[dict[str, Any
         "summary": summary,
         "selected_pack": selected_pack,
         "selected_payload": selected_payload,
+        "public_surface_note": summary.get("public_surface_note", ""),
         "artifacts": {
             "assets_summary_json": str(summary_path),
             "assets_summary_md": str(summary_md_path),
@@ -4995,9 +5107,9 @@ def _build_website_summary_payload() -> tuple[dict[str, Any], int]:
     requirement_templates_path = REPO_ROOT / "WEBSITE_REQUIREMENT_TEMPLATES_20260319.md"
     sales_positioning_path = REPO_ROOT / "WEBSITE_SALES_POSITIONING_20260319.md"
 
-    assets = _load_json_optional(assets_json_path) or {}
-    delivery_validation = _load_json_optional(delivery_validation_json_path) or {}
-    demo_pack_run = _load_json_optional(demo_pack_json_path) or {}
+    assets = _filter_public_website_assets_summary(_load_json_optional(assets_json_path) or {})
+    delivery_validation = _filter_public_website_validation_payload(_load_json_optional(delivery_validation_json_path) or {})
+    demo_pack_run = _filter_public_website_demo_payload(_load_json_optional(demo_pack_json_path) or {})
 
     supported_pack_count = int(assets.get("supported_count", 0) or 0)
     partial_pack_count = int(assets.get("partial_count", 0) or 0)
@@ -5010,13 +5122,13 @@ def _build_website_summary_payload() -> tuple[dict[str, Any], int]:
         recommended_website_action = "website_assets"
         recommended_website_command = f'PYTHONPATH="{REPO_ROOT_STR}" python3 -m cli website assets --json'
         recommended_website_reason = (
-            "Reusable website delivery assets are ready, so the highest-value next step is to consume the validated pack bundles directly."
+            "Reusable static-website delivery assets are ready, so the highest-value next step is to consume the validated presentation-site bundles directly."
         )
     else:
         recommended_website_action = "build_website_delivery_assets"
         recommended_website_command = f"bash {BUILD_WEBSITE_DELIVERY_ASSETS_SH}"
         recommended_website_reason = (
-            "Website delivery assets are missing or stale, so rebuild the reusable website pack bundles before consuming them."
+            "Static-website delivery assets are missing or stale, so rebuild the reusable presentation-site bundles before consuming them."
         )
 
     payload = {
@@ -5030,6 +5142,7 @@ def _build_website_summary_payload() -> tuple[dict[str, Any], int]:
             "summary_md": str(assets_md_path),
             "asset_dir": assets.get("asset_dir", str(results_dir / "website_delivery_assets_20260319")),
             "recommended_validation_flow": assets.get("recommended_validation_flow", ""),
+            "public_surface_note": assets.get("public_surface_note", ""),
         },
         "delivery_validation": {
             "status": (delivery_validation.get("summary") or {}).get("status", "missing"),

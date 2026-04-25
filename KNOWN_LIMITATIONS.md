@@ -21,6 +21,7 @@ AIL Builder currently works best for:
 It does not currently support:
 
 - ecommerce cart / checkout flows
+- order, refund, exchange, or after-sales workflow handling
 - login or authentication systems
 - dashboards or admin panels
 - CMS or publishing-system behavior
