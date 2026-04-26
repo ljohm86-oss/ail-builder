@@ -287,6 +287,11 @@ Output should include:
 - suggested override targets
 - validation instructions
 
+Current implementation notes:
+
+- `project style-brief --json` now includes `model_prompt`
+- `project style-brief --emit-prompt` prints a prompt-ready text block for external styling models
+
 ### `project style-apply-check`
 
 Purpose:
