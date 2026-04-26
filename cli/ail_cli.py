@@ -62,6 +62,7 @@ def main(argv: list[str] | None = None) -> int:
         "init": cmd_init,
         "generate": cmd_generate,
         "website": cmd_website,
+        "writing": cmd_writing,
         "rc-check": cmd_rc_check,
         "rc-go": cmd_rc_go,
         "workspace": cmd_workspace,
@@ -356,6 +357,94 @@ def cmd_website(args: argparse.Namespace) -> int:
             print(f"- trial_status: {trial.get('status', '')}")
             print(f"- detected_profile: {trial.get('detected_profile', '')}")
             print(f"- trial_project_path: {payload.get('trial_project_path', '')}")
+        print("Next:")
+        for step in payload["next_steps"]:
+            print(f"- {step}")
+    return exit_code
+
+
+def cmd_writing(args: argparse.Namespace) -> int:
+    if getattr(args, "writing_command", None) == "packs":
+        payload, exit_code = _build_writing_packs_payload()
+        if args.json:
+            _print_json_payload(payload)
+        else:
+            print("Writing packs")
+            print(f"- status: {payload['status']}")
+            print(f"- available_pack_count: {payload.get('available_pack_count', 0)}")
+            print(f"- public_surface_note: {payload.get('public_surface_note', '')}")
+            print("Available packs:")
+            for item in payload.get("packs", []):
+                print(f"- {item.get('pack_id', '')}: {item.get('pack', '')} ({item.get('support_level', '')})")
+            print("Next:")
+            for step in payload["next_steps"]:
+                print(f"- {step}")
+        return exit_code
+
+    if getattr(args, "writing_command", None) != "check" and getattr(args, "writing_command", None) != "intent":
+        return _emit_command_error(args, EXIT_USAGE, "invalid_usage", "supported writing subcommands: check, packs, intent")
+
+    if getattr(args, "writing_command", None) == "check":
+        requirement = _read_requirement(args)
+        if not requirement:
+            return _emit_command_error(args, EXIT_USAGE, "invalid_usage", "writing check requires a non-empty requirement")
+        payload, exit_code = _build_writing_check_payload(requirement=requirement)
+        if args.json:
+            _print_json_payload(payload)
+        else:
+            print("Writing check")
+            print(f"- status: {payload['status']}")
+            print(f"- writing_pack: {payload['writing_pack']}")
+            print(f"- support_level: {payload['support_level']}")
+            print(f"- expected_profile: {payload.get('expected_profile', '')}")
+            print(f"- writing_reason: {payload.get('writing_reason', '')}")
+            print(f"- operator_positioning: {payload.get('safe_positioning', '')}")
+            if payload.get("matched_signals"):
+                print(f"- matched_signals: {', '.join(payload['matched_signals'])}")
+            if payload.get("boundary_findings"):
+                print("Boundary findings:")
+                for item in payload["boundary_findings"]:
+                    print(f"- {item}")
+            contract = payload.get("writing_contract") or {}
+            if contract:
+                print(f"- delivery_surface: {contract.get('surface', '')}")
+                print(f"- stability_note: {contract.get('stability_note', '')}")
+            print("Next:")
+            for step in payload["next_steps"]:
+                print(f"- {step}")
+        return exit_code
+
+    payload, exit_code = _build_writing_intent_payload(
+        audience=getattr(args, "audience", None),
+        format_mode=getattr(args, "format_mode", None),
+        genre=getattr(args, "genre", None),
+        style_direction=getattr(args, "style_direction", None),
+        localization_mode=getattr(args, "localization_mode", None),
+        target_length=getattr(args, "target_length", None),
+        notes=getattr(args, "notes", None),
+        style_keywords=getattr(args, "style_keyword", None),
+        tone_keywords=getattr(args, "tone_keyword", None),
+        narrative_constraints=getattr(args, "narrative_constraint", None),
+        reset=bool(getattr(args, "reset", False)),
+    )
+    if args.json:
+        _print_json_payload(payload)
+    else:
+        print("Writing intent")
+        print(f"- status: {payload['status']}")
+        print(f"- writing_intent_path: {payload.get('writing_intent_path', '')}")
+        print(f"- action: {payload.get('action', '')}")
+        intent = payload.get("writing_intent") or {}
+        print(f"- audience: {intent.get('audience', '')}")
+        print(f"- format_mode: {intent.get('format_mode', '')}")
+        print(f"- genre: {intent.get('genre', '')}")
+        print(f"- style_direction: {intent.get('style_direction', '')}")
+        print(f"- localization_mode: {intent.get('localization_mode', '')}")
+        print(f"- target_length: {intent.get('target_length', '')}")
+        print(f"- style_keywords: {', '.join(intent.get('style_keywords') or [])}")
+        print(f"- tone_keywords: {', '.join(intent.get('tone_keywords') or [])}")
+        print(f"- narrative_constraints: {', '.join(intent.get('narrative_constraints') or [])}")
+        print(f"- notes: {intent.get('notes', '')}")
         print("Next:")
         for step in payload["next_steps"]:
             print(f"- {step}")
@@ -3980,6 +4069,28 @@ def _build_parser() -> argparse.ArgumentParser:
     website_go_parser.add_argument("--experimental-dynamic", action="store_true", help="Include experimental dynamic packs such as ecommerce or after-sales")
     website_go_parser.add_argument("--json", action="store_true", help="Print website go as JSON")
 
+    writing_parser = subparsers.add_parser("writing", help="Evaluate and scaffold low-token writing creation surfaces")
+    writing_subparsers = writing_parser.add_subparsers(dest="writing_command")
+    writing_check_parser = writing_subparsers.add_parser("check", help="Classify a writing requirement against the current structured low-token writing surface")
+    writing_check_parser.add_argument("requirement", nargs="?", help="Writing requirement text")
+    writing_check_parser.add_argument("--from-file", dest="from_file", help="Read requirement text from a file")
+    writing_check_parser.add_argument("--json", action="store_true", help="Print writing check result as JSON")
+    writing_packs_parser = writing_subparsers.add_parser("packs", help="List the current structured writing packs")
+    writing_packs_parser.add_argument("--json", action="store_true", help="Print writing packs as JSON")
+    writing_intent_parser = writing_subparsers.add_parser("intent", help="Show or save the current repo-level writing intent for later scaffolding and handoff")
+    writing_intent_parser.add_argument("--audience", default=None, help="Primary audience summary for the current writing line")
+    writing_intent_parser.add_argument("--format-mode", default=None, help="Writing mode, for example: copy, story, book")
+    writing_intent_parser.add_argument("--genre", default=None, help="Genre or content lane, for example: fantasy, business, editorial")
+    writing_intent_parser.add_argument("--style-direction", default=None, help="Short writing direction summary, for example: concise persuasive, calm literary, practical structured")
+    writing_intent_parser.add_argument("--localization-mode", default=None, help="Localization mode, for example: english_only, bilingual, zh_cn_first")
+    writing_intent_parser.add_argument("--target-length", default=None, help="Target output size, for example: short, chapter_outline, long_form")
+    writing_intent_parser.add_argument("--notes", default=None, help="Freeform operator notes for the writing handoff")
+    writing_intent_parser.add_argument("--style-keyword", action="append", default=None, help="Repeatable style keyword")
+    writing_intent_parser.add_argument("--tone-keyword", action="append", default=None, help="Repeatable tone keyword")
+    writing_intent_parser.add_argument("--narrative-constraint", action="append", default=None, help="Repeatable structural or narrative constraint")
+    writing_intent_parser.add_argument("--reset", action="store_true", help="Reset the saved writing intent back to an empty default record")
+    writing_intent_parser.add_argument("--json", action="store_true", help="Print writing intent as JSON")
+
     rc_check_parser = subparsers.add_parser("rc-check", help="Show the current RC and readiness state")
     rc_check_parser.add_argument("--base-url", default=None, help="Cloud API base URL, defaults to AIL_CLOUD_BASE_URL or http://127.0.0.1:5002")
     rc_check_parser.add_argument("--refresh", action="store_true", help="Refresh readiness snapshot before reading the latest RC state")
@@ -4420,6 +4531,418 @@ def _scenario_requirement(name: str | None) -> str:
     if not name:
         return ""
     return scenarios.get(name, "")
+
+
+def _writing_pack_metadata() -> dict[str, dict[str, str]]:
+    return {
+        "copy_min": {
+            "pack": "Copy / Messaging Pack",
+            "support_level": "Supported",
+            "expected_profile": "copy_min",
+            "safe_positioning": "Position this as structured copywriting support for campaigns, product messaging, brand text, and page-level sales copy.",
+        },
+        "story_min": {
+            "pack": "Story / Fiction Outline Pack",
+            "support_level": "Supported",
+            "expected_profile": "story_min",
+            "safe_positioning": "Position this as a story-outline and scene-planning surface, not as a fully auto-finished long-form novel generator.",
+        },
+        "book_min": {
+            "pack": "Book / Nonfiction Blueprint Pack",
+            "support_level": "Supported",
+            "expected_profile": "book_min",
+            "safe_positioning": "Position this as a book-outline and chapter-planning surface for structured long-form writing.",
+        },
+        "out_of_scope": {
+            "pack": "Out Of Scope",
+            "support_level": "Out of Scope",
+            "expected_profile": "",
+            "safe_positioning": "Narrow the request back to structured copy, story, or book-planning work before treating it as current writing delivery scope.",
+        },
+    }
+
+
+def _writing_intent_root() -> Path:
+    return REPO_ROOT / ".workspace_ail"
+
+
+def _writing_intent_path() -> Path:
+    return _writing_intent_root() / "writing_intent.json"
+
+
+def _default_writing_intent() -> dict[str, Any]:
+    return {
+        "audience": "",
+        "format_mode": "",
+        "genre": "",
+        "style_direction": "",
+        "localization_mode": "",
+        "target_length": "",
+        "style_keywords": [],
+        "tone_keywords": [],
+        "narrative_constraints": [],
+        "notes": "",
+    }
+
+
+def _load_writing_intent() -> dict[str, Any]:
+    payload = _default_writing_intent()
+    path = _writing_intent_path()
+    if not path.exists():
+        return payload
+    try:
+        raw = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return payload
+    if not isinstance(raw, dict):
+        return payload
+    payload["audience"] = str(raw.get("audience") or "").strip()
+    payload["format_mode"] = str(raw.get("format_mode") or "").strip()
+    payload["genre"] = str(raw.get("genre") or "").strip()
+    payload["style_direction"] = str(raw.get("style_direction") or "").strip()
+    payload["localization_mode"] = str(raw.get("localization_mode") or "").strip()
+    payload["target_length"] = str(raw.get("target_length") or "").strip()
+    payload["style_keywords"] = _normalize_string_list(list(raw.get("style_keywords") or []))
+    payload["tone_keywords"] = _normalize_string_list(list(raw.get("tone_keywords") or []))
+    payload["narrative_constraints"] = _normalize_string_list(list(raw.get("narrative_constraints") or []))
+    payload["notes"] = str(raw.get("notes") or "").strip()
+    return payload
+
+
+def _save_writing_intent(payload: dict[str, Any]) -> Path:
+    _writing_intent_root().mkdir(parents=True, exist_ok=True)
+    path = _writing_intent_path()
+    path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    return path
+
+
+def _contains_any_term(req_lower: str, terms: list[str]) -> list[str]:
+    return [term for term in terms if term in req_lower]
+
+
+def _analyze_writing_requirement(requirement: str) -> dict[str, Any]:
+    req = requirement.strip()
+    req_lower = req.lower()
+    matched_signals: list[str] = []
+    boundary_findings: list[str] = []
+    meta = _writing_pack_metadata()
+
+    out_of_scope_terms = {
+        "多人协作平台": "request includes collaborative platform behavior",
+        "publishing platform": "request includes publishing-platform behavior",
+        "出版平台": "request includes publishing-platform behavior",
+        "cms": "request includes CMS behavior rather than writing scaffolding",
+        "工作流系统": "request includes workflow-system behavior",
+        "database": "request includes database-backed application behavior",
+        "数据库": "request includes database-backed application behavior",
+        "游戏引擎": "request includes game-engine behavior",
+        "interactive game": "request includes interactive game behavior",
+        "editor app": "request includes editor-application behavior",
+        "写作软件": "request includes writing-software product behavior",
+        "知识库": "request includes knowledge-base product behavior",
+        "审稿后台": "request includes editorial back-office behavior",
+        "投稿平台": "request includes submission-platform behavior",
+    }
+    for needle, finding in out_of_scope_terms.items():
+        if needle in req_lower:
+            boundary_findings.append(finding)
+            matched_signals.append(needle)
+
+    if boundary_findings:
+        return {
+            **meta["out_of_scope"],
+            "classification_key": "out_of_scope",
+            "writing_reason": "Requirement crosses the current writing boundary into software, platform, workflow, or database-backed product behavior.",
+            "matched_signals": matched_signals,
+            "boundary_findings": boundary_findings,
+        }
+
+    copy_terms = [
+        "文案", "广告", "宣传", "营销", "产品介绍", "品牌介绍", "slogan", "tagline",
+        "landing copy", "sales copy", "email copy", "campaign copy", "产品文案", "品牌文案",
+        "官网文案", "转化文案", "邮件文案", "press release", "新闻稿",
+    ]
+    story_terms = [
+        "小说", "故事", "短篇", "长篇", "角色", "人物设定", "世界观", "章节", "情节", "plot",
+        "scene", "chapter outline", "protagonist", "fantasy", "sci-fi", "romance", "悬疑", "奇幻",
+    ]
+    book_terms = [
+        "书", "书籍", "目录", "章节目标", "非虚构", "商业书", "guidebook", "handbook", "memoir",
+        "table of contents", "book outline", "chapter plan", "manual", "playbook", "教程书",
+    ]
+
+    story_matches = _contains_any_term(req_lower, story_terms)
+    book_matches = _contains_any_term(req_lower, book_terms)
+    copy_matches = _contains_any_term(req_lower, copy_terms)
+
+    if book_matches:
+        matched_signals.extend(book_matches)
+        return {
+            **meta["book_min"],
+            "classification_key": "book_min",
+            "writing_reason": "Requirement maps to structured long-form book planning, such as table of contents, chapter goals, or nonfiction framing.",
+            "matched_signals": matched_signals,
+            "boundary_findings": boundary_findings,
+        }
+    if story_matches:
+        matched_signals.extend(story_matches)
+        return {
+            **meta["story_min"],
+            "classification_key": "story_min",
+            "writing_reason": "Requirement maps to structured fiction planning, such as outline, character, chapter, or scene design.",
+            "matched_signals": matched_signals,
+            "boundary_findings": boundary_findings,
+        }
+    if copy_matches:
+        matched_signals.extend(copy_matches)
+        return {
+            **meta["copy_min"],
+            "classification_key": "copy_min",
+            "writing_reason": "Requirement maps to structured copy and messaging work, such as campaign, product, landing, or brand text.",
+            "matched_signals": matched_signals,
+            "boundary_findings": boundary_findings,
+        }
+
+    return {
+        **meta["out_of_scope"],
+        "classification_key": "out_of_scope",
+        "writing_reason": "Requirement does not map clearly to the current structured copy, story, or book-planning packs.",
+        "matched_signals": matched_signals,
+        "boundary_findings": ["request does not clearly fit one supported writing pack"],
+    }
+
+
+def _writing_delivery_contract(classification_key: str, *, expected_profile: str) -> dict[str, Any]:
+    if classification_key == "copy_min":
+        return {
+            "surface": "structured_copy_scaffold",
+            "supported_capabilities": [
+                "campaign message hierarchy",
+                "landing-page copy blocks",
+                "product or brand messaging frameworks",
+                "headline, CTA, and section-level copy planning",
+            ],
+            "unsupported_capabilities": [
+                "fully auto-finalized brand system",
+                "live content management workflows",
+                "database-backed approval pipelines",
+            ],
+            "operator_positioning": "Position this as low-token structured copy generation, not as a finished content operations platform.",
+            "stability_note": "This lane is best at structure, framing, and reusable copy blocks. Final polish can still be delegated to an external model or editor.",
+            "validation_focus": [
+                "check whether the output needs stronger audience positioning",
+                "confirm the CTA and offer structure before treating it as final copy",
+            ],
+            "expected_profile": expected_profile,
+        }
+    if classification_key == "story_min":
+        return {
+            "surface": "story_outline_scaffold",
+            "supported_capabilities": [
+                "story premise and character cards",
+                "chapter or scene skeletons",
+                "conflict, arc, and pacing breakdowns",
+                "worldbuilding and cast planning",
+            ],
+            "unsupported_capabilities": [
+                "one-shot finished long-form novel generation",
+                "book-length continuity guarantees without iteration",
+                "publishing workflow management",
+            ],
+            "operator_positioning": "Position this as a low-token story architecture tool, not as an instant finished novel generator.",
+            "stability_note": "This lane is strongest at scaffold-level fiction planning. Final prose quality still depends on later drafting passes.",
+            "validation_focus": [
+                "check if the character and arc structure is coherent before drafting",
+                "confirm chapter granularity and point-of-view decisions early",
+            ],
+            "expected_profile": expected_profile,
+        }
+    if classification_key == "book_min":
+        return {
+            "surface": "book_blueprint_scaffold",
+            "supported_capabilities": [
+                "table of contents design",
+                "chapter goal planning",
+                "argument or lesson sequencing",
+                "book framing, audience fit, and writing roadmap",
+            ],
+            "unsupported_capabilities": [
+                "fully finished publication-ready manuscript generation",
+                "editorial workflow management",
+                "automated publishing-system behavior",
+            ],
+            "operator_positioning": "Position this as a low-token book blueprint and chapter-planning surface for long-form writing.",
+            "stability_note": "This lane is strongest at structure and chapter planning, not at final publication-ready prose.",
+            "validation_focus": [
+                "check if the table of contents matches the target reader transformation",
+                "confirm chapter goals before large drafting passes",
+            ],
+            "expected_profile": expected_profile,
+        }
+    return {
+        "surface": "out_of_scope",
+        "supported_capabilities": [],
+        "unsupported_capabilities": [],
+        "operator_positioning": "Narrow the requirement back to copy, story, or book scaffolding before positioning it as deliverable.",
+        "stability_note": "No writing delivery contract is available because the request is currently out of scope.",
+        "validation_focus": [
+            "remove workflow, platform, editor-app, or publishing-system behavior from the request",
+        ],
+        "expected_profile": expected_profile,
+    }
+
+
+def _build_writing_check_next_steps(*, support_level: str, expected_profile: str) -> list[str]:
+    if support_level == "Out of Scope":
+        return [
+            "narrow the requirement back to copy, story, or book scaffolding work",
+            "remove platform, workflow-system, editor-app, or database-backed behavior from the request",
+            f"run PYTHONPATH={REPO_ROOT_STR} python3 -m cli writing check \"<narrowed writing requirement>\" --json",
+        ]
+    return [
+        f"run PYTHONPATH={REPO_ROOT_STR} python3 -m cli writing intent --format-mode {expected_profile} --json",
+        f"run PYTHONPATH={REPO_ROOT_STR} python3 -m cli writing packs --json",
+        "use the resulting pack as a low-token scaffold, then let an external model or editor expand final prose if needed",
+    ]
+
+
+def _build_writing_check_payload(*, requirement: str) -> tuple[dict[str, Any], int]:
+    analysis = _analyze_writing_requirement(requirement)
+    support_level = analysis["support_level"]
+    status = "ok" if support_level == "Supported" else "out_of_scope"
+    exit_code = EXIT_OK if support_level == "Supported" else EXIT_VALIDATION
+    payload = {
+        "status": status,
+        "entrypoint": "writing-check",
+        "requirement": requirement,
+        "writing_pack": analysis["pack"],
+        "support_level": support_level,
+        "expected_profile": analysis["expected_profile"],
+        "writing_reason": analysis["writing_reason"],
+        "safe_positioning": analysis["safe_positioning"],
+        "matched_signals": analysis.get("matched_signals", []),
+        "boundary_findings": analysis.get("boundary_findings", []),
+        "writing_contract": _writing_delivery_contract(
+            analysis["classification_key"],
+            expected_profile=analysis["expected_profile"],
+        ),
+    }
+    payload["next_steps"] = _build_writing_check_next_steps(
+        support_level=support_level,
+        expected_profile=analysis["expected_profile"] or "copy_min",
+    )
+    return payload, exit_code
+
+
+def _build_writing_packs_payload() -> tuple[dict[str, Any], int]:
+    packs = []
+    for pack_id, meta in _writing_pack_metadata().items():
+        if pack_id == "out_of_scope":
+            continue
+        packs.append(
+            {
+                "pack_id": pack_id,
+                **meta,
+            }
+        )
+    payload = {
+        "status": "ok",
+        "entrypoint": "writing-packs",
+        "available_pack_count": len(packs),
+        "packs": packs,
+        "public_surface_note": "Current writing support is architecture-first and low-token by design: copy scaffolds, story scaffolds, and book blueprints come first; final full prose remains an iterative layer.",
+        "next_steps": [
+            f"run PYTHONPATH={REPO_ROOT_STR} python3 -m cli writing check \"写一个企业产品宣传文案\" --json",
+            f"run PYTHONPATH={REPO_ROOT_STR} python3 -m cli writing intent --json",
+        ],
+    }
+    return payload, EXIT_OK
+
+
+def _build_writing_intent_payload(
+    *,
+    audience: str | None,
+    format_mode: str | None,
+    genre: str | None,
+    style_direction: str | None,
+    localization_mode: str | None,
+    target_length: str | None,
+    notes: str | None,
+    style_keywords: list[str] | None,
+    tone_keywords: list[str] | None,
+    narrative_constraints: list[str] | None,
+    reset: bool,
+) -> tuple[dict[str, Any], int]:
+    existing = _load_writing_intent()
+    writing_intent = _default_writing_intent() if reset else dict(existing)
+    write_requested = reset or any(
+        value is not None
+        for value in (
+            audience,
+            format_mode,
+            genre,
+            style_direction,
+            localization_mode,
+            target_length,
+            notes,
+            style_keywords,
+            tone_keywords,
+            narrative_constraints,
+        )
+    )
+
+    if audience is not None:
+        writing_intent["audience"] = str(audience).strip()
+    if format_mode is not None:
+        writing_intent["format_mode"] = str(format_mode).strip()
+    if genre is not None:
+        writing_intent["genre"] = str(genre).strip()
+    if style_direction is not None:
+        writing_intent["style_direction"] = str(style_direction).strip()
+    if localization_mode is not None:
+        writing_intent["localization_mode"] = str(localization_mode).strip()
+    if target_length is not None:
+        writing_intent["target_length"] = str(target_length).strip()
+    if notes is not None:
+        writing_intent["notes"] = str(notes).strip()
+    if style_keywords is not None:
+        writing_intent["style_keywords"] = _normalize_string_list(style_keywords)
+    if tone_keywords is not None:
+        writing_intent["tone_keywords"] = _normalize_string_list(tone_keywords)
+    if narrative_constraints is not None:
+        writing_intent["narrative_constraints"] = _normalize_string_list(narrative_constraints)
+
+    writing_intent_path = _writing_intent_path()
+    action = "read"
+    message = "Loaded the current writing intent."
+    if reset:
+        _save_writing_intent(writing_intent)
+        action = "reset"
+        message = "Reset the writing intent back to an empty baseline."
+    elif write_requested:
+        _save_writing_intent(writing_intent)
+        action = "write"
+        message = "Saved the current writing intent."
+
+    next_steps = [
+        f"run PYTHONPATH={REPO_ROOT_STR} python3 -m cli writing check \"<writing requirement>\" --json",
+        f"inspect {writing_intent_path}",
+    ]
+    if action != "read":
+        next_steps.append(f"run PYTHONPATH={REPO_ROOT_STR} python3 -m cli writing packs --json")
+
+    payload = {
+        "status": "ok",
+        "entrypoint": "writing-intent",
+        "repo_root": str(REPO_ROOT),
+        "writing_intent_path": str(writing_intent_path),
+        "writing_intent_exists": writing_intent_path.exists(),
+        "action": action,
+        "message": message,
+        "writing_intent": writing_intent,
+        "next_steps": next_steps,
+    }
+    return payload, EXIT_OK
 
 
 def _website_pack_metadata() -> dict[str, dict[str, str]]:

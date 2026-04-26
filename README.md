@@ -24,6 +24,7 @@ AIL Builder is the current AIL platform mainline. It is best understood today as
 - durable managed / unmanaged customization
 - skill-ready agent / IDE workflow packaging
 - sample-level brand distinction experiments
+- low-token structured writing pack experiments for copy, fiction planning, and book blueprints
 
 This repository is already strong enough for external testers to run, inspect, and give feedback on.
 It is **not** yet packaged as a stable end-user product.
@@ -66,6 +67,7 @@ Current tested generation scope:
 - supported: static presentation-style sites such as personal portfolios, company product pages, and simple landing pages
 - partial: blog-style presentation pages, without CMS or publishing-system behavior
 - experimental: `ecom_min` storefront generation and preview behind `trial-run --scenario ecom_min`
+- experimental: low-token `writing` pack detection and intent capture for copy, story, and book-planning requests
 - out of scope for the stable public website promise: full ecommerce operations, production login systems, dashboards, CMS, back-office workflows, and database-backed applications
 
 Current public website boundary:
@@ -203,6 +205,15 @@ cd "$ecom_project_dir"
 PYTHONPATH="$REPO_ROOT" python3 -m cli project serve --install-if-needed
 ```
 
+If you want to test the new low-token writing branch:
+
+```bash
+REPO_ROOT="$PWD"
+PYTHONPATH="$REPO_ROOT" python3 -m cli writing packs --json
+PYTHONPATH="$REPO_ROOT" python3 -m cli writing check '写一个企业产品宣传文案，包含首页主标题、卖点和 CTA。' --json
+PYTHONPATH="$REPO_ROOT" python3 -m cli writing intent --audience 'indie founders' --format-mode copy --style-direction 'clear persuasive' --json
+```
+
 ## What Already Works Well
 
 The repository already has real product truth in these areas:
@@ -213,6 +224,7 @@ The repository already has real product truth in these areas:
 - project-level local frontend serving via `project serve`
 - managed / unmanaged customization via `hook-guide`, `hook-init`, and `hook-continue`
 - durable override workflows without editing managed files directly
+- repo-level low-token writing classification via `writing check`, `writing packs`, and `writing intent`
 - dual-line brand-distinction sample work on company and personal baselines
 
 ## Main Documents

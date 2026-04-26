@@ -16,6 +16,12 @@ ok_ecom_home_surface_json=false
 ok_website_check_json=false
 ok_website_check_out_of_scope_json=false
 ok_website_check_experimental_dynamic_json=false
+ok_writing_packs_json=false
+ok_writing_check_copy_json=false
+ok_writing_check_story_json=false
+ok_writing_check_book_json=false
+ok_writing_intent_write_json=false
+ok_writing_intent_read_json=false
 ok_website_assets_json=false
 ok_website_assets_experimental_dynamic_json=false
 ok_website_assets_pack_json=false
@@ -1358,6 +1364,109 @@ assert payload['trial_result']['status'] == 'ok', payload
 assert payload['trial_result']['detected_profile'] == 'ecom_min', payload
 PY
 ok_website_check_experimental_dynamic_json=true
+
+writing_packs_json="$TMP_ROOT/writing_packs.json"
+PYTHONPATH="$ROOT" python3 -m cli writing packs --json > "$writing_packs_json"
+python3 - "$writing_packs_json" <<'PY'
+import json, sys
+payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
+assert payload['status'] == 'ok', payload
+assert payload['entrypoint'] == 'writing-packs', payload
+assert payload['available_pack_count'] == 3, payload
+pack_ids = [item['pack_id'] for item in payload['packs']]
+assert pack_ids == ['copy_min', 'story_min', 'book_min'], payload
+PY
+ok_writing_packs_json=true
+
+writing_check_copy_json="$TMP_ROOT/writing_check_copy.json"
+PYTHONPATH="$ROOT" python3 -m cli writing check '写一个企业产品宣传文案，包含首页主标题、卖点和 CTA。' --json > "$writing_check_copy_json"
+python3 - "$writing_check_copy_json" <<'PY'
+import json, sys
+payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
+assert payload['status'] == 'ok', payload
+assert payload['entrypoint'] == 'writing-check', payload
+assert payload['writing_pack'] == 'Copy / Messaging Pack', payload
+assert payload['support_level'] == 'Supported', payload
+assert payload['expected_profile'] == 'copy_min', payload
+assert payload['writing_contract']['surface'] == 'structured_copy_scaffold', payload
+assert 'landing-page copy blocks' in payload['writing_contract']['supported_capabilities'], payload
+PY
+ok_writing_check_copy_json=true
+
+writing_check_story_json="$TMP_ROOT/writing_check_story.json"
+PYTHONPATH="$ROOT" python3 -m cli writing check '写一个长篇奇幻小说提纲和角色设定，包含主要冲突和章节结构。' --json > "$writing_check_story_json"
+python3 - "$writing_check_story_json" <<'PY'
+import json, sys
+payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
+assert payload['status'] == 'ok', payload
+assert payload['writing_pack'] == 'Story / Fiction Outline Pack', payload
+assert payload['expected_profile'] == 'story_min', payload
+assert payload['writing_contract']['surface'] == 'story_outline_scaffold', payload
+assert 'chapter or scene skeletons' in payload['writing_contract']['supported_capabilities'], payload
+PY
+ok_writing_check_story_json=true
+
+writing_check_book_json="$TMP_ROOT/writing_check_book.json"
+PYTHONPATH="$ROOT" python3 -m cli writing check '写一本非虚构商业书目录和章节目标，帮助创业者搭建销售系统。' --json > "$writing_check_book_json"
+python3 - "$writing_check_book_json" <<'PY'
+import json, sys
+payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
+assert payload['status'] == 'ok', payload
+assert payload['writing_pack'] == 'Book / Nonfiction Blueprint Pack', payload
+assert payload['expected_profile'] == 'book_min', payload
+assert payload['writing_contract']['surface'] == 'book_blueprint_scaffold', payload
+assert 'table of contents design' in payload['writing_contract']['supported_capabilities'], payload
+PY
+ok_writing_check_book_json=true
+
+writing_intent_write_json="$TMP_ROOT/writing_intent_write.json"
+PYTHONPATH="$ROOT" python3 -m cli writing intent \
+  --audience "indie founders" \
+  --format-mode "story" \
+  --genre "science fantasy" \
+  --style-direction "clear cinematic" \
+  --localization-mode "english_only" \
+  --target-length "chapter_outline" \
+  --style-keyword "visual" \
+  --style-keyword "structured" \
+  --tone-keyword "calm" \
+  --tone-keyword "tense" \
+  --narrative-constraint "limited point of view" \
+  --narrative-constraint "no time travel" \
+  --notes "Keep scene objectives obvious." \
+  --json > "$writing_intent_write_json"
+python3 - "$writing_intent_write_json" <<'PY'
+import json, sys
+payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
+assert payload['status'] == 'ok', payload
+assert payload['entrypoint'] == 'writing-intent', payload
+assert payload['action'] == 'write', payload
+intent = payload['writing_intent']
+assert intent['audience'] == 'indie founders', payload
+assert intent['format_mode'] == 'story', payload
+assert intent['genre'] == 'science fantasy', payload
+assert intent['style_direction'] == 'clear cinematic', payload
+assert intent['localization_mode'] == 'english_only', payload
+assert intent['target_length'] == 'chapter_outline', payload
+assert intent['style_keywords'] == ['visual', 'structured'], payload
+assert intent['tone_keywords'] == ['calm', 'tense'], payload
+assert intent['narrative_constraints'] == ['limited point of view', 'no time travel'], payload
+assert intent['notes'] == 'Keep scene objectives obvious.', payload
+PY
+ok_writing_intent_write_json=true
+
+writing_intent_read_json="$TMP_ROOT/writing_intent_read.json"
+PYTHONPATH="$ROOT" python3 -m cli writing intent --json > "$writing_intent_read_json"
+python3 - "$writing_intent_read_json" <<'PY'
+import json, sys
+payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
+assert payload['status'] == 'ok', payload
+assert payload['entrypoint'] == 'writing-intent', payload
+assert payload['action'] == 'read', payload
+assert payload['writing_intent']['genre'] == 'science fantasy', payload
+assert payload['writing_intent']['style_keywords'] == ['visual', 'structured'], payload
+PY
+ok_writing_intent_read_json=true
 
 website_assets_json="$TMP_ROOT/website_assets.json"
 python3 -m cli website assets --json > "$website_assets_json"
