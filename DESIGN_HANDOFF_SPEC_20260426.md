@@ -311,6 +311,7 @@ Current implementation notes:
 - verifies router wiring still points at `frontend/src/ail-managed/**`
 - runs a preview dry-run readiness check without starting the dev server
 - falls back to local project validation even when no cloud project record exists
+- supports `--emit-summary` for a compact accept/reject view
 
 ### `project style-intent`
 
