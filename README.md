@@ -30,6 +30,10 @@ It is **not** yet packaged as a stable end-user product.
 
 **Start here:** [`OPEN_SOURCE_STATUS.md`](OPEN_SOURCE_STATUS.md) · [`QUICKSTART_OPEN_SOURCE.md`](QUICKSTART_OPEN_SOURCE.md) · [`KNOWN_LIMITATIONS.md`](KNOWN_LIMITATIONS.md) · [`SKILL_PACKAGING_PLAN_20260418.md`](SKILL_PACKAGING_PLAN_20260418.md) · [`SKILL.md`](SKILL.md) · [`MCP_TOOL_SURFACE_SPEC_20260418.md`](MCP_TOOL_SURFACE_SPEC_20260418.md)
 
+Architecture-first styling direction:
+
+- [`DESIGN_HANDOFF_SPEC_20260426.md`](DESIGN_HANDOFF_SPEC_20260426.md)
+
 Windows testers are supported too: see [`QUICKSTART_OPEN_SOURCE.md`](QUICKSTART_OPEN_SOURCE.md) for PowerShell equivalents and current cross-platform notes.
 
 Recent outward-facing changes are tracked in [`CHANGELOG.md`](CHANGELOG.md).
@@ -198,6 +202,7 @@ Current public / packaging docs:
 - [`QUICKSTART_OPEN_SOURCE.md`](QUICKSTART_OPEN_SOURCE.md)
 - [`KNOWN_LIMITATIONS.md`](KNOWN_LIMITATIONS.md)
 - [`CHANGELOG.md`](CHANGELOG.md)
+- [`DESIGN_HANDOFF_SPEC_20260426.md`](DESIGN_HANDOFF_SPEC_20260426.md)
 - [`SKILL_PACKAGING_PLAN_20260418.md`](SKILL_PACKAGING_PLAN_20260418.md)
 - [`SKILL.md`](SKILL.md)
 - [`MCP_TOOL_SURFACE_SPEC_20260418.md`](MCP_TOOL_SURFACE_SPEC_20260418.md)

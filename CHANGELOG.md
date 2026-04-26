@@ -35,6 +35,7 @@ This changelog is intentionally lightweight for now. The repository already has 
 - expanded the experimental ecommerce `/account` wishlist area with saved-item skeletons, recent-view strips, and explicit return-entry markers for product, search, category, and shop continuity
 - expanded the experimental ecommerce `/account` security area with sign-in method chips, device cards, privacy/export controls, and explicit high-risk action placeholders for account freeze/logout/delete flows
 - updated the open-source quickstart and repository docs so external testers can follow a verified `trial-run --scenario ecom_min` plus `project serve` path for the experimental ecommerce preview
+- added `/Users/carwynmac/ai-cl/DESIGN_HANDOFF_SPEC_20260426.md` to define the architecture-first AIL Core plus external model styling contract and the proposed `project style-brief` / `project style-apply-check` direction
 
 ## 2026-04-19
 
