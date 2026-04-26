@@ -73,6 +73,18 @@ Current public website boundary:
 - optimized for static presentation-style websites
 - intentionally not positioned as ecommerce, account, order, after-sales workflow, or other dynamic product behavior
 
+Architecture-first styling direction:
+
+- use `python3 -m cli project style-brief --base-url embedded://local --json` from a generated project when you want one operator-safe brief for an external design model
+- this brief consolidates:
+  - current preview and generated surface context
+  - allowed override-safe write roots
+  - forbidden managed roots
+  - recommended validation and preview commands
+- pair it with:
+  - `python3 -m cli project export-handoff --base-url embedded://local --json`
+  - `python3 -m cli project hook-guide --json`
+
 Experimental dynamic lane:
 
 - `website check --experimental-dynamic` can opt into the current experimental ecommerce / after-sales lane

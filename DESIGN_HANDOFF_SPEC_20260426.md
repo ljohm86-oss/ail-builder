@@ -91,6 +91,7 @@ This direction already fits the repository's current structure.
 
 The most important existing primitives are:
 
+- `python3 -m cli project style-brief --base-url embedded://local --json`
 - `python3 -m cli project export-handoff --json`
 - `python3 -m cli project hook-guide --json`
 - `frontend/src/ail-overrides/theme.tokens.css`
@@ -103,6 +104,12 @@ These already provide the right split:
 
 - generated structure stays in managed zones
 - durable visual customization stays in override zones
+
+Current shortest operator path:
+
+1. run `python3 -m cli project style-brief --base-url embedded://local --json`
+2. inspect the override-safe write scope and recommended commands
+3. hand that brief to the external model before any design edits begin
 
 ## Managed / Unmanaged Rule
 

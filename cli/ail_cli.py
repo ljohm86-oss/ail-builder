@@ -3563,6 +3563,32 @@ def cmd_project(args: argparse.Namespace) -> int:
                 print(f"- {step}")
         return exit_code
 
+    if getattr(args, "project_command", None) == "style-brief":
+        ctx = ProjectContext.discover()
+        payload, exit_code = _build_project_style_brief_payload(ctx, base_url=args.base_url)
+        if args.json:
+            _print_json_payload(payload)
+        else:
+            print(f"Project style-brief: {payload['project_id']}")
+            print(f"- project_root: {payload['project_root']}")
+            print(f"- style_mode: {payload.get('style_mode', '')}")
+            print(f"- operator_positioning: {payload.get('operator_positioning', '')}")
+            print(f"- primary_preview_target: {payload.get('primary_target_label', '')}")
+            print(f"- current_profile: {payload.get('current_profile', '')}")
+            override_surface = payload.get("override_surface") or {}
+            print(f"- theme_tokens_path: {override_surface.get('theme_tokens_path', '')}")
+            print(f"- custom_css_path: {override_surface.get('custom_css_path', '')}")
+            print(f"- component_overrides_dir: {override_surface.get('component_overrides_dir', '')}")
+            print(f"- asset_overrides_dir: {override_surface.get('asset_overrides_dir', '')}")
+            print(f"- managed_boundary_rule: {payload.get('managed_boundary_rule', '')}")
+            print("Recommended commands:")
+            for item in payload.get("recommended_commands", []):
+                print(f"- {item}")
+            print("Next:")
+            for step in payload["next_steps"]:
+                print(f"- {step}")
+        return exit_code
+
     if getattr(args, "project_command", None) == "show":
         project_id = _resolve_project_id_arg(getattr(args, "project_id", None))
         client = AILCloudClient(base_url=args.base_url)
@@ -3642,7 +3668,7 @@ def cmd_project(args: argparse.Namespace) -> int:
             )
         return EXIT_OK
 
-    return _emit_command_error(args, EXIT_USAGE, "invalid_usage", "supported project subcommands: go, continue, check, doctor, summary, hooks, hook-init, preview, serve, open-target, inspect-target, run-inspect-command, export-handoff, show, builds")
+    return _emit_command_error(args, EXIT_USAGE, "invalid_usage", "supported project subcommands: go, continue, check, doctor, summary, hooks, hook-guide, hook-init, preview, serve, open-target, inspect-target, run-inspect-command, export-handoff, style-brief, show, builds")
 
 
 def cmd_conflicts(args: argparse.Namespace) -> int:
@@ -4256,6 +4282,9 @@ def _build_parser() -> argparse.ArgumentParser:
     project_export_handoff_parser = project_subparsers.add_parser("export-handoff", help="Export one consolidated project handoff bundle for IDEs, agents, and operators")
     project_export_handoff_parser.add_argument("--base-url", default=None, help="Cloud API base URL, defaults to AIL_CLOUD_BASE_URL or http://127.0.0.1:5002")
     project_export_handoff_parser.add_argument("--json", action="store_true", help="Print project export handoff as JSON")
+    project_style_brief_parser = project_subparsers.add_parser("style-brief", help="Export one architecture-first styling brief for external design models or operators")
+    project_style_brief_parser.add_argument("--base-url", default=None, help="Cloud API base URL, defaults to AIL_CLOUD_BASE_URL or http://127.0.0.1:5002")
+    project_style_brief_parser.add_argument("--json", action="store_true", help="Print project style brief as JSON")
     project_show_parser = project_subparsers.add_parser("show", help="Show project metadata")
     project_show_parser.add_argument("project_id", nargs="?", help="Project identifier; defaults to the current project")
     project_show_parser.add_argument("--base-url", default=None, help="Cloud API base URL, defaults to AIL_CLOUD_BASE_URL or http://127.0.0.1:5002")
@@ -8756,6 +8785,270 @@ def _build_project_export_handoff_payload(ctx: ProjectContext, *, base_url: str 
         "next_steps": next_steps,
     }
     return payload, exit_code
+
+
+def _build_local_project_style_brief_context(ctx: ProjectContext, *, base_url: str | None, cloud_error: str) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
+    manifest_service = ManifestService()
+    last_build = manifest_service.load_last_build(ctx.last_build_file)
+    build_id = str((last_build or {}).get("build_id") or "")
+    preview_handoff = _build_preview_handoff(
+        artifact_path=str(ctx.root),
+        source_path=str(ctx.source_file),
+        manifest_path=str(ctx.manifest_file),
+        last_build_path=str(ctx.last_build_file),
+        generated_views_dir=str(ctx.root / "src/views/generated"),
+        generated_router_dir=str(ctx.root / "src/router/generated"),
+        generated_backend_dir=str(ctx.root / "backend/generated"),
+        project_id=ctx.project_id,
+        build_id=build_id,
+        base_url=base_url,
+        include_build_artifact_step=False,
+    )
+    check_payload, diagnosis_payload, recommended_action, doctor_status, findings, _, _ = _analyze_project_doctor_state(
+        ctx,
+        base_url=base_url,
+    )
+    recommendation = _project_summary_recommendation(
+        ctx,
+        recommended_action=recommended_action,
+        doctor_status=doctor_status,
+    )
+    hook_catalog = _build_hook_catalog_summary(ctx)
+    next_steps = list(preview_handoff.get("next_steps") or [])
+    hook_step = f"run PYTHONPATH={REPO_ROOT_STR} python3 -m cli project hooks --json"
+    if hook_catalog.get("exists") and hook_step not in next_steps:
+        next_steps.append(hook_step)
+
+    summary = {
+        "status": "warning",
+        "entrypoint": "project-summary",
+        "project_id": ctx.project_id,
+        "project_root": str(ctx.root),
+        "source_of_truth": str(ctx.source_file),
+        "manifest": str(ctx.manifest_file),
+        "last_build": str(ctx.last_build_file),
+        "managed_roots": MANAGED_ROOTS,
+        "user_roots": USER_ROOTS,
+        "project_check": check_payload,
+        "source_diagnosis": diagnosis_payload,
+        "doctor_status": doctor_status,
+        "doctor_findings": findings,
+        "recommended_action": recommended_action,
+        "cloud_status": {
+            "status": "warning",
+            "message": "Cloud status was unavailable for this local project context.",
+            "error": cloud_error,
+            "project": {"project_id": ctx.project_id, "latest_build_id": build_id},
+            "latest_build": {"build_id": build_id, "source_project_root": str(ctx.root)},
+            "latest_artifact": {"local_path": str(ctx.root)},
+        },
+        "preview_handoff": preview_handoff,
+        "preview_hint": preview_handoff["preview_hint"],
+        "open_targets": preview_handoff["open_targets"],
+        "hook_catalog": {key: value for key, value in hook_catalog.items() if key != "pages"},
+        "next_steps": next_steps,
+        **recommendation,
+    }
+    preview = {
+        "status": "warning",
+        "entrypoint": "project-preview",
+        "project_id": summary["project_id"],
+        "project_root": summary["project_root"],
+        "doctor_status": summary.get("doctor_status", ""),
+        "recommended_action": summary.get("recommended_action", ""),
+        "recommended_primary_action": summary.get("recommended_primary_action", ""),
+        "recommended_primary_command": summary.get("recommended_primary_command", ""),
+        "recommended_primary_reason": summary.get("recommended_primary_reason", ""),
+        "latest_build_id": build_id,
+        "latest_artifact_id": "",
+        "latest_artifact_format": "",
+        "latest_artifact_local_path": str(ctx.root),
+        "website_preview_summary": preview_handoff.get("website_summary"),
+        "website_delivery_summary": _build_website_delivery_summary(
+            project_id=summary["project_id"],
+            project_root=summary["project_root"],
+            doctor_status=summary.get("doctor_status"),
+            recommended_action=summary.get("recommended_action"),
+            expected_or_detected_profile=((summary.get("source_diagnosis") or {}).get("diagnosis") or {}).get("detected_profile"),
+            latest_build_id=build_id,
+            latest_artifact_id="",
+            latest_artifact_format="",
+            preview_handoff=preview_handoff,
+            project_check=summary.get("project_check"),
+        ),
+        "preview_handoff": preview_handoff,
+        "preview_hint": preview_handoff["preview_hint"],
+        "open_targets": preview_handoff["open_targets"],
+        "cloud_status": summary["cloud_status"],
+        "next_steps": list(summary.get("next_steps") or []),
+    }
+    export_payload = {
+        "status": "warning",
+        "entrypoint": "project-export-handoff",
+        "project_id": summary["project_id"],
+        "project_root": summary["project_root"],
+        "doctor_status": summary.get("doctor_status"),
+        "recommended_action": summary.get("recommended_action"),
+        "recommended_primary_action": summary.get("recommended_primary_action"),
+        "recommended_primary_command": summary.get("recommended_primary_command"),
+        "recommended_primary_reason": summary.get("recommended_primary_reason"),
+        "website_preview_summary": preview.get("website_preview_summary"),
+        "website_delivery_summary": preview.get("website_delivery_summary"),
+        "preview_handoff": preview_handoff,
+        "preview_hint": preview.get("preview_hint"),
+        "open_targets": preview.get("open_targets", []),
+        "primary_target_label": (preview_handoff.get("primary_target") or {}).get("label", ""),
+        "primary_target": preview_handoff.get("primary_target"),
+        "primary_inspection": _inspect_resolved_target(preview_handoff.get("primary_target") or {}),
+        "inspect_command": f"inspect {(preview_handoff.get('primary_target') or {}).get('path', '')}",
+        "available_labels": [item.get("label", "") for item in (preview.get("open_targets") or [])],
+        "cloud_status": summary.get("cloud_status"),
+        "project_summary": summary,
+        "project_preview": preview,
+        "next_steps": list(preview.get("next_steps") or []),
+    }
+    return summary, preview, export_payload
+
+
+def _build_project_style_brief_payload(ctx: ProjectContext, *, base_url: str | None) -> tuple[dict[str, Any], int]:
+    local_mode_reason = ""
+    try:
+        summary = _build_project_summary_payload(ctx, base_url=base_url, project_id=ctx.project_id)
+        preview = _build_project_preview_payload(ctx, base_url=base_url)
+        export_payload, export_exit = _build_project_export_handoff_payload(ctx, base_url=base_url)
+    except CloudClientError as exc:
+        local_mode_reason = str(exc)
+        summary, preview, export_payload = _build_local_project_style_brief_context(
+            ctx,
+            base_url=base_url,
+            cloud_error=local_mode_reason,
+        )
+        export_exit = EXIT_OK
+    hook_guide_payload, hook_exit = _build_project_hook_guide_payload(ctx)
+
+    def _abs_path(relpath: str) -> str:
+        return str((ctx.root / relpath).resolve())
+
+    allowed_write_roots = [_abs_path(relpath) for relpath in USER_ROOTS]
+    discouraged_write_roots = [
+        _abs_path("frontend/src/"),
+        _abs_path("frontend/public/"),
+        _abs_path("src/"),
+        _abs_path("backend/"),
+    ]
+    forbidden_write_roots = [_abs_path(relpath) for relpath in MANAGED_ROOTS]
+    override_surface = {
+        "root": _abs_path("frontend/src/ail-overrides/"),
+        "theme_tokens_path": _abs_path("frontend/src/ail-overrides/theme.tokens.css"),
+        "custom_css_path": _abs_path("frontend/src/ail-overrides/custom.css"),
+        "component_overrides_dir": _abs_path("frontend/src/ail-overrides/components/"),
+        "asset_overrides_dir": _abs_path("frontend/src/ail-overrides/assets/"),
+        "public_asset_overrides_dir": _abs_path("frontend/public/ail-overrides/"),
+        "readme_path": _abs_path("frontend/src/ail-overrides/README.md"),
+    }
+
+    preview_handoff = preview.get("preview_handoff") or {}
+    primary_target = preview_handoff.get("primary_target") or {}
+    source_diagnosis = (summary.get("source_diagnosis") or {}).get("diagnosis") or {}
+    website_delivery_summary = preview.get("website_delivery_summary") or {}
+    generated_pages_entries = website_delivery_summary.get("generated_pages_entries") or []
+    generated_routes_entries = website_delivery_summary.get("generated_routes_entries") or []
+    open_targets = preview.get("open_targets") or []
+
+    recommended_commands = []
+    for command in (
+        f"PYTHONPATH={REPO_ROOT_STR} python3 -m cli project style-brief --base-url embedded://local --json",
+        f"PYTHONPATH={REPO_ROOT_STR} python3 -m cli project export-handoff --base-url embedded://local --json",
+        f"PYTHONPATH={REPO_ROOT_STR} python3 -m cli project hook-guide --json",
+        f"PYTHONPATH={REPO_ROOT_STR} python3 -m cli project serve --install-if-needed --json",
+        summary.get("recommended_primary_command"),
+    ):
+        normalized = str(command or "").strip()
+        if normalized and normalized not in recommended_commands:
+            recommended_commands.append(normalized)
+
+    next_steps = []
+    for source in (
+        [f"inspect {override_surface['readme_path']}"],
+        [f"inspect {override_surface['theme_tokens_path']}", f"inspect {override_surface['custom_css_path']}"],
+        [f"run {command}" for command in recommended_commands],
+        export_payload.get("next_steps", []),
+        preview.get("next_steps", []),
+        hook_guide_payload.get("next_steps", []),
+    ):
+        for item in source:
+            normalized = str(item or "").strip()
+            if normalized and normalized not in next_steps:
+                next_steps.append(normalized)
+
+    payload = {
+        "status": "ok" if export_exit == EXIT_OK and hook_exit == EXIT_OK else "warning",
+        "entrypoint": "project-style-brief",
+        "project_id": summary["project_id"],
+        "project_root": summary["project_root"],
+        "style_mode": "architecture_first_model_styling",
+        "operator_positioning": "AIL owns architecture and managed generation; external models should style the project through override-safe surfaces.",
+        "local_mode": bool(local_mode_reason),
+        "local_mode_reason": local_mode_reason,
+        "current_profile": source_diagnosis.get("detected_profile", ""),
+        "doctor_status": summary.get("doctor_status"),
+        "recommended_action": summary.get("recommended_action"),
+        "recommended_primary_action": summary.get("recommended_primary_action"),
+        "recommended_primary_command": summary.get("recommended_primary_command"),
+        "recommended_primary_reason": summary.get("recommended_primary_reason"),
+        "preview_hint": preview.get("preview_hint"),
+        "website_preview_summary": preview.get("website_preview_summary"),
+        "website_delivery_summary": website_delivery_summary,
+        "primary_target_label": primary_target.get("label", ""),
+        "primary_target_path": primary_target.get("path", ""),
+        "open_targets": open_targets,
+        "architecture_contract": {
+            "surface_kind": (preview.get("website_preview_summary") or {}).get("surface_kind", ""),
+            "primary_target_label": primary_target.get("label", ""),
+            "primary_target_path": primary_target.get("path", ""),
+            "generated_pages_path": website_delivery_summary.get("generated_pages_path", ""),
+            "generated_pages_entries": generated_pages_entries,
+            "generated_routes_path": website_delivery_summary.get("generated_routes_path", ""),
+            "generated_routes_entries": generated_routes_entries,
+            "open_target_labels": [item.get("label", "") for item in open_targets],
+        },
+        "write_contract": {
+            "allowed_write_roots": allowed_write_roots,
+            "discouraged_write_roots": discouraged_write_roots,
+            "forbidden_write_roots": forbidden_write_roots,
+            "managed_boundary_rule": "Do not edit managed generated files directly for long-term styling. Prefer token, CSS, component, and asset overrides under frontend/src/ail-overrides or frontend/public/ail-overrides.",
+        },
+        "override_surface": override_surface,
+        "hook_surface": {
+            "entrypoint": hook_guide_payload.get("entrypoint"),
+            "recommended_page_key": hook_guide_payload.get("recommended_page_key"),
+            "recommended_hook_name": hook_guide_payload.get("recommended_hook_name"),
+            "preferred_project_hook_command": hook_guide_payload.get("preferred_project_hook_command"),
+            "preferred_project_hook_run_command": hook_guide_payload.get("preferred_project_hook_run_command"),
+            "cheat_sheet_path": hook_guide_payload.get("cheat_sheet_path"),
+        },
+        "managed_boundary_rule": "Keep structural generation in managed files. Push lasting visual customization into override-safe files and hook-owned components.",
+        "design_prompt_scaffold": {
+            "goal": "Keep routes, generated structure, and preview continuity intact while restyling the current website surface.",
+            "allowed_edit_strategy": [
+                "adjust design tokens first",
+                "add scoped CSS overrides next",
+                "add hook-owned or override-owned Vue components when layout expression needs new markup",
+            ],
+            "avoid": [
+                "do not rewrite generated router or managed generated views in-place for durable styling work",
+                "do not remove required preview targets or managed continuity files",
+            ],
+        },
+        "recommended_commands": recommended_commands,
+        "source_commands": {
+            "project_export_handoff": f"PYTHONPATH={REPO_ROOT_STR} python3 -m cli project export-handoff --base-url embedded://local --json",
+            "project_hook_guide": f"PYTHONPATH={REPO_ROOT_STR} python3 -m cli project hook-guide --json",
+            "project_serve": f"PYTHONPATH={REPO_ROOT_STR} python3 -m cli project serve --install-if-needed --json",
+        },
+        "next_steps": next_steps,
+    }
+    return payload, EXIT_OK if payload["status"] == "ok" else max(export_exit, hook_exit)
 
 
 def _build_project_run_inspect_command_payload(

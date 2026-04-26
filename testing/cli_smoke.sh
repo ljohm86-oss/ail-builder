@@ -2751,6 +2751,31 @@ assert payload['project_preview']['entrypoint'] == 'project-preview', payload
 PY
 ok_project_export_handoff_json=true
 
+project_style_brief_json="$TMP_ROOT/project_style_brief.json"
+AIL_CLOUD_BASE_URL=embedded://local python3 -m cli project style-brief --json > "$project_style_brief_json"
+python3 - "$project_style_brief_json" <<'PY'
+import os
+ROOT = os.environ['AIL_REPO_ROOT']
+import json, sys
+payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
+assert payload['status'] == 'ok', payload
+assert payload['entrypoint'] == 'project-style-brief', payload
+assert payload['style_mode'] == 'architecture_first_model_styling', payload
+assert payload['write_contract']['allowed_write_roots'], payload
+assert any(path.endswith('/frontend/src/ail-overrides') for path in payload['write_contract']['allowed_write_roots']), payload
+assert any(path.endswith('/frontend/public/ail-overrides') for path in payload['write_contract']['allowed_write_roots']), payload
+assert any(path.endswith('/frontend/src/ail-managed') for path in payload['write_contract']['forbidden_write_roots']), payload
+assert payload['override_surface']['theme_tokens_path'].endswith('/frontend/src/ail-overrides/theme.tokens.css'), payload
+assert payload['override_surface']['custom_css_path'].endswith('/frontend/src/ail-overrides/custom.css'), payload
+assert payload['hook_surface']['entrypoint'] == 'project-hook-guide', payload
+assert payload['source_commands']['project_export_handoff'].endswith('python3 -m cli project export-handoff --base-url embedded://local --json'), payload
+assert payload['source_commands']['project_hook_guide'].endswith('python3 -m cli project hook-guide --json'), payload
+assert payload['source_commands']['project_serve'].endswith('python3 -m cli project serve --install-if-needed --json'), payload
+assert payload['architecture_contract']['primary_target_label'] == 'artifact_root', payload
+assert 'generated_pages_entries' in payload['architecture_contract'], payload
+PY
+ok_project_style_brief_json=true
+
 cloud_status_preview_json="$TMP_ROOT/cloud_status_preview.json"
 AIL_CLOUD_BASE_URL=embedded://local python3 -m cli cloud status --json > "$cloud_status_preview_json"
 python3 - "$cloud_status_preview_json" <<'PY'
