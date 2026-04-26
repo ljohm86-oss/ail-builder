@@ -2776,6 +2776,28 @@ assert 'generated_pages_entries' in payload['architecture_contract'], payload
 PY
 ok_project_style_brief_json=true
 
+project_style_apply_check_json="$TMP_ROOT/project_style_apply_check.json"
+(
+  cd "$ROOT/output_projects/CompanyProductSiteBrandPostureReview"
+  PYTHONPATH="$ROOT" AIL_CLOUD_BASE_URL=embedded://local python3 -m cli project style-apply-check --base-url embedded://local --json > "$project_style_apply_check_json"
+)
+python3 - "$project_style_apply_check_json" <<'PY'
+import json, sys
+payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
+assert payload['status'] == 'ok', payload
+assert payload['entrypoint'] == 'project-style-apply-check', payload
+assert payload['verification_mode'] == 'local_boundary_and_runtime_continuity', payload
+assert payload['managed_boundary']['managed_root_exists'] is True, payload
+assert payload['managed_boundary']['verified_count'] >= 4, payload
+assert payload['managed_boundary']['violation_count'] == 0, payload
+assert payload['route_contract']['route_contract_ok'] is True, payload
+assert payload['runtime_entry_contract']['runtime_entry_ok'] is True, payload
+assert payload['serve_dry_run']['entrypoint'] == 'project-serve', payload
+assert payload['style_brief']['entrypoint'] == 'project-style-brief', payload
+assert payload['style_brief']['local_mode'] is True, payload
+PY
+ok_project_style_apply_check_json=true
+
 cloud_status_preview_json="$TMP_ROOT/cloud_status_preview.json"
 AIL_CLOUD_BASE_URL=embedded://local python3 -m cli cloud status --json > "$cloud_status_preview_json"
 python3 - "$cloud_status_preview_json" <<'PY'

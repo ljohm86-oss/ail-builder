@@ -263,6 +263,8 @@ PYTHONPATH="$REPO_ROOT" python3 -m cli trial-run --scenario ecom_min --base-url 
 cd "$PROJECT_DIR"
 PYTHONPATH="$REPO_ROOT" python3 -m cli project export-handoff --base-url embedded://local --json
 PYTHONPATH="$REPO_ROOT" python3 -m cli project hook-guide --json
+PYTHONPATH="$REPO_ROOT" python3 -m cli project style-brief --base-url embedded://local --json
+PYTHONPATH="$REPO_ROOT" python3 -m cli project style-apply-check --base-url embedded://local --json
 PYTHONPATH="$REPO_ROOT" python3 -m cli project serve --install-if-needed
 ```
 
@@ -296,6 +298,13 @@ Checks should include:
 - preview still starts
 - route file still intact
 - generated core files not unexpectedly changed
+
+Current implementation notes:
+
+- verifies managed mirror integrity for runtime view and router copies
+- verifies router wiring still points at `frontend/src/ail-managed/**`
+- runs a preview dry-run readiness check without starting the dev server
+- falls back to local project validation even when no cloud project record exists
 
 ### `project style-intent`
 

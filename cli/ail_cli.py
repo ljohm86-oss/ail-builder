@@ -3589,6 +3589,27 @@ def cmd_project(args: argparse.Namespace) -> int:
                 print(f"- {step}")
         return exit_code
 
+    if getattr(args, "project_command", None) == "style-apply-check":
+        ctx = ProjectContext.discover()
+        payload, exit_code = _build_project_style_apply_check_payload(ctx, base_url=args.base_url)
+        if args.json:
+            _print_json_payload(payload)
+        else:
+            print(f"Project style-apply-check: {payload['project_id']}")
+            print(f"- project_root: {payload['project_root']}")
+            print(f"- status: {payload.get('status', '')}")
+            print(f"- verification_mode: {payload.get('verification_mode', '')}")
+            print(f"- managed_mirror_verified_count: {payload.get('managed_boundary', {}).get('verified_count', 0)}")
+            print(f"- managed_mirror_violation_count: {payload.get('managed_boundary', {}).get('violation_count', 0)}")
+            print(f"- route_contract_ok: {str(bool((payload.get('route_contract') or {}).get('route_contract_ok'))).lower()}")
+            print(f"- serve_dry_run_status: {(payload.get('serve_dry_run') or {}).get('status', '')}")
+            if payload.get("message"):
+                print(f"- message: {payload['message']}")
+            print("Next:")
+            for step in payload["next_steps"]:
+                print(f"- {step}")
+        return exit_code
+
     if getattr(args, "project_command", None) == "show":
         project_id = _resolve_project_id_arg(getattr(args, "project_id", None))
         client = AILCloudClient(base_url=args.base_url)
@@ -3668,7 +3689,7 @@ def cmd_project(args: argparse.Namespace) -> int:
             )
         return EXIT_OK
 
-    return _emit_command_error(args, EXIT_USAGE, "invalid_usage", "supported project subcommands: go, continue, check, doctor, summary, hooks, hook-guide, hook-init, preview, serve, open-target, inspect-target, run-inspect-command, export-handoff, style-brief, show, builds")
+    return _emit_command_error(args, EXIT_USAGE, "invalid_usage", "supported project subcommands: go, continue, check, doctor, summary, hooks, hook-guide, hook-init, preview, serve, open-target, inspect-target, run-inspect-command, export-handoff, style-brief, style-apply-check, show, builds")
 
 
 def cmd_conflicts(args: argparse.Namespace) -> int:
@@ -4285,6 +4306,9 @@ def _build_parser() -> argparse.ArgumentParser:
     project_style_brief_parser = project_subparsers.add_parser("style-brief", help="Export one architecture-first styling brief for external design models or operators")
     project_style_brief_parser.add_argument("--base-url", default=None, help="Cloud API base URL, defaults to AIL_CLOUD_BASE_URL or http://127.0.0.1:5002")
     project_style_brief_parser.add_argument("--json", action="store_true", help="Print project style brief as JSON")
+    project_style_apply_check_parser = project_subparsers.add_parser("style-apply-check", help="Validate that styling changes stayed inside safe surfaces and preserved project runtime continuity")
+    project_style_apply_check_parser.add_argument("--base-url", default=None, help="Cloud API base URL, defaults to AIL_CLOUD_BASE_URL or http://127.0.0.1:5002")
+    project_style_apply_check_parser.add_argument("--json", action="store_true", help="Print project style apply check as JSON")
     project_show_parser = project_subparsers.add_parser("show", help="Show project metadata")
     project_show_parser.add_argument("project_id", nargs="?", help="Project identifier; defaults to the current project")
     project_show_parser.add_argument("--base-url", default=None, help="Cloud API base URL, defaults to AIL_CLOUD_BASE_URL or http://127.0.0.1:5002")
@@ -9049,6 +9073,203 @@ def _build_project_style_brief_payload(ctx: ProjectContext, *, base_url: str | N
         "next_steps": next_steps,
     }
     return payload, EXIT_OK if payload["status"] == "ok" else max(export_exit, hook_exit)
+
+
+def _count_files_under(path: Path) -> int:
+    if not path.exists() or not path.is_dir():
+        return 0
+    return sum(1 for item in path.rglob("*") if item.is_file())
+
+
+def _managed_mirror_live_path(ctx: ProjectContext, managed_file: Path) -> Path | None:
+    try:
+        rel = managed_file.resolve().relative_to((ctx.root / "frontend/src/ail-managed").resolve()).as_posix()
+    except ValueError:
+        return None
+    if rel.startswith("views/"):
+        return ctx.root / "frontend/src/views" / rel[len("views/"):]
+    if rel.startswith("router/"):
+        return ctx.root / "frontend/src/router" / rel[len("router/"):]
+    return None
+
+
+def _files_identical(left: Path, right: Path) -> bool:
+    if not left.exists() or not right.exists() or not left.is_file() or not right.is_file():
+        return False
+    return left.read_bytes() == right.read_bytes()
+
+
+def _build_project_style_apply_check_payload(ctx: ProjectContext, *, base_url: str | None) -> tuple[dict[str, Any], int]:
+    style_brief_payload, _ = _build_project_style_brief_payload(ctx, base_url=base_url)
+    serve_payload, serve_exit = _build_project_serve_payload(
+        ctx,
+        host="127.0.0.1",
+        port=5173,
+        install_if_needed=False,
+        dry_run=True,
+    )
+
+    managed_root = ctx.root / "frontend/src/ail-managed"
+    managed_files = sorted(item for item in managed_root.rglob("*") if item.is_file()) if managed_root.exists() else []
+    mirror_checks: list[dict[str, Any]] = []
+    violation_count = 0
+    missing_mirror_count = 0
+    verified_count = 0
+
+    for managed_file in managed_files:
+        live_path = _managed_mirror_live_path(ctx, managed_file)
+        if live_path is None:
+            mirror_checks.append(
+                {
+                    "managed_path": str(managed_file),
+                    "live_path": "",
+                    "verified": False,
+                    "reason": "no_runtime_mirror_rule",
+                }
+            )
+            continue
+        verified_count += 1
+        live_exists = live_path.exists()
+        identical = _files_identical(managed_file, live_path) if live_exists else False
+        if not live_exists:
+            missing_mirror_count += 1
+        elif not identical:
+            violation_count += 1
+        mirror_checks.append(
+            {
+                "managed_path": str(managed_file),
+                "live_path": str(live_path),
+                "verified": True,
+                "live_exists": live_exists,
+                "identical": identical,
+                "status": "ok" if live_exists and identical else ("missing" if not live_exists else "violation"),
+            }
+        )
+
+    route_index_path = ctx.root / "frontend/src/router/index.ts"
+    route_index_text = route_index_path.read_text(encoding="utf-8", errors="replace") if route_index_path.exists() else ""
+    route_contract = {
+        "route_index_path": str(route_index_path),
+        "route_index_exists": route_index_path.exists(),
+        "imports_managed_routes": '@/ail-managed/router/routes.generated' in route_index_text,
+        "imports_managed_roles": '@/ail-managed/router/roles.generated' in route_index_text,
+        "managed_routes_path": str(ctx.root / "frontend/src/ail-managed/router/routes.generated.ts"),
+        "managed_routes_exists": (ctx.root / "frontend/src/ail-managed/router/routes.generated.ts").exists(),
+        "managed_roles_path": str(ctx.root / "frontend/src/ail-managed/router/roles.generated.ts"),
+        "managed_roles_exists": (ctx.root / "frontend/src/ail-managed/router/roles.generated.ts").exists(),
+    }
+    route_contract["route_contract_ok"] = bool(
+        route_contract["route_index_exists"]
+        and route_contract["imports_managed_routes"]
+        and route_contract["imports_managed_roles"]
+        and route_contract["managed_routes_exists"]
+        and route_contract["managed_roles_exists"]
+    )
+
+    override_root = ctx.root / "frontend/src/ail-overrides"
+    override_components_dir = override_root / "components"
+    override_assets_dir = override_root / "assets"
+    public_override_dir = ctx.root / "frontend/public/ail-overrides"
+    override_surface_summary = {
+        "override_root": str(override_root),
+        "override_root_exists": override_root.exists(),
+        "theme_tokens_path": str(override_root / "theme.tokens.css"),
+        "theme_tokens_exists": (override_root / "theme.tokens.css").exists(),
+        "custom_css_path": str(override_root / "custom.css"),
+        "custom_css_exists": (override_root / "custom.css").exists(),
+        "override_components_dir": str(override_components_dir),
+        "override_component_file_count": _count_files_under(override_components_dir),
+        "override_assets_dir": str(override_assets_dir),
+        "override_asset_file_count": _count_files_under(override_assets_dir),
+        "public_override_dir": str(public_override_dir),
+        "public_override_file_count": _count_files_under(public_override_dir),
+    }
+
+    runtime_entry_paths = [
+        ctx.root / "frontend/src/App.vue",
+        ctx.root / "frontend/src/main.ts",
+        ctx.root / "frontend/src/main.js",
+        ctx.root / "frontend/package.json",
+        ctx.root / "frontend/vite.config.ts",
+        ctx.root / "frontend/vite.config.js",
+    ]
+    runtime_entry_summary = {
+        "existing_runtime_entries": [str(path) for path in runtime_entry_paths if path.exists()],
+        "missing_runtime_entries": [str(path) for path in runtime_entry_paths if not path.exists()],
+    }
+    runtime_entry_summary["runtime_entry_ok"] = bool(
+        (ctx.root / "frontend/package.json").exists()
+        and any(path.exists() for path in (ctx.root / "frontend/src/main.ts", ctx.root / "frontend/src/main.js"))
+        and any(path.exists() for path in (ctx.root / "frontend/vite.config.ts", ctx.root / "frontend/vite.config.js"))
+    )
+
+    managed_boundary = {
+        "managed_root": str(managed_root),
+        "managed_root_exists": managed_root.exists(),
+        "managed_file_count": len(managed_files),
+        "verified_count": verified_count,
+        "missing_mirror_count": missing_mirror_count,
+        "violation_count": violation_count,
+        "verification_scope_note": "This check can locally prove mirror integrity for managed router and view files that have runtime copies. It does not claim a full historical diff for every non-override file without a baseline.",
+        "mirror_checks": mirror_checks,
+    }
+
+    next_steps: list[str] = []
+    for item in (
+        f"run PYTHONPATH={REPO_ROOT_STR} python3 -m cli project style-brief --base-url embedded://local --json",
+        f"run PYTHONPATH={REPO_ROOT_STR} python3 -m cli project serve --install-if-needed --json",
+        f"inspect {override_surface_summary['theme_tokens_path']}",
+        f"inspect {override_surface_summary['custom_css_path']}",
+    ):
+        if item not in next_steps:
+            next_steps.append(item)
+    for check in mirror_checks:
+        if check.get("status") in {"missing", "violation"} and check.get("live_path"):
+            step = f"inspect {check['live_path']}"
+            if step not in next_steps:
+                next_steps.append(step)
+    if not route_contract["route_contract_ok"]:
+        next_steps.append(f"inspect {route_contract['route_index_path']}")
+    for item in serve_payload.get("next_steps", []):
+        if item not in next_steps:
+            next_steps.append(item)
+
+    status = "ok"
+    message = "Style application stayed inside the expected architecture boundary and the local preview path still looks intact."
+    exit_code = EXIT_OK
+    if not managed_boundary["managed_root_exists"]:
+        status = "warning"
+        message = "Managed continuity files were not found, so style-apply-check could only run partial local validation."
+        exit_code = EXIT_VALIDATION
+    if violation_count or missing_mirror_count:
+        status = "warning"
+        message = "Managed mirror mismatches were found. A styling pass may have edited runtime files that should still match managed continuity copies."
+        exit_code = EXIT_VALIDATION
+    if not route_contract["route_contract_ok"] or not runtime_entry_summary["runtime_entry_ok"]:
+        status = "warning"
+        message = "Runtime continuity checks failed. Inspect router or runtime entry files before accepting the styling pass."
+        exit_code = EXIT_VALIDATION
+    if serve_exit != EXIT_OK:
+        status = "warning"
+        message = "The style boundary checks ran, but preview dry-run is not currently ready."
+        exit_code = max(exit_code, serve_exit)
+
+    payload = {
+        "status": status,
+        "entrypoint": "project-style-apply-check",
+        "project_id": style_brief_payload.get("project_id", ctx.project_id),
+        "project_root": style_brief_payload.get("project_root", str(ctx.root)),
+        "verification_mode": "local_boundary_and_runtime_continuity",
+        "message": message,
+        "style_brief": style_brief_payload,
+        "managed_boundary": managed_boundary,
+        "route_contract": route_contract,
+        "runtime_entry_contract": runtime_entry_summary,
+        "override_surface_summary": override_surface_summary,
+        "serve_dry_run": serve_payload,
+        "next_steps": next_steps,
+    }
+    return payload, exit_code
 
 
 def _build_project_run_inspect_command_payload(

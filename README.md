@@ -76,11 +76,16 @@ Current public website boundary:
 Architecture-first styling direction:
 
 - use `python3 -m cli project style-brief --base-url embedded://local --json` from a generated project when you want one operator-safe brief for an external design model
+- use `python3 -m cli project style-apply-check --base-url embedded://local --json` after a styling pass when you want one local boundary and runtime continuity check
 - this brief consolidates:
   - current preview and generated surface context
   - allowed override-safe write roots
   - forbidden managed roots
   - recommended validation and preview commands
+- the apply-check validates:
+  - managed mirror integrity for router and view runtime copies
+  - route wiring continuity
+  - local preview dry-run readiness
 - pair it with:
   - `python3 -m cli project export-handoff --base-url embedded://local --json`
   - `python3 -m cli project hook-guide --json`
