@@ -99,7 +99,38 @@ What you should expect:
 - a deliverability judgment for the current website surface
 - no crash
 
-## 6. Read The Current Workspace Surface
+## 6. Optional: Validate The Experimental Ecommerce Scenario
+
+If you want to test the current experimental storefront lane instead of the static website lane, use the built-in `ecom_min` scenario:
+
+```bash
+ecom_project_dir="$(mktemp -d /tmp/ail_ecom_preview.XXXXXX)"
+PYTHONPATH="$REPO_ROOT" python3 -m cli trial-run --scenario ecom_min --base-url embedded://local --project-dir "$ecom_project_dir" --json
+```
+
+PowerShell equivalent:
+
+```powershell
+$env:PYTHONPATH = $env:REPO_ROOT
+$ecomProjectDir = Join-Path $env:TEMP ("ail_ecom_preview_" + [System.Guid]::NewGuid().ToString("N"))
+New-Item -ItemType Directory -Path $ecomProjectDir | Out-Null
+py -3 -m cli trial-run --scenario ecom_min --base-url embedded://local --project-dir $ecomProjectDir --json
+```
+
+What you should expect:
+
+- a JSON payload with `detected_profile = ecom_min`
+- a generated multi-page storefront skeleton under the target project directory
+- browse / category / search / product / cart / checkout continuity
+- an account-center shell plus supporting pages such as `about`, `contact`, and `policy`
+
+Important scope note:
+
+- this is an experimental ecommerce preview, not the stable public website promise
+- generated checkout and account flows are skeletons, not production commerce systems
+- if a login page appears, treat it as a shell, not a finished auth product
+
+## 7. Read The Current Workspace Surface
 
 ```bash
 PYTHONPATH="$REPO_ROOT" python3 -m cli workspace summary --base-url embedded://local
@@ -107,7 +138,7 @@ PYTHONPATH="$REPO_ROOT" python3 -m cli workspace summary --base-url embedded://l
 
 This gives a higher-level operator view before you dig into project-specific flows.
 
-## 7. Inspect Durable Customization From A Proof Baseline
+## 8. Inspect Durable Customization From A Proof Baseline
 
 ```bash
 cd "$REPO_ROOT/output_projects/CompanyProductSiteBrandPostureReview"
@@ -120,9 +151,9 @@ What you should expect:
 - recommended next commands
 - hook discovery / preview / handoff structure
 
-## 8. Optional: Build A Proof Baseline Frontend
+## 9. Optional: Preview A Generated Project Locally
 
-You can preview a generated frontend through the CLI:
+For a static proof baseline:
 
 ```bash
 cd "$REPO_ROOT/output_projects/CompanyProductSiteBrandPostureReview"
@@ -130,16 +161,26 @@ PYTHONPATH="$REPO_ROOT" python3 -m cli project serve --dry-run --json
 PYTHONPATH="$REPO_ROOT" python3 -m cli project serve --install-if-needed
 ```
 
-PowerShell equivalent:
+For an experimental ecommerce project generated with `trial-run --scenario ecom_min`:
+
+```bash
+cd "$ecom_project_dir"
+PYTHONPATH="$REPO_ROOT" python3 -m cli project serve --dry-run --json
+PYTHONPATH="$REPO_ROOT" python3 -m cli project serve --install-if-needed
+```
+
+PowerShell equivalent for the ecommerce preview:
 
 ```powershell
-cd "$env:REPO_ROOT\output_projects\CompanyProductSiteBrandPostureReview"
+cd $ecomProjectDir
 $env:PYTHONPATH = $env:REPO_ROOT
 py -3 -m cli project serve --dry-run --json
 py -3 -m cli project serve --install-if-needed
 ```
 
 The command starts the frontend dev server in the background and returns a local URL such as `http://127.0.0.1:5173`.
+
+## 10. Optional: Build A Proof Baseline Frontend
 
 You can also build the proof frontends manually.
 
