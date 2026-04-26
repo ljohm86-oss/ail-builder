@@ -33,6 +33,7 @@ This changelog is intentionally lightweight for now. The repository already has 
 - expanded the experimental ecommerce `/account` order area with a status filter strip, order-card skeletons, and an explicit order empty-state block so future account/order work can attach to a clearer UI contract
 - expanded the experimental ecommerce `/account` address area with a default-address card, reusable address-item skeletons, explicit address actions, and an address empty-state block aligned with checkout reuse
 - expanded the experimental ecommerce `/account` wishlist area with saved-item skeletons, recent-view strips, and explicit return-entry markers for product, search, category, and shop continuity
+- expanded the experimental ecommerce `/account` security area with sign-in method chips, device cards, privacy/export controls, and explicit high-risk action placeholders for account freeze/logout/delete flows
 
 ## 2026-04-19
 

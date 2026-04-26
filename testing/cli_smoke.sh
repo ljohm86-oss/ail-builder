@@ -1059,7 +1059,26 @@ assert 'RETURN TO SHOP' in account_content, account_content
 assert 'EMPTY STATE READY' in account_content, account_content
 assert 'SECURITY DETAIL' in account_content, account_content
 assert 'AUTH LATER' in account_content, account_content
+assert 'EMAIL SIGN-IN' in account_content, account_content
+assert 'MOBILE SIGN-IN' in account_content, account_content
+assert 'SOCIAL BIND' in account_content, account_content
+assert '2FA READY' in account_content, account_content
 assert '双重验证与设备管理' in account_content, account_content
+assert 'DEVICE CARD / MacBook Air' in account_content, account_content
+assert 'DEVICE CARD / iPhone' in account_content, account_content
+assert 'NOTIFY LOGIN EVENTS' in account_content, account_content
+assert 'EXPORT ACCOUNT DATA' in account_content, account_content
+assert 'MARKETING CONSENT' in account_content, account_content
+assert 'SESSION REVIEW' in account_content, account_content
+assert '更新密码' in account_content, account_content
+assert '启用双重验证' in account_content, account_content
+assert '管理设备' in account_content, account_content
+assert '导出账户数据' in account_content, account_content
+assert 'RISK ACTIONS' in account_content, account_content
+assert '退出全部设备' in account_content, account_content
+assert '冻结账户入口' in account_content, account_content
+assert '申请注销' in account_content, account_content
+assert 'SECURITY EMPTY STATE' in account_content, account_content
 assert 'DYNAMIC BOUNDARY' in account_content, account_content
 routes_generated = (project_dir / 'src/router/generated/routes.generated.ts').read_text(encoding='utf-8')
 assert '/about' in routes_generated, routes_generated
