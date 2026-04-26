@@ -281,6 +281,7 @@ Purpose:
 Output should include:
 
 - architecture summary
+- saved style intent when available
 - design intent placeholders
 - allowed write scope
 - suggested override targets
@@ -319,6 +320,12 @@ Example fields:
 - style keywords
 - localization
 - visual constraints
+
+Current implementation notes:
+
+- persists to `.ail/style_intent.json`
+- supports read, write, and reset flows
+- is automatically included inside `project style-brief`
 
 ## Profile-Specific Notes
 
