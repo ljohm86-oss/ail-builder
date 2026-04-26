@@ -41,6 +41,7 @@ External testers can already:
 - run core CLI entrypoints
 - inspect website-oriented evaluation flows
 - generate static presentation-style site projects
+- generate the current experimental ecommerce storefront baseline with `trial-run --scenario ecom_min`
 - serve a generated project's frontend locally with `project serve`
 - explore durable customization workflows
 - inspect proof baselines for company and personal distinction work
@@ -60,6 +61,26 @@ It should not be presented as ecommerce, after-sales workflow, CMS, dashboard, a
 There is now a narrower experimental lane for ecommerce and after-sales exploration behind an explicit CLI opt-in.
 
 That lane should still be described as experimental research or validation work, not as part of the stable public website promise.
+
+The ecommerce experimental lane is now strong enough for public testers to:
+
+- generate a multi-page storefront skeleton
+- preview that storefront locally with `project serve`
+- inspect browse / category / search / product / cart / checkout continuity
+- inspect the current account-center shell and supporting pages
+
+It should still not be described as a finished commerce stack.
+
+More precise wording:
+
+- acceptable:
+  - experimental ecommerce storefront
+  - storefront skeleton
+  - ecommerce builder preview
+- avoid:
+  - production-ready ecommerce platform
+  - complete account system
+  - real payment or order-management product
 
 ## What This Release Should Be Called
 

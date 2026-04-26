@@ -20,9 +20,9 @@ AIL Builder currently works best for:
 
 It does not currently support:
 
-- ecommerce cart / checkout flows
-- order, refund, exchange, or after-sales workflow handling
-- login or authentication systems
+- stable public ecommerce promises
+- order, refund, exchange, or after-sales workflow handling as production systems
+- production login or authentication systems
 - dashboards or admin panels
 - CMS or publishing-system behavior
 - database-backed applications
@@ -35,16 +35,23 @@ Today, the experimental ecommerce lane is best understood as:
 
 - product-listing or shop-entry pages
 - product detail pages
+- category and search pages
 - cart pages
-- checkout handoff pages
+- checkout skeleton / handoff pages
+- account-center shell pages
+- supporting pages such as `about`, `contact`, and `policy`
+- local preview of generated storefront projects through `project serve`
 
 It should not currently be positioned as:
 
-- account or login behavior
+- production account or login behavior
 - real payment processing
 - merchant backend or inventory tooling
 - order-management systems
 - production-grade database-backed ecommerce
+
+If auth APIs are present in the generated project, a login page shell may also appear.
+That should still be treated as an implementation shell, not as a finished authentication product.
 
 ### 2. Blog Support Is Partial
 
@@ -175,6 +182,8 @@ These are currently strong enough to rely on for testing:
   - `207 / 207` checks passing
 - website-oriented CLI mainline
 - static presentation-site generation for portfolio, company/product, and landing-style pages
+- experimental ecommerce storefront generation via `trial-run --scenario ecom_min`
+- project-level ecommerce storefront preview via `project serve`
 - durable customization workflow
 - proof baselines for company and personal distinction work
 

@@ -61,7 +61,8 @@ Current tested generation scope:
 
 - supported: static presentation-style sites such as personal portfolios, company product pages, and simple landing pages
 - partial: blog-style presentation pages, without CMS or publishing-system behavior
-- out of scope: ecommerce, login systems, dashboards, CMS, back-office workflows, and database-backed applications
+- experimental: `ecom_min` storefront generation and preview behind `trial-run --scenario ecom_min`
+- out of scope for the stable public website promise: full ecommerce operations, production login systems, dashboards, CMS, back-office workflows, and database-backed applications
 
 Current public website boundary:
 
@@ -77,13 +78,32 @@ Experimental dynamic lane:
   - catalog / shop entry
   - product detail
   - cart
-  - checkout handoff
+  - checkout skeleton / handoff
+  - search, category, and shop continuity pages
+  - account-center shell
+  - supporting pages such as `about`, `contact`, and `policy`
+- current verified ecom scenario entrypoint is:
+  - `python3 -m cli trial-run --scenario ecom_min --base-url embedded://local --json`
+- current verified local preview path is:
+  - generate with `trial-run --scenario ecom_min`
+  - then run `python3 -m cli project serve --install-if-needed` from the generated project directory
 - do not position the ecommerce lane as:
-  - login / account system
+  - production login / account system
   - payment capture stack
   - merchant backend
   - order-management platform
   - database-backed production commerce system
+
+Current observed ecommerce preview shape:
+
+- multi-page storefront skeleton rather than a single landing page
+- product browse/search/cart/checkout continuity is present
+- account-center shell is present and now includes:
+  - order skeleton
+  - address skeleton
+  - wishlist skeleton
+  - security skeleton
+- login may appear as a shell page when auth APIs are present, but should not be marketed as a finished auth product
 
 Current realization expectation for most landing-style website requests:
 
@@ -104,7 +124,7 @@ AIL Builder is a good fit today for:
 It is not yet optimized for:
 
 - casual users expecting a 5-minute no-context setup
-- ecommerce, CMS, authentication, dashboard, or database-backed app generation
+- production ecommerce, CMS, authentication, dashboard, or database-backed app generation
 - automatic one-command generate-and-serve from a raw prompt
 - production deployment with stability guarantees
 - a frozen public API or stable plugin surface
@@ -148,12 +168,23 @@ PYTHONPATH="$REPO_ROOT" python3 -m cli project serve --dry-run --json
 PYTHONPATH="$REPO_ROOT" python3 -m cli project serve --install-if-needed
 ```
 
+If you want to validate the current experimental ecommerce storefront lane:
+
+```bash
+REPO_ROOT="$PWD"
+ecom_project_dir="$(mktemp -d /tmp/ail_ecom_preview.XXXXXX)"
+PYTHONPATH="$REPO_ROOT" python3 -m cli trial-run --scenario ecom_min --base-url embedded://local --project-dir "$ecom_project_dir" --json
+cd "$ecom_project_dir"
+PYTHONPATH="$REPO_ROOT" python3 -m cli project serve --install-if-needed
+```
+
 ## What Already Works Well
 
 The repository already has real product truth in these areas:
 
 - website-oriented CLI checks, previews, summaries, and handoff flows
 - static presentation-site generation for portfolio, company/product, and landing-style pages
+- experimental ecommerce storefront generation and local preview through `trial-run --scenario ecom_min` plus `project serve`
 - project-level local frontend serving via `project serve`
 - managed / unmanaged customization via `hook-guide`, `hook-init`, and `hook-continue`
 - durable override workflows without editing managed files directly
