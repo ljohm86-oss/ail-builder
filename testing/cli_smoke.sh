@@ -18,6 +18,7 @@ ok_website_check_out_of_scope_json=false
 ok_website_check_experimental_dynamic_json=false
 ok_writing_packs_json=false
 ok_writing_check_copy_json=false
+ok_writing_check_announcement_json=false
 ok_writing_check_story_json=false
 ok_writing_check_book_json=false
 ok_writing_scaffold_copy_json=false
@@ -1401,6 +1402,19 @@ assert payload['writing_contract']['surface'] == 'structured_copy_scaffold', pay
 assert 'landing-page copy blocks' in payload['writing_contract']['supported_capabilities'], payload
 PY
 ok_writing_check_copy_json=true
+
+writing_check_announcement_json="$TMP_ROOT/writing_check_announcement.json"
+PYTHONPATH="$ROOT" python3 -m cli writing check '写一个产品发布公告，包含发布时间、核心亮点和行动号召。' --json > "$writing_check_announcement_json"
+python3 - "$writing_check_announcement_json" <<'PY'
+import json, sys
+payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
+assert payload['status'] == 'ok', payload
+assert payload['writing_pack'] == 'Copy / Messaging Pack', payload
+assert payload['support_level'] == 'Supported', payload
+assert payload['expected_profile'] == 'copy_min', payload
+assert '公告' in payload['matched_signals'] or '产品发布' in payload['matched_signals'], payload
+PY
+ok_writing_check_announcement_json=true
 
 writing_check_story_json="$TMP_ROOT/writing_check_story.json"
 PYTHONPATH="$ROOT" python3 -m cli writing check '写一个长篇奇幻小说提纲和角色设定，包含主要冲突和章节结构。' --json > "$writing_check_story_json"

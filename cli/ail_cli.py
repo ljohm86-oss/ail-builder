@@ -4754,6 +4754,8 @@ def _analyze_writing_requirement(requirement: str) -> dict[str, Any]:
         "文案", "广告", "宣传", "营销", "产品介绍", "品牌介绍", "slogan", "tagline",
         "landing copy", "sales copy", "email copy", "campaign copy", "产品文案", "品牌文案",
         "官网文案", "转化文案", "邮件文案", "press release", "新闻稿",
+        "公告", "announcement", "launch announcement", "产品发布", "发布公告",
+        "发布说明", "发布稿", "上新", "新品发布", "媒体稿", "公关稿",
     ]
     story_terms = [
         "小说", "故事", "短篇", "长篇", "角色", "人物设定", "世界观", "章节", "情节", "plot",
