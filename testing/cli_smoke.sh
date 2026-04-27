@@ -42,6 +42,7 @@ ok_writing_review_output_file_summary=false
 ok_writing_review_output_file_json=false
 ok_writing_bundle_json=false
 ok_writing_bundle_zip_json=false
+ok_writing_bundle_copy_archive_path_json=false
 ok_writing_bundle_emit_summary_txt=false
 ok_writing_bundle_output_file_summary=false
 ok_writing_bundle_output_file_json=false
@@ -1774,6 +1775,22 @@ assert os.path.exists(payload['archive_path']), payload
 assert payload['archive_path'].endswith('.zip'), payload
 PY
 ok_writing_bundle_zip_json=true
+
+writing_bundle_copy_archive_json="$TMP_ROOT/writing_bundle_copy_archive.json"
+writing_bundle_copy_archive_dir="$TMP_ROOT/writing_bundle_copy_archive_dir"
+PYTHONPATH="$ROOT" python3 -m cli writing bundle '写一个长篇奇幻小说提纲和角色设定，包含主要冲突和章节结构。' --deep --zip --copy-archive-path --output-dir "$writing_bundle_copy_archive_dir" --json > "$writing_bundle_copy_archive_json"
+python3 - "$writing_bundle_copy_archive_json" <<'PY'
+import json, os, sys
+payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
+assert payload['status'] == 'ok', payload
+assert payload['entrypoint'] == 'writing-bundle', payload
+assert payload['zip_enabled'] is True, payload
+assert payload['archive_path'], payload
+assert os.path.exists(payload['archive_path']), payload
+assert payload['copied_archive_path'] == payload['archive_path'], payload
+assert payload['copied_archive_path_to_clipboard'] is True, payload
+PY
+ok_writing_bundle_copy_archive_path_json=true
 
 writing_bundle_emit_summary_txt="$TMP_ROOT/writing_bundle_emit_summary.txt"
 writing_bundle_emit_summary_dir="$TMP_ROOT/writing_bundle_emit_summary_dir"
@@ -5825,6 +5842,7 @@ export CLI_SMOKE_OK_WRITING_REVIEW_OUTPUT_FILE_SUMMARY="$ok_writing_review_outpu
 export CLI_SMOKE_OK_WRITING_REVIEW_OUTPUT_FILE_JSON="$ok_writing_review_output_file_json"
 export CLI_SMOKE_OK_WRITING_BUNDLE_JSON="$ok_writing_bundle_json"
 export CLI_SMOKE_OK_WRITING_BUNDLE_ZIP_JSON="$ok_writing_bundle_zip_json"
+export CLI_SMOKE_OK_WRITING_BUNDLE_COPY_ARCHIVE_PATH_JSON="$ok_writing_bundle_copy_archive_path_json"
 export CLI_SMOKE_OK_WRITING_BUNDLE_EMIT_SUMMARY_TXT="$ok_writing_bundle_emit_summary_txt"
 export CLI_SMOKE_OK_WRITING_BUNDLE_OUTPUT_FILE_SUMMARY="$ok_writing_bundle_output_file_summary"
 export CLI_SMOKE_OK_WRITING_BUNDLE_OUTPUT_FILE_JSON="$ok_writing_bundle_output_file_json"
@@ -6039,6 +6057,7 @@ payload = {
         'writing_review_output_file_json_ok': os.environ['CLI_SMOKE_OK_WRITING_REVIEW_OUTPUT_FILE_JSON'] == 'true',
         'writing_bundle_json_ok': os.environ['CLI_SMOKE_OK_WRITING_BUNDLE_JSON'] == 'true',
         'writing_bundle_zip_json_ok': os.environ['CLI_SMOKE_OK_WRITING_BUNDLE_ZIP_JSON'] == 'true',
+        'writing_bundle_copy_archive_path_json_ok': os.environ['CLI_SMOKE_OK_WRITING_BUNDLE_COPY_ARCHIVE_PATH_JSON'] == 'true',
         'writing_bundle_emit_summary_txt_ok': os.environ['CLI_SMOKE_OK_WRITING_BUNDLE_EMIT_SUMMARY_TXT'] == 'true',
         'writing_bundle_output_file_summary_ok': os.environ['CLI_SMOKE_OK_WRITING_BUNDLE_OUTPUT_FILE_SUMMARY'] == 'true',
         'writing_bundle_output_file_json_ok': os.environ['CLI_SMOKE_OK_WRITING_BUNDLE_OUTPUT_FILE_JSON'] == 'true',

@@ -59,6 +59,7 @@ This changelog is intentionally lightweight for now. The repository already has 
 - added `writing bundle --output-file` so the compact bundle summary or full bundle manifest can be written directly to disk
 - added `README.txt` inside each writing bundle so the exported directory explains file purpose and suggested reading order
 - added `manifest_version` and `bundle_created_at` to writing bundles so exported artifacts carry lightweight versioning and creation metadata
+- added `writing bundle --copy-archive-path` so zipped bundles can copy their archive path directly into the macOS clipboard for faster handoff
 
 ## 2026-04-19
 
