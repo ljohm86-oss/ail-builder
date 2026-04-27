@@ -577,6 +577,7 @@ def cmd_writing(args: argparse.Namespace) -> int:
             output_dir=getattr(args, "output_dir", None),
             make_zip=bool(getattr(args, "zip_bundle", False)),
             copy_archive_path=bool(getattr(args, "copy_archive_path", False)),
+            copy_summary=bool(getattr(args, "copy_summary", False)),
         )
         output_file = getattr(args, "output_file", None)
         if getattr(args, "emit_summary", False):
@@ -604,6 +605,10 @@ def cmd_writing(args: argparse.Namespace) -> int:
                 print(f"- copied_archive_path_to_clipboard: {payload.get('copied_archive_path_to_clipboard', False)}")
             if payload.get("copy_archive_path_error"):
                 print(f"- copy_archive_path_error: {payload.get('copy_archive_path_error', '')}")
+            if "copied_summary_to_clipboard" in payload:
+                print(f"- copied_summary_to_clipboard: {payload.get('copied_summary_to_clipboard', False)}")
+            if payload.get("copy_summary_error"):
+                print(f"- copy_summary_error: {payload.get('copy_summary_error', '')}")
             print("Files:")
             for label, path in (payload.get("files") or {}).items():
                 print(f"- {label}: {path}")
@@ -4308,6 +4313,7 @@ def _build_parser() -> argparse.ArgumentParser:
     writing_bundle_parser.add_argument("--deep", action="store_true", help="Run the bundle with deep expansion enabled")
     writing_bundle_parser.add_argument("--zip", dest="zip_bundle", action="store_true", help="Also create a zip archive next to the bundle directory")
     writing_bundle_parser.add_argument("--copy-archive-path", action="store_true", help="Copy the generated bundle archive path to the macOS clipboard (requires --zip)")
+    writing_bundle_parser.add_argument("--copy-summary", action="store_true", help="Copy the compact bundle summary text to the macOS clipboard")
     writing_bundle_parser.add_argument("--emit-summary", action="store_true", help="Print only a compact bundle summary")
     writing_bundle_parser.add_argument("--output-file", dest="output_file", help="Write the bundle output to a file")
     writing_bundle_parser.add_argument("--output-dir", dest="output_dir", help="Directory where the writing bundle should be written")
@@ -6054,6 +6060,7 @@ def _build_writing_bundle_payload(
     output_dir: str | None,
     make_zip: bool,
     copy_archive_path: bool,
+    copy_summary: bool,
 ) -> tuple[dict[str, Any], int]:
     check_payload, check_exit = _build_writing_check_payload(requirement=requirement)
     scaffold_payload, scaffold_exit = _build_writing_scaffold_payload(requirement=requirement)
@@ -6150,6 +6157,15 @@ def _build_writing_bundle_payload(
             payload["copied_archive_path_to_clipboard"] = False
             payload["copy_archive_path_error"] = "No bundle archive path was available to copy. Re-run with --zip first."
     payload["summary_text"] = _build_writing_bundle_summary_text(payload)
+    if copy_summary:
+        summary_text = str(payload.get("summary_text", ""))
+        copied_ok, copied_error = _copy_text_to_clipboard(summary_text)
+        payload["copied_summary"] = summary_text
+        payload["copied_summary_to_clipboard"] = copied_ok
+        if copied_error:
+            payload["copy_summary_error"] = copied_error
+        elif copied_ok:
+            payload["next_steps"].insert(0, "paste the copied bundle summary into your handoff note or test report")
     _write_cli_output_file(files["bundle_manifest_json"], payload, as_json=True)
     exit_code = max(check_exit, scaffold_exit, brief_exit, expand_exit, review_exit)
     return payload, exit_code

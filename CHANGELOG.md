@@ -60,6 +60,7 @@ This changelog is intentionally lightweight for now. The repository already has 
 - added `README.txt` inside each writing bundle so the exported directory explains file purpose and suggested reading order
 - added `manifest_version` and `bundle_created_at` to writing bundles so exported artifacts carry lightweight versioning and creation metadata
 - added `writing bundle --copy-archive-path` so zipped bundles can copy their archive path directly into the macOS clipboard for faster handoff
+- added `writing bundle --copy-summary` so compact bundle summaries can be copied straight into a handoff note or test report
 
 ## 2026-04-19
 
