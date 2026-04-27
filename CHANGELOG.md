@@ -46,6 +46,7 @@ This changelog is intentionally lightweight for now. The repository already has 
 - expanded the first `writing` CLI branch with `writing brief` and `--emit-prompt`, so writing scaffolds and saved writing intent can now be handed to external models as one prompt-ready continuation task
 - expanded the first `writing` CLI branch with `writing expand` and `--emit-text`, so copy, story, and book scaffolds can now be turned into one controlled first-draft pass before deeper rewriting
 - widened `copy_min` writing detection so announcement and launch-style requests such as product release notices are classified into the copy lane more reliably
+- added deterministic variation modes inside `writing expand` so first-draft outputs can differ in voice while staying stable for the same requirement and pack
 
 ## 2026-04-19
 

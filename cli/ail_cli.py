@@ -5195,42 +5195,101 @@ def _build_writing_brief_payload(*, requirement: str) -> tuple[dict[str, Any], i
     return payload, exit_code
 
 
-def _copy_expand(scaffold: dict[str, Any], intent: dict[str, Any]) -> tuple[list[dict[str, str]], str]:
+def _writing_expand_variant_seed(requirement: str, profile: str) -> int:
+    key = f"{profile}|{requirement.strip()}".strip()
+    if not key:
+        return 0
+    return sum(ord(ch) for ch in key) % 3
+
+
+def _copy_expand(scaffold: dict[str, Any], intent: dict[str, Any], *, variant_seed: int) -> tuple[str, list[dict[str, str]], str]:
     headline = str(scaffold.get("headline") or "A clearer offer starts here.")
     promise = str(scaffold.get("one_line_promise") or "Turn the current offer into a message the reader can act on.")
     message_architecture = scaffold.get("message_architecture") or {}
     proof_points = list(message_architecture.get("proof") or [])
     ctas = list(message_architecture.get("cta_direction") or ["Book a demo"])
     tone = ", ".join(intent.get("tone_keywords") or []) or "clear and direct"
-    sections = [
-        {
-            "label": "hero_draft",
-            "text": (
-                f"{headline}\n\n"
-                f"{promise} We frame the problem in a {tone} voice, then move quickly into why this offer is easier to trust, easier to understand, and easier to act on."
-            ),
-        },
-        {
-            "label": "proof_draft",
-            "text": (
-                "Why this lands:\n"
-                + "\n".join(f"- {point.capitalize()}." for point in proof_points)
-                + "\n\nInstead of forcing the reader to decode the value, the page carries them from fit to proof to next step."
-            ),
-        },
-        {
-            "label": "cta_draft",
-            "text": (
-                f"Next step: {ctas[0]}\n\n"
-                f"If the reader already feels the pain and can see the fit, the call to action should feel like the natural continuation rather than a hard sell."
-            ),
-        },
-    ]
+    variant_id = ["copy_direct", "copy_editorial", "copy_operator"][variant_seed]
+    if variant_seed == 0:
+        sections = [
+            {
+                "label": "hero_draft",
+                "text": (
+                    f"{headline}\n\n"
+                    f"{promise} We frame the problem in a {tone} voice, then move quickly into why this offer is easier to trust, easier to understand, and easier to act on."
+                ),
+            },
+            {
+                "label": "proof_draft",
+                "text": (
+                    "Why this lands:\n"
+                    + "\n".join(f"- {point.capitalize()}." for point in proof_points)
+                    + "\n\nInstead of forcing the reader to decode the value, the page carries them from fit to proof to next step."
+                ),
+            },
+            {
+                "label": "cta_draft",
+                "text": (
+                    f"Next step: {ctas[0]}\n\n"
+                    f"If the reader already feels the pain and can see the fit, the call to action should feel like the natural continuation rather than a hard sell."
+                ),
+            },
+        ]
+    elif variant_seed == 1:
+        sections = [
+            {
+                "label": "hero_draft",
+                "text": (
+                    f"{headline}\n\n"
+                    f"{promise} The copy should open with confidence, then slow just enough to help the reader feel oriented instead of rushed."
+                ),
+            },
+            {
+                "label": "proof_draft",
+                "text": (
+                    "What makes the message believable:\n"
+                    + "\n".join(f"- {point.capitalize()}." for point in proof_points)
+                    + "\n\nThe reader should feel that each line reduces uncertainty rather than piling on more claims."
+                ),
+            },
+            {
+                "label": "cta_draft",
+                "text": (
+                    f"Suggested close: {ctas[0]}\n\n"
+                    f"End with one clear action and one short reason to take it now, so the page finishes with momentum instead of hesitation."
+                ),
+            },
+        ]
+    else:
+        sections = [
+            {
+                "label": "hero_draft",
+                "text": (
+                    f"{headline}\n\n"
+                    f"{promise} The opening should work like an operator summary: what changed, why it matters, and what the reader should do next."
+                ),
+            },
+            {
+                "label": "proof_draft",
+                "text": (
+                    "Operational proof:\n"
+                    + "\n".join(f"- {point.capitalize()}." for point in proof_points)
+                    + "\n\nEach point should help the reader move from vague interest to a more concrete buying decision."
+                ),
+            },
+            {
+                "label": "cta_draft",
+                "text": (
+                    f"Recommended action: {ctas[0]}\n\n"
+                    f"Treat the CTA like the next operational step, not a decorative footer button."
+                ),
+            },
+        ]
     expanded_text = "\n\n".join(item["text"] for item in sections)
-    return sections, expanded_text
+    return variant_id, sections, expanded_text
 
 
-def _story_expand(scaffold: dict[str, Any], intent: dict[str, Any]) -> tuple[list[dict[str, str]], str]:
+def _story_expand(scaffold: dict[str, Any], intent: dict[str, Any], *, variant_seed: int) -> tuple[str, list[dict[str, str]], str]:
     story_core = scaffold.get("story_core") or {}
     chapter_tree = list(scaffold.get("chapter_tree") or [])
     character_cards = list(scaffold.get("character_cards") or [])
@@ -5238,69 +5297,170 @@ def _story_expand(scaffold: dict[str, Any], intent: dict[str, Any]) -> tuple[lis
     tone = str(story_core.get("tone") or ", ".join(intent.get("tone_keywords") or []) or "tense")
     chapter_one = chapter_tree[0] if chapter_tree else {"label": "opening", "goal": "disturb the current equilibrium"}
     chapter_two = chapter_tree[1] if len(chapter_tree) > 1 else {"label": "choice", "goal": "force a commitment"}
-    sections = [
-        {
-            "label": "opening_scene_draft",
-            "text": (
-                f"Opening scene, {chapter_one['label']}:\n\n"
-                f"The story begins in a {tone} register. The protagonist moves through a familiar routine until the cost of staying passive becomes impossible to ignore. "
-                f"What seemed manageable suddenly carries a sharper consequence, and the first real fracture in the old equilibrium appears."
-            ),
-        },
-        {
-            "label": "character_motion_draft",
-            "text": (
-                f"Character motion:\n\n"
-                f"The protagonist wants {protagonist.get('need', 'a concrete win')}, but the hidden pressure comes from {protagonist.get('hidden_need', 'an internal correction')}. "
-                f"That tension shapes every decision, especially once the ally and the opposition begin pulling the same conflict in different directions."
-            ),
-        },
-        {
-            "label": "chapter_progression_draft",
-            "text": (
-                f"From chapter one into chapter two:\n\n"
-                f"After the initial disruption, the story pivots into {chapter_two['label']}. "
-                f"The protagonist is forced to choose a path that costs them safety, clarity, or reputation, which gives the next chapter its forward pressure."
-            ),
-        },
-    ]
+    variant_id = ["story_cinematic", "story_close_psychology", "story_forward_pressure"][variant_seed]
+    if variant_seed == 0:
+        sections = [
+            {
+                "label": "opening_scene_draft",
+                "text": (
+                    f"Opening scene, {chapter_one['label']}:\n\n"
+                    f"The story begins in a {tone} register. The protagonist moves through a familiar routine until the cost of staying passive becomes impossible to ignore. "
+                    f"What seemed manageable suddenly carries a sharper consequence, and the first real fracture in the old equilibrium appears."
+                ),
+            },
+            {
+                "label": "character_motion_draft",
+                "text": (
+                    f"Character motion:\n\n"
+                    f"The protagonist wants {protagonist.get('need', 'a concrete win')}, but the hidden pressure comes from {protagonist.get('hidden_need', 'an internal correction')}. "
+                    f"That tension shapes every decision, especially once the ally and the opposition begin pulling the same conflict in different directions."
+                ),
+            },
+            {
+                "label": "chapter_progression_draft",
+                "text": (
+                    f"From chapter one into chapter two:\n\n"
+                    f"After the initial disruption, the story pivots into {chapter_two['label']}. "
+                    f"The protagonist is forced to choose a path that costs them safety, clarity, or reputation, which gives the next chapter its forward pressure."
+                ),
+            },
+        ]
+    elif variant_seed == 1:
+        sections = [
+            {
+                "label": "opening_scene_draft",
+                "text": (
+                    f"Opening scene, {chapter_one['label']}:\n\n"
+                    f"The opening should feel intimate before it feels large. We stay close to the protagonist's perception, letting the first disturbance arrive through one detail that refuses to stay ignorable."
+                ),
+            },
+            {
+                "label": "character_motion_draft",
+                "text": (
+                    "Inner pressure:\n\n"
+                    f"Under the visible goal of {protagonist.get('need', 'a concrete win')}, the protagonist is really wrestling with {protagonist.get('hidden_need', 'an internal correction')}. "
+                    f"That inner contradiction is what gives later scenes their emotional recoil."
+                ),
+            },
+            {
+                "label": "chapter_progression_draft",
+                "text": (
+                    f"Toward chapter two:\n\n"
+                    f"The consequence of the first disturbance should narrow the protagonist's options until {chapter_two['label']} is no longer a free choice but the least survivable refusal."
+                ),
+            },
+        ]
+    else:
+        sections = [
+            {
+                "label": "opening_scene_draft",
+                "text": (
+                    f"Opening scene, {chapter_one['label']}:\n\n"
+                    f"Begin with motion. The world is already leaning toward rupture, and the protagonist notices it a breath too late. The first scene should feel like pressure arriving before explanation."
+                ),
+            },
+            {
+                "label": "character_motion_draft",
+                "text": (
+                    "Conflict engine:\n\n"
+                    f"The protagonist reaches for {protagonist.get('need', 'a concrete win')}, but every fast decision drags them closer to the weakness hidden inside {protagonist.get('hidden_need', 'an internal correction')}."
+                ),
+            },
+            {
+                "label": "chapter_progression_draft",
+                "text": (
+                    f"Forward pressure:\n\n"
+                    f"Chapter one should end with momentum already pointing at {chapter_two['label']}, so the next move feels unavoidable and costly at the same time."
+                ),
+            },
+        ]
     expanded_text = "\n\n".join(item["text"] for item in sections)
-    return sections, expanded_text
+    return variant_id, sections, expanded_text
 
 
-def _book_expand(scaffold: dict[str, Any], intent: dict[str, Any]) -> tuple[list[dict[str, str]], str]:
+def _book_expand(scaffold: dict[str, Any], intent: dict[str, Any], *, variant_seed: int) -> tuple[str, list[dict[str, str]], str]:
     transformation = str(scaffold.get("reader_transformation") or "Help the reader move toward a more repeatable approach.")
     toc = list(scaffold.get("table_of_contents") or [])
     first = toc[0] if toc else {"title": "Why the current approach breaks", "goal": "reset expectations"}
     second = toc[1] if len(toc) > 1 else {"title": "What the new model changes", "goal": "introduce the framework"}
     audience = str((scaffold.get("positioning") or {}).get("reader") or intent.get("audience") or "the target reader")
-    sections = [
-        {
-            "label": "intro_draft",
-            "text": (
-                f"Book introduction:\n\n"
-                f"This book is for {audience}. {transformation} The opening pages should make the reader feel seen, then quickly show that the current way of operating breaks for predictable reasons."
-            ),
-        },
-        {
-            "label": "chapter_one_draft",
-            "text": (
-                f"Chapter 1, {first['title']}:\n\n"
-                f"Start by naming the friction the reader already feels. Then explain why that friction is not random; it comes from an outdated operating model. "
-                f"The goal of this chapter is to reset expectations and prepare the reader for a more useful framework."
-            ),
-        },
-        {
-            "label": "chapter_two_bridge_draft",
-            "text": (
-                f"Bridge into Chapter 2, {second['title']}:\n\n"
-                f"Once the old model has been discredited, the reader is ready for the new one. "
-                f"This section should turn the argument into a practical framework the reader can remember and apply."
-            ),
-        },
-    ]
+    variant_id = ["book_coach", "book_editorial", "book_operator"][variant_seed]
+    if variant_seed == 0:
+        sections = [
+            {
+                "label": "intro_draft",
+                "text": (
+                    f"Book introduction:\n\n"
+                    f"This book is for {audience}. {transformation} The opening pages should make the reader feel seen, then quickly show that the current way of operating breaks for predictable reasons."
+                ),
+            },
+            {
+                "label": "chapter_one_draft",
+                "text": (
+                    f"Chapter 1, {first['title']}:\n\n"
+                    f"Start by naming the friction the reader already feels. Then explain why that friction is not random; it comes from an outdated operating model. "
+                    f"The goal of this chapter is to reset expectations and prepare the reader for a more useful framework."
+                ),
+            },
+            {
+                "label": "chapter_two_bridge_draft",
+                "text": (
+                    f"Bridge into Chapter 2, {second['title']}:\n\n"
+                    f"Once the old model has been discredited, the reader is ready for the new one. "
+                    f"This section should turn the argument into a practical framework the reader can remember and apply."
+                ),
+            },
+        ]
+    elif variant_seed == 1:
+        sections = [
+            {
+                "label": "intro_draft",
+                "text": (
+                    f"Book introduction:\n\n"
+                    f"Open with recognition, not abstraction. {audience} should feel that the book understands the frustration beneath the surface before it starts teaching."
+                ),
+            },
+            {
+                "label": "chapter_one_draft",
+                "text": (
+                    f"Chapter 1, {first['title']}:\n\n"
+                    f"This chapter should read like a reframe. The reader first sees their current struggle more clearly, then understands why the old explanation was incomplete."
+                ),
+            },
+            {
+                "label": "chapter_two_bridge_draft",
+                "text": (
+                    f"Bridge into Chapter 2, {second['title']}:\n\n"
+                    f"Only after the old frame has collapsed should the book introduce a cleaner one, with language simple enough to remember and strong enough to use."
+                ),
+            },
+        ]
+    else:
+        sections = [
+            {
+                "label": "intro_draft",
+                "text": (
+                    f"Book introduction:\n\n"
+                    f"This book is written for {audience}, and it should open like an operator memo: what is broken, what will change, and what the reader will be able to do differently."
+                ),
+            },
+            {
+                "label": "chapter_one_draft",
+                "text": (
+                    f"Chapter 1, {first['title']}:\n\n"
+                    f"Name the bottleneck directly. Show that the current system creates predictable waste, then make the reader ready to replace it rather than optimize around it."
+                ),
+            },
+            {
+                "label": "chapter_two_bridge_draft",
+                "text": (
+                    f"Bridge into Chapter 2, {second['title']}:\n\n"
+                    f"Once the reader accepts that the old model is expensive, chapter two should give them a practical replacement they can test immediately."
+                ),
+            },
+        ]
     expanded_text = "\n\n".join(item["text"] for item in sections)
-    return sections, expanded_text
+    return variant_id, sections, expanded_text
 
 
 def _build_writing_expand_payload(*, requirement: str) -> tuple[dict[str, Any], int]:
@@ -5319,17 +5479,19 @@ def _build_writing_expand_payload(*, requirement: str) -> tuple[dict[str, Any], 
     scaffold = scaffold_payload.get("scaffold") or {}
     intent = scaffold_payload.get("writing_intent") or {}
     profile = str(scaffold_payload.get("expected_profile") or "")
+    variant_seed = _writing_expand_variant_seed(requirement, profile)
     if profile == "copy_min":
-        expanded_units, expanded_text = _copy_expand(scaffold, intent)
+        expand_variant, expanded_units, expanded_text = _copy_expand(scaffold, intent, variant_seed=variant_seed)
     elif profile == "story_min":
-        expanded_units, expanded_text = _story_expand(scaffold, intent)
+        expand_variant, expanded_units, expanded_text = _story_expand(scaffold, intent, variant_seed=variant_seed)
     else:
-        expanded_units, expanded_text = _book_expand(scaffold, intent)
+        expand_variant, expanded_units, expanded_text = _book_expand(scaffold, intent, variant_seed=variant_seed)
 
     payload = {
         **scaffold_payload,
         "entrypoint": "writing-expand",
         "expand_mode": "first_draft_pass",
+        "expand_variant": expand_variant,
         "expanded_units": expanded_units,
         "expanded_unit_count": len(expanded_units),
         "expanded_text": expanded_text,

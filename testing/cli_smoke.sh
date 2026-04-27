@@ -1569,8 +1569,9 @@ assert payload['status'] == 'ok', payload
 assert payload['entrypoint'] == 'writing-expand', payload
 assert payload['expand_mode'] == 'first_draft_pass', payload
 assert payload['writing_pack'] == 'Copy / Messaging Pack', payload
+assert payload['expand_variant'] in {'copy_direct', 'copy_editorial', 'copy_operator'}, payload
 assert payload['expanded_unit_count'] == 3, payload
-assert 'Help' in payload['expanded_text'], payload
+assert payload['expanded_text'], payload
 assert payload['expanded_units'][0]['label'] == 'hero_draft', payload
 PY
 ok_writing_expand_copy_json=true
@@ -1584,8 +1585,9 @@ assert payload['status'] == 'ok', payload
 assert payload['entrypoint'] == 'writing-expand', payload
 assert payload['expand_mode'] == 'first_draft_pass', payload
 assert payload['writing_pack'] == 'Story / Fiction Outline Pack', payload
+assert payload['expand_variant'] in {'story_cinematic', 'story_close_psychology', 'story_forward_pressure'}, payload
 assert payload['expanded_unit_count'] == 3, payload
-assert 'Opening scene' in payload['expanded_text'], payload
+assert payload['expanded_text'], payload
 assert payload['expanded_units'][0]['label'] == 'opening_scene_draft', payload
 PY
 ok_writing_expand_story_json=true
@@ -1599,8 +1601,9 @@ assert payload['status'] == 'ok', payload
 assert payload['entrypoint'] == 'writing-expand', payload
 assert payload['expand_mode'] == 'first_draft_pass', payload
 assert payload['writing_pack'] == 'Book / Nonfiction Blueprint Pack', payload
+assert payload['expand_variant'] in {'book_coach', 'book_editorial', 'book_operator'}, payload
 assert payload['expanded_unit_count'] == 3, payload
-assert 'Book introduction:' in payload['expanded_text'], payload
+assert payload['expanded_text'], payload
 assert payload['expanded_units'][0]['label'] == 'intro_draft', payload
 PY
 ok_writing_expand_book_json=true
