@@ -34,6 +34,8 @@ ok_writing_expand_emit_text_txt=false
 ok_writing_review_copy_json=false
 ok_writing_review_story_json=false
 ok_writing_review_emit_summary_txt=false
+ok_writing_review_output_file_summary=false
+ok_writing_review_output_file_json=false
 ok_writing_intent_write_json=false
 ok_writing_intent_read_json=false
 ok_website_assets_json=false
@@ -1676,6 +1678,23 @@ grep -q "^status: ok$" "$writing_review_emit_summary_txt"
 grep -q "^alignment_band: " "$writing_review_emit_summary_txt"
 grep -q "^drift_count: " "$writing_review_emit_summary_txt"
 ok_writing_review_emit_summary_txt=true
+
+writing_review_output_file_summary="$TMP_ROOT/writing_review_saved_summary.txt"
+PYTHONPATH="$ROOT" python3 -m cli writing review '写一个长篇奇幻小说提纲和角色设定，包含主要冲突和章节结构。' --text 'The corridor was quiet and cold. She moved forward without knowing why the doors were already open.' --emit-summary --output-file "$writing_review_output_file_summary" > /dev/null
+grep -q "^status: ok$" "$writing_review_output_file_summary"
+grep -q "^first_revision_target: " "$writing_review_output_file_summary"
+ok_writing_review_output_file_summary=true
+
+writing_review_output_file_json="$TMP_ROOT/writing_review_saved.json"
+PYTHONPATH="$ROOT" python3 -m cli writing review '写一个企业产品宣传文案，包含首页主标题、卖点和 CTA。' --text 'Help operators cut reporting time in half. Request pricing today.' --json --output-file "$writing_review_output_file_json" > /dev/null
+python3 - "$writing_review_output_file_json" <<'PY'
+import json, sys
+payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
+assert payload['entrypoint'] == 'writing-review', payload
+assert payload['status'] == 'ok', payload
+assert payload['summary_text'], payload
+PY
+ok_writing_review_output_file_json=true
 
 website_assets_json="$TMP_ROOT/website_assets.json"
 python3 -m cli website assets --json > "$website_assets_json"
@@ -5689,6 +5708,8 @@ export CLI_SMOKE_OK_WRITING_EXPAND_EMIT_TEXT_TXT="$ok_writing_expand_emit_text_t
 export CLI_SMOKE_OK_WRITING_REVIEW_COPY_JSON="$ok_writing_review_copy_json"
 export CLI_SMOKE_OK_WRITING_REVIEW_STORY_JSON="$ok_writing_review_story_json"
 export CLI_SMOKE_OK_WRITING_REVIEW_EMIT_SUMMARY_TXT="$ok_writing_review_emit_summary_txt"
+export CLI_SMOKE_OK_WRITING_REVIEW_OUTPUT_FILE_SUMMARY="$ok_writing_review_output_file_summary"
+export CLI_SMOKE_OK_WRITING_REVIEW_OUTPUT_FILE_JSON="$ok_writing_review_output_file_json"
 export CLI_SMOKE_OK_WRITING_INTENT_WRITE_JSON="$ok_writing_intent_write_json"
 export CLI_SMOKE_OK_WRITING_INTENT_READ_JSON="$ok_writing_intent_read_json"
 export CLI_SMOKE_OK_PROJECT_HOOK_GUIDE_REPO_JSON="$ok_project_hook_guide_repo_json"
@@ -5892,6 +5913,8 @@ payload = {
         'writing_review_copy_json_ok': os.environ['CLI_SMOKE_OK_WRITING_REVIEW_COPY_JSON'] == 'true',
         'writing_review_story_json_ok': os.environ['CLI_SMOKE_OK_WRITING_REVIEW_STORY_JSON'] == 'true',
         'writing_review_emit_summary_txt_ok': os.environ['CLI_SMOKE_OK_WRITING_REVIEW_EMIT_SUMMARY_TXT'] == 'true',
+        'writing_review_output_file_summary_ok': os.environ['CLI_SMOKE_OK_WRITING_REVIEW_OUTPUT_FILE_SUMMARY'] == 'true',
+        'writing_review_output_file_json_ok': os.environ['CLI_SMOKE_OK_WRITING_REVIEW_OUTPUT_FILE_JSON'] == 'true',
         'writing_intent_write_json_ok': os.environ['CLI_SMOKE_OK_WRITING_INTENT_WRITE_JSON'] == 'true',
         'writing_intent_read_json_ok': os.environ['CLI_SMOKE_OK_WRITING_INTENT_READ_JSON'] == 'true',
         'website_check_json_ok': os.environ['CLI_SMOKE_OK_WEBSITE_CHECK_JSON'] == 'true',

@@ -505,12 +505,19 @@ def cmd_writing(args: argparse.Namespace) -> int:
         if not draft_text:
             return _emit_command_error(args, EXIT_USAGE, "invalid_usage", "writing review requires draft text via --text, --text-file, or stdin")
         payload, exit_code = _build_writing_review_payload(requirement=requirement, draft_text=draft_text)
+        output_file = getattr(args, "output_file", None)
         if getattr(args, "emit_summary", False):
+            if output_file:
+                _write_cli_output_file(Path(output_file), str(payload.get("summary_text", "")))
             sys.stdout.write(str(payload.get("summary_text", "")))
             return exit_code
         if args.json:
+            if output_file:
+                _write_cli_output_file(Path(output_file), payload, as_json=True)
             _print_json_payload(payload)
         else:
+            if output_file:
+                _write_cli_output_file(Path(output_file), str(payload.get("summary_text", "")))
             print("Writing review")
             print(f"- status: {payload['status']}")
             print(f"- writing_pack: {payload['writing_pack']}")
@@ -4228,6 +4235,7 @@ def _build_parser() -> argparse.ArgumentParser:
     writing_review_parser.add_argument("--text", dest="review_text", help="Draft text to review")
     writing_review_parser.add_argument("--text-file", dest="review_text_file", help="Read draft text from a file")
     writing_review_parser.add_argument("--emit-summary", action="store_true", help="Print only a compact review summary")
+    writing_review_parser.add_argument("--output-file", dest="output_file", help="Write the review output to a file")
     writing_review_parser.add_argument("--json", action="store_true", help="Print writing review as JSON")
     writing_intent_parser = writing_subparsers.add_parser("intent", help="Show or save the current repo-level writing intent for later scaffolding and handoff")
     writing_intent_parser.add_argument("--audience", default=None, help="Primary audience summary for the current writing line")
@@ -7287,6 +7295,17 @@ def _read_review_text(args: argparse.Namespace) -> str:
     if getattr(args, "review_text", None):
         return str(args.review_text).strip()
     return sys.stdin.read().strip()
+
+
+def _write_cli_output_file(path: Path, payload: str | dict[str, Any], *, as_json: bool = False) -> None:
+    path = path.expanduser()
+    if not path.is_absolute():
+        path = (Path.cwd() / path).resolve()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if as_json:
+        path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    else:
+        path.write_text(str(payload), encoding="utf-8")
 
 
 def _resolve_ail_input(raw_input: str) -> Path:
