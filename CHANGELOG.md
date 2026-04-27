@@ -47,6 +47,7 @@ This changelog is intentionally lightweight for now. The repository already has 
 - expanded the first `writing` CLI branch with `writing expand` and `--emit-text`, so copy, story, and book scaffolds can now be turned into one controlled first-draft pass before deeper rewriting
 - widened `copy_min` writing detection so announcement and launch-style requests such as product release notices are classified into the copy lane more reliably
 - added deterministic variation modes inside `writing expand` so first-draft outputs can differ in voice while staying stable for the same requirement and pack
+- added `writing expand --deep` so the existing first-draft pass can be pushed one layer further into a second-pass draft without pretending to generate a finished manuscript
 
 ## 2026-04-19
 

@@ -471,7 +471,10 @@ def cmd_writing(args: argparse.Namespace) -> int:
         requirement = _read_requirement(args)
         if not requirement:
             return _emit_command_error(args, EXIT_USAGE, "invalid_usage", "writing expand requires a non-empty requirement")
-        payload, exit_code = _build_writing_expand_payload(requirement=requirement)
+        payload, exit_code = _build_writing_expand_payload(
+            requirement=requirement,
+            deep=bool(getattr(args, "deep", False)),
+        )
         if getattr(args, "emit_text", False):
             sys.stdout.write(str(payload.get("expanded_text", "")))
             return exit_code
@@ -483,6 +486,7 @@ def cmd_writing(args: argparse.Namespace) -> int:
             print(f"- writing_pack: {payload['writing_pack']}")
             print(f"- expected_profile: {payload.get('expected_profile', '')}")
             print(f"- expand_mode: {payload.get('expand_mode', '')}")
+            print(f"- expand_depth: {payload.get('expand_depth', '')}")
             print(f"- expanded_unit_count: {payload.get('expanded_unit_count', 0)}")
             print(f"- intent_scope_status: {payload.get('intent_scope_status', '')}")
             if payload.get("expanded_text"):
@@ -4168,6 +4172,7 @@ def _build_parser() -> argparse.ArgumentParser:
     writing_expand_parser = writing_subparsers.add_parser("expand", help="Expand one writing scaffold into a first drafting pass")
     writing_expand_parser.add_argument("requirement", nargs="?", help="Writing requirement text")
     writing_expand_parser.add_argument("--from-file", dest="from_file", help="Read requirement text from a file")
+    writing_expand_parser.add_argument("--deep", action="store_true", help="Expand the first draft one layer deeper into a second-pass draft")
     writing_expand_parser.add_argument("--emit-text", action="store_true", help="Print only the expanded first-draft text")
     writing_expand_parser.add_argument("--json", action="store_true", help="Print writing expansion as JSON")
     writing_intent_parser = writing_subparsers.add_parser("intent", help="Show or save the current repo-level writing intent for later scaffolding and handoff")
@@ -5463,13 +5468,62 @@ def _book_expand(scaffold: dict[str, Any], intent: dict[str, Any], *, variant_se
     return variant_id, sections, expanded_text
 
 
-def _build_writing_expand_payload(*, requirement: str) -> tuple[dict[str, Any], int]:
+def _deepen_copy_units(units: list[dict[str, str]]) -> tuple[list[dict[str, str]], str]:
+    deep_units = []
+    additions = {
+        "hero_draft": "Second-pass note:\n\nTighten the opening around one concrete buyer outcome so the page feels less descriptive and more decision-oriented.",
+        "proof_draft": "Second-pass note:\n\nAdd one sharper proof signal, such as an operating metric, a customer example, or a before-and-after contrast.",
+        "cta_draft": "Second-pass note:\n\nRephrase the CTA support copy so it removes one last hesitation rather than only repeating the action.",
+    }
+    fallback = "Second-pass note:\n\nSharpen this block with one more concrete detail."
+    for item in units:
+        label = str(item.get("label") or "")
+        text = str(item.get("text") or "")
+        addition = additions.get(label, fallback)
+        deep_units.append({"label": label, "text": f"{text}\n\n{addition}"})
+    return deep_units, "\n\n".join(unit["text"] for unit in deep_units)
+
+
+def _deepen_story_units(units: list[dict[str, str]]) -> tuple[list[dict[str, str]], str]:
+    deep_units = []
+    additions = {
+        "opening_scene_draft": "Second-pass note:\n\nAdd one sensory detail and one irreversible choice so the scene starts carrying consequence instead of only atmosphere.",
+        "character_motion_draft": "Second-pass note:\n\nMake the contradiction between outer goal and hidden need visible through one behavioral habit or reflex.",
+        "chapter_progression_draft": "Second-pass note:\n\nEnd the transition with a sharper loss condition so chapter two feels compelled, not merely suggested.",
+    }
+    fallback = "Second-pass note:\n\nPush the conflict one layer deeper."
+    for item in units:
+        label = str(item.get("label") or "")
+        text = str(item.get("text") or "")
+        addition = additions.get(label, fallback)
+        deep_units.append({"label": label, "text": f"{text}\n\n{addition}"})
+    return deep_units, "\n\n".join(unit["text"] for unit in deep_units)
+
+
+def _deepen_book_units(units: list[dict[str, str]]) -> tuple[list[dict[str, str]], str]:
+    deep_units = []
+    additions = {
+        "intro_draft": "Second-pass note:\n\nGive the reader one sharper promise about what they will be able to do differently after finishing the book.",
+        "chapter_one_draft": "Second-pass note:\n\nAnchor the chapter in one recognizable operating mistake so the diagnosis feels earned.",
+        "chapter_two_bridge_draft": "Second-pass note:\n\nName the first practical shift the reader can test immediately once the new model is introduced.",
+    }
+    fallback = "Second-pass note:\n\nClarify the practical takeaway more directly."
+    for item in units:
+        label = str(item.get("label") or "")
+        text = str(item.get("text") or "")
+        addition = additions.get(label, fallback)
+        deep_units.append({"label": label, "text": f"{text}\n\n{addition}"})
+    return deep_units, "\n\n".join(unit["text"] for unit in deep_units)
+
+
+def _build_writing_expand_payload(*, requirement: str, deep: bool = False) -> tuple[dict[str, Any], int]:
     scaffold_payload, exit_code = _build_writing_scaffold_payload(requirement=requirement)
     if scaffold_payload.get("status") != "ok":
         payload = {
             **scaffold_payload,
             "entrypoint": "writing-expand",
             "expand_mode": "unavailable",
+            "expand_depth": "none",
             "expanded_units": [],
             "expanded_unit_count": 0,
             "expanded_text": "",
@@ -5482,23 +5536,30 @@ def _build_writing_expand_payload(*, requirement: str) -> tuple[dict[str, Any], 
     variant_seed = _writing_expand_variant_seed(requirement, profile)
     if profile == "copy_min":
         expand_variant, expanded_units, expanded_text = _copy_expand(scaffold, intent, variant_seed=variant_seed)
+        if deep:
+            expanded_units, expanded_text = _deepen_copy_units(expanded_units)
     elif profile == "story_min":
         expand_variant, expanded_units, expanded_text = _story_expand(scaffold, intent, variant_seed=variant_seed)
+        if deep:
+            expanded_units, expanded_text = _deepen_story_units(expanded_units)
     else:
         expand_variant, expanded_units, expanded_text = _book_expand(scaffold, intent, variant_seed=variant_seed)
+        if deep:
+            expanded_units, expanded_text = _deepen_book_units(expanded_units)
 
     payload = {
         **scaffold_payload,
         "entrypoint": "writing-expand",
-        "expand_mode": "first_draft_pass",
+        "expand_mode": "second_draft_pass" if deep else "first_draft_pass",
+        "expand_depth": "deep" if deep else "base",
         "expand_variant": expand_variant,
         "expanded_units": expanded_units,
         "expanded_unit_count": len(expanded_units),
         "expanded_text": expanded_text,
         "next_steps": [
             f"run PYTHONPATH={REPO_ROOT_STR} python3 -m cli writing brief {shlex.quote(requirement)} --emit-prompt",
-            "review the expanded units and decide which one deserves a deeper second pass",
-            "use the expanded_text as a first draft, not as a finished final manuscript",
+            "review the expanded units and decide which one deserves a line-level rewrite next",
+            "use the expanded_text as a draft layer, not as a finished final manuscript",
         ],
     }
     return payload, exit_code

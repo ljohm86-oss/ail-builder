@@ -29,6 +29,7 @@ ok_writing_brief_emit_prompt_txt=false
 ok_writing_expand_copy_json=false
 ok_writing_expand_story_json=false
 ok_writing_expand_book_json=false
+ok_writing_expand_deep_story_json=false
 ok_writing_expand_emit_text_txt=false
 ok_writing_intent_write_json=false
 ok_writing_intent_read_json=false
@@ -1568,6 +1569,7 @@ payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
 assert payload['status'] == 'ok', payload
 assert payload['entrypoint'] == 'writing-expand', payload
 assert payload['expand_mode'] == 'first_draft_pass', payload
+assert payload['expand_depth'] == 'base', payload
 assert payload['writing_pack'] == 'Copy / Messaging Pack', payload
 assert payload['expand_variant'] in {'copy_direct', 'copy_editorial', 'copy_operator'}, payload
 assert payload['expanded_unit_count'] == 3, payload
@@ -1584,6 +1586,7 @@ payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
 assert payload['status'] == 'ok', payload
 assert payload['entrypoint'] == 'writing-expand', payload
 assert payload['expand_mode'] == 'first_draft_pass', payload
+assert payload['expand_depth'] == 'base', payload
 assert payload['writing_pack'] == 'Story / Fiction Outline Pack', payload
 assert payload['expand_variant'] in {'story_cinematic', 'story_close_psychology', 'story_forward_pressure'}, payload
 assert payload['expanded_unit_count'] == 3, payload
@@ -1600,6 +1603,7 @@ payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
 assert payload['status'] == 'ok', payload
 assert payload['entrypoint'] == 'writing-expand', payload
 assert payload['expand_mode'] == 'first_draft_pass', payload
+assert payload['expand_depth'] == 'base', payload
 assert payload['writing_pack'] == 'Book / Nonfiction Blueprint Pack', payload
 assert payload['expand_variant'] in {'book_coach', 'book_editorial', 'book_operator'}, payload
 assert payload['expanded_unit_count'] == 3, payload
@@ -1608,10 +1612,25 @@ assert payload['expanded_units'][0]['label'] == 'intro_draft', payload
 PY
 ok_writing_expand_book_json=true
 
+writing_expand_deep_story_json="$TMP_ROOT/writing_expand_deep_story.json"
+PYTHONPATH="$ROOT" python3 -m cli writing expand '写一个长篇奇幻小说提纲和角色设定，包含主要冲突和章节结构。' --deep --json > "$writing_expand_deep_story_json"
+python3 - "$writing_expand_deep_story_json" <<'PY'
+import json, sys
+payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
+assert payload['status'] == 'ok', payload
+assert payload['entrypoint'] == 'writing-expand', payload
+assert payload['expand_mode'] == 'second_draft_pass', payload
+assert payload['expand_depth'] == 'deep', payload
+assert payload['writing_pack'] == 'Story / Fiction Outline Pack', payload
+assert payload['expanded_unit_count'] == 3, payload
+assert 'Second-pass note:' in payload['expanded_text'], payload
+PY
+ok_writing_expand_deep_story_json=true
+
 writing_expand_emit_text_txt="$TMP_ROOT/writing_expand_emit_text.txt"
 PYTHONPATH="$ROOT" python3 -m cli writing expand '写一个长篇奇幻小说提纲和角色设定，包含主要冲突和章节结构。' --emit-text > "$writing_expand_emit_text_txt"
-grep -q "^Opening scene, disruption:$" "$writing_expand_emit_text_txt"
-grep -q "^Character motion:$" "$writing_expand_emit_text_txt"
+grep -q "^Opening scene, disruption:$\|^Opening scene, disruption:" "$writing_expand_emit_text_txt"
+grep -q "chapter two" "$writing_expand_emit_text_txt"
 ok_writing_expand_emit_text_txt=true
 
 website_assets_json="$TMP_ROOT/website_assets.json"
