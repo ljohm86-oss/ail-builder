@@ -56,6 +56,7 @@ This changelog is intentionally lightweight for now. The repository already has 
 - added `writing bundle`, so one command can now export check, scaffold, brief, expand, and review outputs into a reusable bundle directory
 - added `writing bundle --zip` so the full writing bundle can also be exported as a shareable zip archive
 - added `writing bundle --emit-summary` plus a `summary_text` field so bundle results can be scanned quickly without opening the full JSON manifest
+- added `writing bundle --output-file` so the compact bundle summary or full bundle manifest can be written directly to disk
 
 ## 2026-04-19
 

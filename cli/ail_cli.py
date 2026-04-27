@@ -577,12 +577,19 @@ def cmd_writing(args: argparse.Namespace) -> int:
             output_dir=getattr(args, "output_dir", None),
             make_zip=bool(getattr(args, "zip_bundle", False)),
         )
+        output_file = getattr(args, "output_file", None)
         if getattr(args, "emit_summary", False):
+            if output_file:
+                _write_cli_output_file(Path(output_file), str(payload.get("summary_text", "")))
             sys.stdout.write(str(payload.get("summary_text", "")))
             return exit_code
         if args.json:
+            if output_file:
+                _write_cli_output_file(Path(output_file), payload, as_json=True)
             _print_json_payload(payload)
         else:
+            if output_file:
+                _write_cli_output_file(Path(output_file), str(payload.get("summary_text", "")))
             print("Writing bundle")
             print(f"- status: {payload['status']}")
             print(f"- bundle_root: {payload.get('bundle_root', '')}")
@@ -4296,6 +4303,7 @@ def _build_parser() -> argparse.ArgumentParser:
     writing_bundle_parser.add_argument("--deep", action="store_true", help="Run the bundle with deep expansion enabled")
     writing_bundle_parser.add_argument("--zip", dest="zip_bundle", action="store_true", help="Also create a zip archive next to the bundle directory")
     writing_bundle_parser.add_argument("--emit-summary", action="store_true", help="Print only a compact bundle summary")
+    writing_bundle_parser.add_argument("--output-file", dest="output_file", help="Write the bundle output to a file")
     writing_bundle_parser.add_argument("--output-dir", dest="output_dir", help="Directory where the writing bundle should be written")
     writing_bundle_parser.add_argument("--json", action="store_true", help="Print writing bundle as JSON")
     writing_intent_parser = writing_subparsers.add_parser("intent", help="Show or save the current repo-level writing intent for later scaffolding and handoff")

@@ -43,6 +43,8 @@ ok_writing_review_output_file_json=false
 ok_writing_bundle_json=false
 ok_writing_bundle_zip_json=false
 ok_writing_bundle_emit_summary_txt=false
+ok_writing_bundle_output_file_summary=false
+ok_writing_bundle_output_file_json=false
 ok_writing_intent_write_json=false
 ok_writing_intent_read_json=false
 ok_website_assets_json=false
@@ -1777,6 +1779,26 @@ grep -q "^status: ok$" "$writing_bundle_emit_summary_txt"
 grep -q "^zip_enabled: True$" "$writing_bundle_emit_summary_txt"
 grep -q "^archive_path: " "$writing_bundle_emit_summary_txt"
 ok_writing_bundle_emit_summary_txt=true
+
+writing_bundle_output_file_summary="$TMP_ROOT/writing_bundle_saved_summary.txt"
+writing_bundle_output_file_summary_dir="$TMP_ROOT/writing_bundle_saved_summary_dir"
+PYTHONPATH="$ROOT" python3 -m cli writing bundle '写一个长篇奇幻小说提纲和角色设定，包含主要冲突和章节结构。' --deep --zip --output-dir "$writing_bundle_output_file_summary_dir" --emit-summary --output-file "$writing_bundle_output_file_summary" > /dev/null
+grep -q "^status: ok$" "$writing_bundle_output_file_summary"
+grep -q "^archive_path: " "$writing_bundle_output_file_summary"
+ok_writing_bundle_output_file_summary=true
+
+writing_bundle_output_file_json="$TMP_ROOT/writing_bundle_saved.json"
+writing_bundle_output_file_json_dir="$TMP_ROOT/writing_bundle_saved_json_dir"
+PYTHONPATH="$ROOT" python3 -m cli writing bundle '写一个长篇奇幻小说提纲和角色设定，包含主要冲突和章节结构。' --deep --zip --output-dir "$writing_bundle_output_file_json_dir" --json --output-file "$writing_bundle_output_file_json" > /dev/null
+python3 - "$writing_bundle_output_file_json" <<'PY'
+import json, sys
+payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
+assert payload['entrypoint'] == 'writing-bundle', payload
+assert payload['status'] == 'ok', payload
+assert payload['summary_text'], payload
+assert payload['archive_path'], payload
+PY
+ok_writing_bundle_output_file_json=true
 
 website_assets_json="$TMP_ROOT/website_assets.json"
 python3 -m cli website assets --json > "$website_assets_json"
@@ -5799,6 +5821,8 @@ export CLI_SMOKE_OK_WRITING_REVIEW_OUTPUT_FILE_JSON="$ok_writing_review_output_f
 export CLI_SMOKE_OK_WRITING_BUNDLE_JSON="$ok_writing_bundle_json"
 export CLI_SMOKE_OK_WRITING_BUNDLE_ZIP_JSON="$ok_writing_bundle_zip_json"
 export CLI_SMOKE_OK_WRITING_BUNDLE_EMIT_SUMMARY_TXT="$ok_writing_bundle_emit_summary_txt"
+export CLI_SMOKE_OK_WRITING_BUNDLE_OUTPUT_FILE_SUMMARY="$ok_writing_bundle_output_file_summary"
+export CLI_SMOKE_OK_WRITING_BUNDLE_OUTPUT_FILE_JSON="$ok_writing_bundle_output_file_json"
 export CLI_SMOKE_OK_WRITING_INTENT_WRITE_JSON="$ok_writing_intent_write_json"
 export CLI_SMOKE_OK_WRITING_INTENT_READ_JSON="$ok_writing_intent_read_json"
 export CLI_SMOKE_OK_PROJECT_HOOK_GUIDE_REPO_JSON="$ok_project_hook_guide_repo_json"
@@ -6011,6 +6035,8 @@ payload = {
         'writing_bundle_json_ok': os.environ['CLI_SMOKE_OK_WRITING_BUNDLE_JSON'] == 'true',
         'writing_bundle_zip_json_ok': os.environ['CLI_SMOKE_OK_WRITING_BUNDLE_ZIP_JSON'] == 'true',
         'writing_bundle_emit_summary_txt_ok': os.environ['CLI_SMOKE_OK_WRITING_BUNDLE_EMIT_SUMMARY_TXT'] == 'true',
+        'writing_bundle_output_file_summary_ok': os.environ['CLI_SMOKE_OK_WRITING_BUNDLE_OUTPUT_FILE_SUMMARY'] == 'true',
+        'writing_bundle_output_file_json_ok': os.environ['CLI_SMOKE_OK_WRITING_BUNDLE_OUTPUT_FILE_JSON'] == 'true',
         'writing_intent_write_json_ok': os.environ['CLI_SMOKE_OK_WRITING_INTENT_WRITE_JSON'] == 'true',
         'writing_intent_read_json_ok': os.environ['CLI_SMOKE_OK_WRITING_INTENT_READ_JSON'] == 'true',
         'website_check_json_ok': os.environ['CLI_SMOKE_OK_WEBSITE_CHECK_JSON'] == 'true',
