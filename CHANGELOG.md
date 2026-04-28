@@ -75,6 +75,7 @@ This changelog is intentionally lightweight for now. The repository already has 
 - added formal `context` metrics on `compress` and `inspect`, including source characters, skeleton characters, heuristic token estimates, token direction, and estimated size ratios
 - added `/Users/carwynmac/ai-cl/CONTEXT_TEST_MATRIX_20260428.md` so context compression, restore, inspect, apply-check, bundle, and patch regressions can be run against one stable matrix
 - added `/Users/carwynmac/ai-cl/CONTEXT_TEST_REPORT_20260428.md` to capture one external validation pass over presets, inspect, apply-check, bundle, and patch behavior
+- added `/Users/carwynmac/ai-cl/CONTEXT_METRICS_REPORT_20260428.md` to capture one metrics-focused validation pass and clarify that current token figures are heuristic estimates rather than billing-grade measurements
 - added `/Users/carwynmac/ai-cl/CONTEXT_COMPRESSION_SPEC_20260428.md` to document the new context-compression bundle shape, restore strategy, and MCP skeleton positioning
 - added smoke coverage for text, code, and directory context compression, exact directory restore, context bundle inspection, context apply-check drift/pass cases, preset catalog selection, context bundle export/zip/apply-check cases, context patch export cases for text and directory candidates, and patch replay cases for text and directory bundles
 
