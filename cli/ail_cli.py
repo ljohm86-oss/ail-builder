@@ -19,6 +19,7 @@ from .cloud_client import AILCloudClient, CloudClientError
 from .context_compression import (
     build_context_apply_check_payload,
     build_context_compress_payload,
+    build_context_preset_payload,
     inspect_context_package,
     load_context_package,
     restore_context_from_package,
@@ -155,8 +156,34 @@ def cmd_generate(args: argparse.Namespace) -> int:
 
 
 def cmd_context(args: argparse.Namespace) -> int:
-    if getattr(args, "context_command", None) not in {"compress", "restore", "inspect", "apply-check"}:
-        return _emit_command_error(args, EXIT_USAGE, "invalid_usage", "supported context subcommands: compress, restore, inspect, apply-check")
+    if getattr(args, "context_command", None) not in {"compress", "restore", "inspect", "apply-check", "preset"}:
+        return _emit_command_error(args, EXIT_USAGE, "invalid_usage", "supported context subcommands: compress, restore, inspect, apply-check, preset")
+
+    if getattr(args, "context_command", None) == "preset":
+        try:
+            payload = build_context_preset_payload(getattr(args, "preset_id", None))
+        except ValueError as exc:
+            return _emit_command_error(args, EXIT_USAGE, "invalid_usage", str(exc))
+        if args.json:
+            _print_json_payload(payload)
+        else:
+            selected = payload.get("selected_preset") or {}
+            print("Context preset")
+            print(f"- status: {payload['status']}")
+            print(f"- preset_count: {payload.get('preset_count', 0)}")
+            print(f"- selected_preset: {selected.get('preset_id', '')}")
+            print(f"- selected_label: {selected.get('label', '')}")
+            if selected.get("focus"):
+                print("Focus:")
+                for item in selected.get("focus", []):
+                    print(f"- {item}")
+            print("Available presets:")
+            for item in payload.get("presets", []):
+                print(f"- {item.get('preset_id', '')}: {item.get('label', '')}")
+            print("Next:")
+            for step in payload.get("next_steps", []):
+                print(f"- {step}")
+        return EXIT_OK
 
     if getattr(args, "context_command", None) == "compress":
         inline_text = str(getattr(args, "context_text", "") or "").strip()
@@ -170,6 +197,7 @@ def cmd_context(args: argparse.Namespace) -> int:
                 text_file=text_file,
                 input_file=input_file,
                 input_dir=input_dir,
+                preset_id=getattr(args, "preset_id", None),
                 output_dir=output_dir,
             )
         except ValueError as exc:
@@ -189,6 +217,7 @@ def cmd_context(args: argparse.Namespace) -> int:
                 _write_cli_output_file(Path(output_file), str(payload.get("skeleton_text", "")))
             print("Context compress")
             print(f"- status: {payload['status']}")
+            print(f"- preset_id: {payload.get('preset_id', '')}")
             print(f"- compression_mode: {payload.get('compression_mode', '')}")
             print(f"- source_kind: {payload.get('source_kind', '')}")
             print(f"- source_label: {payload.get('source_label', '')}")
@@ -224,6 +253,7 @@ def cmd_context(args: argparse.Namespace) -> int:
                     _write_cli_output_file(Path(output_file), str(inspect_payload.get("summary_text", "")))
                 print("Context inspect")
                 print(f"- status: {inspect_payload['status']}")
+                print(f"- preset_id: {inspect_payload.get('preset_id', '')}")
                 print(f"- compression_mode: {inspect_payload.get('compression_mode', '')}")
                 print(f"- source_kind: {inspect_payload.get('source_kind', '')}")
                 print(f"- source_label: {inspect_payload.get('source_label', '')}")
@@ -272,6 +302,7 @@ def cmd_context(args: argparse.Namespace) -> int:
                 print(f"- status: {apply_payload['status']}")
                 print(f"- apply_check_mode: {apply_payload.get('apply_check_mode', '')}")
                 print(f"- apply_check_passed: {apply_payload.get('apply_check_passed', False)}")
+                print(f"- preset_id: {apply_payload.get('preset_id', '')}")
                 print(f"- source_kind: {apply_payload.get('source_kind', '')}")
                 print(f"- candidate_source_kind: {apply_payload.get('candidate_source_kind', '')}")
                 print(f"- alignment_score: {apply_payload.get('alignment_score', 0)}")
@@ -4465,6 +4496,7 @@ def _build_parser() -> argparse.ArgumentParser:
     context_compress_parser.add_argument("--text-file", dest="text_file", help="Read long-form text from a file")
     context_compress_parser.add_argument("--input-file", dest="input_file", help="Compress one source file or project file")
     context_compress_parser.add_argument("--input-dir", dest="input_dir", help="Compress one project directory tree")
+    context_compress_parser.add_argument("--preset", dest="preset_id", default="generic", help="Compression preset such as generic, codebase, writing, website, or ecommerce")
     context_compress_parser.add_argument("--emit-skeleton", action="store_true", help="Print only the MCP skeleton text")
     context_compress_parser.add_argument("--output-file", dest="output_file", help="Write the output to a file")
     context_compress_parser.add_argument("--output-dir", dest="output_dir", help="Write a full context bundle directory")
@@ -4489,6 +4521,9 @@ def _build_parser() -> argparse.ArgumentParser:
     context_apply_check_parser.add_argument("--emit-summary", action="store_true", help="Print only a compact context apply-check summary")
     context_apply_check_parser.add_argument("--output-file", dest="output_file", help="Write the apply-check output to a file")
     context_apply_check_parser.add_argument("--json", action="store_true", help="Print context apply-check as JSON")
+    context_preset_parser = context_subparsers.add_parser("preset", help="List the available context compression presets or inspect one selected preset")
+    context_preset_parser.add_argument("preset_id", nargs="?", default="generic", help="Optional preset id such as generic, codebase, writing, website, or ecommerce")
+    context_preset_parser.add_argument("--json", action="store_true", help="Print context preset metadata as JSON")
 
     website_parser = subparsers.add_parser("website", help="Evaluate and validate static presentation-style website requests")
     website_subparsers = website_parser.add_subparsers(dest="website_command")

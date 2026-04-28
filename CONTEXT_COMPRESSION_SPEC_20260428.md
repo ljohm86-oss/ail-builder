@@ -15,9 +15,11 @@ This feature is intentionally architecture-first:
 ### Compress
 
 ```bash
+PYTHONPATH="$PWD" python3 -m cli context preset --json
+PYTHONPATH="$PWD" python3 -m cli context preset website --json
 PYTHONPATH="$PWD" python3 -m cli context compress --text-file /absolute/path/to/long-text.md --json
 PYTHONPATH="$PWD" python3 -m cli context compress --input-file /absolute/path/to/app.py --emit-skeleton
-PYTHONPATH="$PWD" python3 -m cli context compress --input-dir /absolute/path/to/project --output-dir /absolute/path/to/context-bundle --json
+PYTHONPATH="$PWD" python3 -m cli context compress --preset website --input-dir /absolute/path/to/project --output-dir /absolute/path/to/context-bundle --json
 ```
 
 ### Restore
@@ -42,6 +44,19 @@ PYTHONPATH="$PWD" python3 -m cli context apply-check --package-file /absolute/pa
 PYTHONPATH="$PWD" python3 -m cli context apply-check --package-file /absolute/path/to/context-bundle/context_manifest.json --input-file /absolute/path/to/edited-file.py --json
 PYTHONPATH="$PWD" python3 -m cli context apply-check --package-file /absolute/path/to/context-bundle/context_manifest.json --input-dir /absolute/path/to/edited-project --json
 ```
+
+## Presets
+
+Current presets:
+
+- `generic`
+- `codebase`
+- `writing`
+- `website`
+- `ecommerce`
+
+Presets do not change restore accuracy.
+They change the declared compression emphasis and the guidance written into the MCP skeleton and bundle metadata.
 
 ## Bundle Shape
 
@@ -146,3 +161,4 @@ The current smoke coverage locks in:
 - bundle inspection summary generation
 - bundle inspection JSON payload generation
 - apply-check pass/fail coverage for aligned and drifting candidates
+- preset catalog and selected-preset coverage

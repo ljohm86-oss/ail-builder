@@ -68,8 +68,9 @@ This changelog is intentionally lightweight for now. The repository already has 
 - added a universal `context` CLI surface with `context compress` and `context restore`, so long raw text, one source file, or one project tree can be turned into an AI-facing `MCP-SKL.v1` skeleton plus an exact restore bundle
 - added `context inspect`, so a context bundle can now be summarized or inspected as JSON without restoring the original content first
 - added `context apply-check`, so edited text, files, or directory trees can now be checked against the original compressed skeleton boundary before handoff
+- added `context preset` plus `context compress --preset`, so operators can choose a declared compression emphasis such as `generic`, `codebase`, `writing`, `website`, or `ecommerce` without changing restore accuracy
 - added `/Users/carwynmac/ai-cl/CONTEXT_COMPRESSION_SPEC_20260428.md` to document the new context-compression bundle shape, restore strategy, and MCP skeleton positioning
-- added smoke coverage for text, code, and directory context compression, exact directory restore, context bundle inspection, and context apply-check drift/pass cases
+- added smoke coverage for text, code, and directory context compression, exact directory restore, context bundle inspection, context apply-check drift/pass cases, and preset catalog selection
 
 ## 2026-04-19
 

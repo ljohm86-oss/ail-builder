@@ -32,6 +32,58 @@ STOPWORDS = {
 
 ALIGNMENT_STRONG_THRESHOLD = 82
 ALIGNMENT_WORKABLE_THRESHOLD = 64
+CONTEXT_PRESETS: dict[str, dict[str, Any]] = {
+    "generic": {
+        "preset_id": "generic",
+        "label": "Generic Context Skeleton",
+        "focus": [
+            "preserve the core structure without assuming a domain-specific workflow",
+            "keep headings, symbols, routes, and file-tree relationships visible",
+            "treat the bundle as a balanced AI-facing compression surface",
+        ],
+        "best_for": ["mixed notes", "unknown repos", "general AI handoff"],
+    },
+    "codebase": {
+        "preset_id": "codebase",
+        "label": "Codebase Relationship Skeleton",
+        "focus": [
+            "prioritize imports, symbols, file roles, and cross-file structure",
+            "keep component, route, and runtime wiring legible for engineering review",
+            "optimize the skeleton for code-reading models and IDE copilots",
+        ],
+        "best_for": ["backend repos", "frontend code trees", "refactor and onboarding handoff"],
+    },
+    "writing": {
+        "preset_id": "writing",
+        "label": "Long-form Writing Skeleton",
+        "focus": [
+            "prioritize headings, section flow, paragraph density, and topic vocabulary",
+            "keep the narrative or editorial shape visible without forcing full prose into context",
+            "optimize for review, expansion, and continuation workflows",
+        ],
+        "best_for": ["books", "articles", "copy drafts", "story planning"],
+    },
+    "website": {
+        "preset_id": "website",
+        "label": "Website Architecture Skeleton",
+        "focus": [
+            "prioritize page structure, routes, sections, component roles, and managed boundaries",
+            "keep page-to-section relationships and frontend wiring visible to design or implementation agents",
+            "optimize for static-site and customization workflows",
+        ],
+        "best_for": ["landing pages", "personal sites", "company/product sites"],
+    },
+    "ecommerce": {
+        "preset_id": "ecommerce",
+        "label": "Ecommerce Flow Skeleton",
+        "focus": [
+            "prioritize storefront pages, browse/search/product/cart/checkout continuity, and account shells",
+            "keep transaction-adjacent structure visible without pretending to hold a full commerce backend",
+            "optimize for experimental ecommerce scaffolds and operator review",
+        ],
+        "best_for": ["storefront skeletons", "catalog review", "checkout-flow analysis"],
+    },
+}
 
 
 def build_context_compress_payload(
@@ -40,8 +92,10 @@ def build_context_compress_payload(
     text_file: Path | None,
     input_file: Path | None,
     input_dir: Path | None,
+    preset_id: str | None = None,
     output_dir: Path | None = None,
 ) -> dict[str, Any]:
+    preset = resolve_context_preset(preset_id)
     source = _resolve_context_input_source(
         inline_text=inline_text,
         text_file=text_file,
@@ -50,7 +104,7 @@ def build_context_compress_payload(
         command_label="context compress",
     )
 
-    skeleton_text = _render_skeleton_text(source)
+    skeleton_text = _render_skeleton_text(source, preset=preset)
     restore_blob = _encode_restore_blob(source["restore_blob"])
     payload = {
         "status": "ok",
@@ -58,6 +112,10 @@ def build_context_compress_payload(
         "manifest_version": MANIFEST_VERSION,
         "bundle_created_at": _utc_now(),
         "skeleton_language": SKELETON_LANGUAGE,
+        "preset_id": preset["preset_id"],
+        "preset_label": preset["label"],
+        "preset_focus": list(preset["focus"]),
+        "preset_best_for": list(preset["best_for"]),
         "compression_mode": source["compression_mode"],
         "source_kind": source["source_kind"],
         "source_label": source["source_label"],
@@ -142,6 +200,25 @@ def load_context_package(package_file: Path) -> dict[str, Any]:
     return json.loads(package_file.read_text(encoding="utf-8"))
 
 
+def build_context_preset_payload(preset_id: str | None = None) -> dict[str, Any]:
+    preset = resolve_context_preset(preset_id)
+    presets = [CONTEXT_PRESETS[key] for key in sorted(CONTEXT_PRESETS.keys())]
+    payload = {
+        "status": "ok",
+        "entrypoint": "context-preset",
+        "default_preset_id": "generic",
+        "preset_count": len(presets),
+        "available_preset_ids": [item["preset_id"] for item in presets],
+        "presets": presets,
+        "selected_preset": preset,
+        "next_steps": [
+            f"use `python3 -m cli context compress --preset {preset['preset_id']} ...` when you want this preset applied during compression",
+            "run `context preset --json` when you want the full preset catalog",
+        ],
+    }
+    return payload
+
+
 def build_context_apply_check_payload(
     *,
     package_payload: dict[str, Any],
@@ -209,6 +286,8 @@ def build_context_apply_check_payload(
         "entrypoint": "context-apply-check",
         "apply_check_mode": "skeleton_continuity_gate",
         "apply_check_passed": apply_check_passed,
+        "preset_id": package_payload.get("preset_id", "generic"),
+        "preset_label": package_payload.get("preset_label", CONTEXT_PRESETS["generic"]["label"]),
         "source_kind": original_kind,
         "source_label": package_payload.get("source_label", ""),
         "candidate_source_kind": candidate.get("source_kind", ""),
@@ -248,6 +327,9 @@ def inspect_context_package(package_payload: dict[str, Any]) -> dict[str, Any]:
         "manifest_version": package_payload.get("manifest_version", MANIFEST_VERSION),
         "bundle_created_at": package_payload.get("bundle_created_at", ""),
         "skeleton_language": package_payload.get("skeleton_language", SKELETON_LANGUAGE),
+        "preset_id": package_payload.get("preset_id", "generic"),
+        "preset_label": package_payload.get("preset_label", CONTEXT_PRESETS["generic"]["label"]),
+        "preset_focus": list(package_payload.get("preset_focus") or CONTEXT_PRESETS["generic"]["focus"]),
         "compression_mode": package_payload.get("compression_mode", restore_mode),
         "source_kind": package_payload.get("source_kind", decoded.get("source_kind", "")),
         "source_label": package_payload.get("source_label", decoded.get("source_label", "")),
@@ -455,10 +537,15 @@ def _build_context_readme_text(payload: dict[str, Any], files: dict[str, Path]) 
             "",
             f"manifest_version: {payload.get('manifest_version', MANIFEST_VERSION)}",
             f"bundle_created_at: {payload.get('bundle_created_at', '')}",
+            f"preset_id: {payload.get('preset_id', 'generic')}",
+            f"preset_label: {payload.get('preset_label', CONTEXT_PRESETS['generic']['label'])}",
             f"compression_mode: {payload.get('compression_mode', '')}",
             f"source_kind: {payload.get('source_kind', '')}",
             f"source_label: {payload.get('source_label', '')}",
             f"skeleton_language: {payload.get('skeleton_language', SKELETON_LANGUAGE)}",
+            "",
+            "Preset focus:",
+            *[f"- {item}" for item in (payload.get("preset_focus") or CONTEXT_PRESETS["generic"]["focus"])],
             "",
             "Files:",
             f"- context_manifest.json: full machine-readable compression bundle and restore package",
@@ -477,6 +564,7 @@ def _build_context_readme_text(payload: dict[str, Any], files: dict[str, Path]) 
 def _build_context_inspect_summary_text(payload: dict[str, Any]) -> str:
     lines = [
         f"status: {payload.get('status', '')}",
+        f"preset_id: {payload.get('preset_id', '')}",
         f"compression_mode: {payload.get('compression_mode', '')}",
         f"source_kind: {payload.get('source_kind', '')}",
         f"source_label: {payload.get('source_label', '')}",
@@ -504,6 +592,7 @@ def _build_context_apply_check_summary_text(payload: dict[str, Any]) -> str:
         f"status: {payload.get('status', '')}",
         f"apply_check_mode: {payload.get('apply_check_mode', '')}",
         f"apply_check_passed: {payload.get('apply_check_passed', False)}",
+        f"preset_id: {payload.get('preset_id', '')}",
         f"source_kind: {payload.get('source_kind', '')}",
         f"source_label: {payload.get('source_label', '')}",
         f"candidate_source_kind: {payload.get('candidate_source_kind', '')}",
@@ -547,15 +636,19 @@ def _decode_restore_blob(payload: dict[str, Any]) -> dict[str, Any]:
     return decoded
 
 
-def _render_skeleton_text(source: dict[str, Any]) -> str:
+def _render_skeleton_text(source: dict[str, Any], *, preset: dict[str, Any]) -> str:
     lines = [
         SKELETON_LANGUAGE,
+        f"PRESET: {preset['preset_id']}",
+        f"PRESET_LABEL: {preset['label']}",
         f"MODE: {source['compression_mode']}",
         f"SOURCE_KIND: {source['source_kind']}",
         f"SOURCE_LABEL: {source['source_label']}",
     ]
     if source.get("source_path"):
         lines.append(f"SOURCE_PATH: {source['source_path']}")
+    lines.append("PRESET_FOCUS:")
+    lines.extend([f"  - {item}" for item in preset["focus"]])
     lines.append("CORE:")
     lines.extend(_render_core_summary_lines(source["source_summary"], indent="  "))
     lines.append("SKELETON:")
@@ -583,6 +676,20 @@ def _resolve_context_input_source(
     if input_dir is not None:
         return _build_directory_source(input_dir)
     raise ValueError(f"{command_label} did not receive a usable input source")
+
+
+def resolve_context_preset(preset_id: str | None) -> dict[str, Any]:
+    normalized = str(preset_id or "generic").strip().lower() or "generic"
+    preset = CONTEXT_PRESETS.get(normalized)
+    if preset is None:
+        supported = ", ".join(sorted(CONTEXT_PRESETS.keys()))
+        raise ValueError(f"Unsupported context preset `{normalized}`. Supported presets: {supported}")
+    return {
+        "preset_id": preset["preset_id"],
+        "label": preset["label"],
+        "focus": list(preset["focus"]),
+        "best_for": list(preset["best_for"]),
+    }
 
 
 def _render_core_summary_lines(summary: dict[str, Any], *, indent: str) -> list[str]:
