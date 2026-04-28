@@ -26,11 +26,11 @@ Record these before each run:
 Run these first when you only need a quick signal.
 
 ```bash
+python3 -m cli context compress --preset writing --text "# Context Compression\n\nPreserve business logic." --output-dir /absolute/path/to/context-fast-bundle --json
 python3 -m cli context preset --json
-python3 -m cli context compress --text "# Context Compression\n\nPreserve business logic." --json
-python3 -m cli context inspect --package-file /absolute/path/to/context-bundle/context_manifest.json --emit-summary
+python3 -m cli context inspect --package-file /absolute/path/to/context-fast-bundle/context_manifest.json --emit-summary
 python3 -m cli context bundle --preset writing --text "# Context Compression\n\nPreserve business logic." --emit-summary
-python3 -m cli context patch --package-file /absolute/path/to/context-bundle/context_manifest.json --text "# Context Compression\n\nPreserve business logic and route continuity." --emit-summary
+python3 -m cli context patch --package-file /absolute/path/to/context-fast-bundle/context_manifest.json --text "# Context Compression\n\nPreserve business logic and route continuity." --emit-summary
 ```
 
 Expected:
@@ -38,6 +38,7 @@ Expected:
 - every command returns `status: ok`
 - no hangs in wrapped shells
 - `context bundle` and `context patch` complete in a few seconds on small inputs
+- `context patch` is always run against a package whose mode matches the candidate input mode
 
 ## Preset Matrix
 
