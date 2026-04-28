@@ -81,6 +81,40 @@ Observed example values in the test pass:
 
 This validates the intended operator workflow: inspect the bundle shape before restore or downstream editing.
 
+### Metrics
+
+The `context` line now has a formal metrics surface instead of relying on hand-written token estimates.
+
+Current machine-emitted fields include:
+
+- `source_char_count`
+- `skeleton_char_count`
+- `estimated_token_count_source`
+- `estimated_token_count_skeleton`
+- `estimated_tokens_saved`
+- `estimated_token_delta_from_source`
+- `estimated_token_direction`
+- `estimated_token_reduction_ratio`
+- `estimated_token_size_ratio`
+- `char_reduction_ratio`
+
+Current basis:
+
+- `token_estimate_basis = heuristic_chars_div_4`
+
+This is intentionally approximate, but it is good enough for:
+
+- regression reporting
+- before/after comparison
+- external test summaries
+- operator-facing efficiency claims that stay clearly labeled as estimates
+
+Important nuance:
+
+- very small inputs may show `estimated_token_direction = expanded`
+- that is acceptable because the skeleton header can outweigh the original text at tiny sizes
+- larger codebases and long-form text are still the primary target for meaningful reduction
+
 ### Bundle
 
 Confirmed:

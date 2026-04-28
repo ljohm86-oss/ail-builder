@@ -254,6 +254,8 @@ PYTHONPATH="$REPO_ROOT" python3 -m cli context patch-apply --patch-file /absolut
 PYTHONPATH="$REPO_ROOT" python3 -m cli context restore --package-file /absolute/path/to/context-bundle/context_manifest.json --output-dir /absolute/path/to/restore-root --json
 ```
 
+`context compress` and `context inspect` now emit formal `metrics`, including source characters, skeleton characters, heuristic token estimates, token direction, and estimated size ratios, so test reports no longer need hand-written token math. On very small inputs the skeleton can be larger than the source, and the metrics surface now reports that explicitly instead of pretending every input compresses.
+
 ## What Already Works Well
 
 The repository already has real product truth in these areas:

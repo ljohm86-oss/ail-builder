@@ -227,6 +227,12 @@ def cmd_context(args: argparse.Namespace) -> int:
             print(f"- skeleton_language: {payload.get('skeleton_language', '')}")
             print(f"- skeleton_char_count: {payload.get('skeleton_char_count', 0)}")
             print(f"- compression_ratio: {payload.get('compression_ratio', 0)}")
+            metrics = payload.get("metrics") or {}
+            if metrics:
+                print(f"- estimated_token_count_source: {metrics.get('estimated_token_count_source', 0)}")
+                print(f"- estimated_token_count_skeleton: {metrics.get('estimated_token_count_skeleton', 0)}")
+                print(f"- estimated_token_direction: {metrics.get('estimated_token_direction', '')}")
+                print(f"- estimated_token_reduction_ratio: {metrics.get('estimated_token_reduction_ratio', 0)}")
             if payload.get("output_dir"):
                 print(f"- output_dir: {payload.get('output_dir', '')}")
             print("Next:")
@@ -437,6 +443,12 @@ def cmd_context(args: argparse.Namespace) -> int:
                 print(f"- restore_mode: {inspect_payload.get('restore_mode', '')}")
                 print(f"- skeleton_char_count: {inspect_payload.get('skeleton_char_count', 0)}")
                 print(f"- compression_ratio: {inspect_payload.get('compression_ratio', 0)}")
+                metrics = inspect_payload.get("metrics") or {}
+                if metrics:
+                    print(f"- estimated_token_count_source: {metrics.get('estimated_token_count_source', 0)}")
+                    print(f"- estimated_token_count_skeleton: {metrics.get('estimated_token_count_skeleton', 0)}")
+                    print(f"- estimated_token_direction: {metrics.get('estimated_token_direction', '')}")
+                    print(f"- estimated_token_reduction_ratio: {metrics.get('estimated_token_reduction_ratio', 0)}")
                 source_summary = inspect_payload.get("source_summary") or {}
                 if source_summary.get("total_files") is not None:
                     print(f"- total_files: {source_summary.get('total_files', 0)}")

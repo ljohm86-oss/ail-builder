@@ -108,6 +108,7 @@ def build_context_compress_payload(
 
     skeleton_text = _render_skeleton_text(source, preset=preset)
     restore_blob = _encode_restore_blob(source["restore_blob"])
+    metrics = _build_context_metrics(source["source_summary"], skeleton_text=skeleton_text)
     payload = {
         "status": "ok",
         "entrypoint": "context-compress",
@@ -126,7 +127,8 @@ def build_context_compress_payload(
         "skeleton_text": skeleton_text,
         "skeleton_char_count": len(skeleton_text),
         "restore_package": restore_blob,
-        "compression_ratio": round(len(skeleton_text) / max(1, source["source_summary"].get("total_chars", 1)), 4),
+        "compression_ratio": metrics["char_reduction_ratio"],
+        "metrics": metrics,
         "next_steps": [
             "feed skeleton_text to the target AI or IDE instead of the original raw context",
             "keep the restore package together with the skeleton so the original source can be reconstructed exactly",
@@ -640,6 +642,7 @@ def inspect_context_package(package_payload: dict[str, Any]) -> dict[str, Any]:
         "restore_raw_byte_count": int(restore_package.get("raw_byte_count", 0) or 0),
         "restore_compressed_byte_count": int(restore_package.get("compressed_byte_count", 0) or 0),
         "compression_ratio": package_payload.get("compression_ratio", 0),
+        "metrics": dict(package_payload.get("metrics") or _build_context_metrics(source_summary, skeleton_text=str(package_payload.get("skeleton_text") or ""))),
         "source_summary": source_summary,
         "tree_preview": tree_preview,
         "has_restore_package": bool(restore_package),
@@ -884,6 +887,19 @@ def _build_context_inspect_summary_text(payload: dict[str, Any]) -> str:
     if tree_preview:
         lines.append(f"tree_preview_count: {len(tree_preview)}")
         lines.append(f"first_tree_item: {tree_preview[0]}")
+    metrics = payload.get("metrics") or {}
+    for key in [
+        "source_char_count",
+        "skeleton_char_count",
+        "estimated_token_count_source",
+        "estimated_token_count_skeleton",
+        "estimated_token_direction",
+        "estimated_token_delta_from_source",
+        "estimated_token_reduction_ratio",
+        "estimated_tokens_saved",
+    ]:
+        if key in metrics:
+            lines.append(f"{key}: {metrics.get(key)}")
     return "\n".join(lines)
 
 
@@ -1360,6 +1376,57 @@ def _top_terms(text: str, *, limit: int = 8) -> list[str]:
     tokens = re.findall(r"[A-Za-z][A-Za-z0-9_-]{2,}|[\u4e00-\u9fff]{2,}", text.lower())
     counts = Counter(token for token in tokens if token not in STOPWORDS)
     return [term for term, _count in counts.most_common(limit)]
+
+
+def _build_context_metrics(source_summary: dict[str, Any], *, skeleton_text: str) -> dict[str, Any]:
+    source_char_count = _int_metric(
+        source_summary.get("total_chars"),
+        fallback=source_summary.get("bytes") or source_summary.get("total_bytes") or 0,
+    )
+    skeleton_char_count = len(skeleton_text)
+    estimated_token_count_source = _estimate_token_count(source_char_count)
+    estimated_token_count_skeleton = _estimate_token_count(skeleton_char_count)
+    token_delta_from_source = estimated_token_count_skeleton - estimated_token_count_source
+    estimated_tokens_saved = max(0, estimated_token_count_source - estimated_token_count_skeleton)
+    estimated_token_ratio = (
+        round(estimated_token_count_skeleton / max(1, estimated_token_count_source), 4)
+        if estimated_token_count_source > 0
+        else 0.0
+    )
+    char_reduction_ratio = round(skeleton_char_count / max(1, source_char_count), 4) if source_char_count > 0 else 0.0
+    if estimated_token_count_skeleton < estimated_token_count_source:
+        estimated_token_direction = "reduced"
+    elif estimated_token_count_skeleton > estimated_token_count_source:
+        estimated_token_direction = "expanded"
+    else:
+        estimated_token_direction = "flat"
+    return {
+        "source_char_count": source_char_count,
+        "skeleton_char_count": skeleton_char_count,
+        "estimated_token_count_source": estimated_token_count_source,
+        "estimated_token_count_skeleton": estimated_token_count_skeleton,
+        "estimated_tokens_saved": estimated_tokens_saved,
+        "estimated_token_delta_from_source": token_delta_from_source,
+        "estimated_token_reduction_ratio": estimated_token_ratio,
+        "estimated_token_size_ratio": estimated_token_ratio,
+        "estimated_token_direction": estimated_token_direction,
+        "char_reduction_ratio": char_reduction_ratio,
+        "token_estimate_basis": "heuristic_chars_div_4",
+    }
+
+
+def _estimate_token_count(char_count: int) -> int:
+    if char_count <= 0:
+        return 0
+    return max(1, (char_count + 3) // 4)
+
+
+def _int_metric(value: Any, *, fallback: Any = 0) -> int:
+    candidate = value if value not in (None, "") else fallback
+    try:
+        return int(candidate or 0)
+    except (TypeError, ValueError):
+        return int(fallback or 0)
 
 
 def _first_sentence(text: str) -> str:

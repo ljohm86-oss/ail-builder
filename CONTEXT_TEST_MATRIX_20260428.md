@@ -86,6 +86,11 @@ Check:
 - `source_kind = text | markdown`
 - `skeleton_language = MCP-SKL.v1`
 - `compression_ratio` is meaningfully smaller than `1`
+- `metrics.source_char_count > 0`
+- `metrics.estimated_token_count_source > 0`
+- `metrics.estimated_token_count_skeleton > 0`
+- `metrics.estimated_token_direction in {reduced, expanded, flat}`
+- `metrics.token_estimate_basis = heuristic_chars_div_4`
 
 ### T2. Restore long-form text
 
@@ -163,6 +168,7 @@ Expected:
 - `restore_mode = file`
 - `source_kind = code | text | binary`
 - `summary_text` present
+- `metrics` present
 
 ### F3. Patch one edited file
 
@@ -218,6 +224,12 @@ Expected:
 - `compression_mode: directory`
 - `source_kind: mixed_project`
 - `tree_preview_count:` present
+- estimated token fields present in summary or JSON output
+
+Note:
+
+- tiny inputs may report `estimated_token_direction = expanded`
+- larger repos or long-form text should usually report `reduced`
 
 ### D4. Directory apply-check aligned
 

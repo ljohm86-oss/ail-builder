@@ -1942,6 +1942,11 @@ assert payload['compression_mode'] == 'text', payload
 assert payload['skeleton_language'] == 'MCP-SKL.v1', payload
 assert payload['preset_id'] == 'writing', payload
 assert payload['preset_focus'], payload
+assert payload['metrics']['source_char_count'] > 0, payload
+assert payload['metrics']['estimated_token_count_source'] > 0, payload
+assert payload['metrics']['estimated_token_count_skeleton'] > 0, payload
+assert payload['metrics']['estimated_token_direction'] in {'reduced', 'expanded', 'flat'}, payload
+assert payload['metrics']['token_estimate_basis'] == 'heuristic_chars_div_4', payload
 assert payload['restore_package']['encoding'] == 'zlib+base64+json', payload
 for key in ['manifest_file', 'skeleton_file', 'restore_file', 'readme_file']:
     assert os.path.exists(payload['files'][key]), (key, payload)
@@ -2048,6 +2053,9 @@ assert payload['status'] == 'ok', payload
 assert payload['restore_mode'] == 'directory', payload
 assert payload['tree_preview'], payload
 assert payload['summary_text'], payload
+assert payload['metrics']['source_char_count'] > 0, payload
+assert payload['metrics']['estimated_token_count_source'] > 0, payload
+assert payload['metrics']['estimated_token_count_skeleton'] > 0, payload
 PY
 ok_context_inspect_json=true
 

@@ -131,6 +131,37 @@ It carries:
 - text headings, sections, and theme terms
 - directory tree plus per-file structural summaries
 
+## Metrics Surface
+
+`context compress` and `context inspect` now emit a formal `metrics` object.
+
+Current fields:
+
+- `source_char_count`
+- `skeleton_char_count`
+- `estimated_token_count_source`
+- `estimated_token_count_skeleton`
+- `estimated_tokens_saved`
+- `estimated_token_delta_from_source`
+- `estimated_token_direction`
+- `estimated_token_reduction_ratio`
+- `estimated_token_size_ratio`
+- `char_reduction_ratio`
+- `token_estimate_basis`
+
+Current token estimation basis:
+
+- `heuristic_chars_div_4`
+
+This is intentionally approximate.
+It is useful for operator reporting and cross-run comparison, not for billing-grade token accounting.
+
+Important nuance:
+
+- on very small inputs the MCP skeleton can be larger than the original source
+- in those cases `estimated_token_direction` will report `expanded`
+- this is expected and more honest than forcing every case into a fake reduction claim
+
 ## Exact Restore Strategy
 
 The skeleton does **not** try to hold the original content verbatim.
