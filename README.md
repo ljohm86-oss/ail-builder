@@ -250,6 +250,7 @@ PYTHONPATH="$REPO_ROOT" python3 -m cli context bundle --preset website --input-d
 PYTHONPATH="$REPO_ROOT" python3 -m cli context inspect --package-file /absolute/path/to/context-bundle/context_manifest.json --emit-summary
 PYTHONPATH="$REPO_ROOT" python3 -m cli context apply-check --package-file /absolute/path/to/context-bundle/context_manifest.json --input-dir /absolute/path/to/edited-project --emit-summary
 PYTHONPATH="$REPO_ROOT" python3 -m cli context patch --package-file /absolute/path/to/context-bundle/context_manifest.json --input-dir /absolute/path/to/edited-project --zip --output-dir /absolute/path/to/context-patch --json
+PYTHONPATH="$REPO_ROOT" python3 -m cli context patch-apply --patch-file /absolute/path/to/context-patch/patch_manifest.json --source-package-file /absolute/path/to/context-bundle/context_manifest.json --output-dir /absolute/path/to/replayed-project --json
 PYTHONPATH="$REPO_ROOT" python3 -m cli context restore --package-file /absolute/path/to/context-bundle/context_manifest.json --output-dir /absolute/path/to/restore-root --json
 ```
 

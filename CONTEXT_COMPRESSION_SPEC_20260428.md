@@ -59,6 +59,13 @@ PYTHONPATH="$PWD" python3 -m cli context patch --package-file /absolute/path/to/
 PYTHONPATH="$PWD" python3 -m cli context patch --package-file /absolute/path/to/context-bundle/context_manifest.json --text-file /absolute/path/to/edited-text.md --emit-summary
 ```
 
+### Patch-apply
+
+```bash
+PYTHONPATH="$PWD" python3 -m cli context patch-apply --patch-file /absolute/path/to/context-patch/patch_manifest.json --source-package-file /absolute/path/to/context-bundle/context_manifest.json --output-dir /absolute/path/to/replayed-project --json
+PYTHONPATH="$PWD" python3 -m cli context patch-apply --patch-file /absolute/path/to/context-patch/patch_manifest.json --output-file /absolute/path/to/replayed.txt --emit-summary
+```
+
 ## Presets
 
 Current presets:
@@ -99,6 +106,14 @@ When `context patch` is run, it writes:
 - one diff or patch-preview artifact
 - one candidate snapshot file or directory
 - optional zip archive next to the patch directory
+
+`context patch-apply` replays the patch package into a safe output target.
+
+For now it is intentionally conservative:
+
+- text patch -> writes the candidate snapshot back to one file path
+- file patch -> writes the candidate snapshot back to one file path
+- directory patch -> restores the original source package into a fresh output root, overlays changed and added files, and removes paths recorded in the patch manifest
 
 ## Skeleton Language
 
@@ -211,6 +226,17 @@ It is useful for:
 - handing a compact delta package to another AI, IDE, or teammate
 - preserving edited payloads without losing the original restore bundle
 
+## Patch-apply Positioning
+
+`context patch-apply` is a controlled replay step.
+
+It is not a merge-aware patch engine.
+It is a safe reconstruction path that:
+
+- uses the candidate snapshot files already exported by `context patch`
+- uses the original source bundle when directory replay is needed
+- rebuilds the edited surface into a fresh output target instead of mutating an active project tree in place
+
 ## Recommended Workflow
 
 1. feed the raw long context into `context compress`
@@ -237,3 +263,5 @@ The current smoke coverage locks in:
 - patch export coverage for text candidates
 - patch export coverage for directory candidates
 - patch summary output coverage
+- patch-apply replay coverage for text candidates
+- patch-apply replay coverage for directory candidates, including removed-path handling

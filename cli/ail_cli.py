@@ -17,6 +17,7 @@ from typing import Any, Sequence
 
 from .cloud_client import AILCloudClient, CloudClientError
 from .context_compression import (
+    apply_context_patch_payload,
     build_context_apply_check_payload,
     build_context_bundle_payload,
     build_context_compress_payload,
@@ -158,8 +159,8 @@ def cmd_generate(args: argparse.Namespace) -> int:
 
 
 def cmd_context(args: argparse.Namespace) -> int:
-    if getattr(args, "context_command", None) not in {"compress", "restore", "inspect", "apply-check", "preset", "bundle", "patch"}:
-        return _emit_command_error(args, EXIT_USAGE, "invalid_usage", "supported context subcommands: compress, restore, inspect, apply-check, preset, bundle, patch")
+    if getattr(args, "context_command", None) not in {"compress", "restore", "inspect", "apply-check", "preset", "bundle", "patch", "patch-apply"}:
+        return _emit_command_error(args, EXIT_USAGE, "invalid_usage", "supported context subcommands: compress, restore, inspect, apply-check, preset, bundle, patch, patch-apply")
 
     if getattr(args, "context_command", None) == "preset":
         try:
@@ -306,6 +307,7 @@ def cmd_context(args: argparse.Namespace) -> int:
             package_payload = load_context_package(package_file)
             payload = build_context_patch_payload(
                 package_payload=package_payload,
+                source_package_file=package_file,
                 inline_text=inline_text if inline_text else None,
                 text_file=text_file,
                 input_file=input_file,
@@ -352,6 +354,59 @@ def cmd_context(args: argparse.Namespace) -> int:
             for step in payload.get("next_steps", []):
                 print(f"- {step}")
         return exit_code
+
+    if getattr(args, "context_command", None) == "patch-apply":
+        patch_file = Path(str(getattr(args, "patch_file", "") or "")).expanduser()
+        if not str(patch_file).strip():
+            return _emit_command_error(args, EXIT_USAGE, "invalid_usage", "context patch-apply requires --patch-file")
+        source_package_file = Path(args.source_package_file).expanduser() if getattr(args, "source_package_file", None) else None
+        output_file = Path(args.output_file).expanduser() if getattr(args, "output_file", None) else None
+        output_dir = Path(args.output_dir).expanduser() if getattr(args, "output_dir", None) else None
+        try:
+            patch_payload = load_context_package(patch_file)
+            if source_package_file is None:
+                implicit = str(patch_payload.get("source_package_file") or "").strip()
+                if implicit:
+                    source_package_file = Path(implicit).expanduser()
+            source_package_payload = load_context_package(source_package_file) if source_package_file is not None else None
+            payload = apply_context_patch_payload(
+                patch_payload=patch_payload,
+                source_package_payload=source_package_payload,
+                output_dir=output_dir,
+                output_file=output_file,
+            )
+        except ValueError as exc:
+            return _emit_command_error(args, EXIT_USAGE, "invalid_usage", str(exc))
+        if getattr(args, "emit_summary", False):
+            if getattr(args, "output_report_file", None):
+                _write_cli_output_file(Path(args.output_report_file), str(payload.get("summary_text", "")))
+            sys.stdout.write(str(payload.get("summary_text", "")))
+            return EXIT_OK
+        if args.json:
+            if getattr(args, "output_report_file", None):
+                _write_cli_output_file(Path(args.output_report_file), payload, as_json=True)
+            _print_json_payload(payload)
+        else:
+            if getattr(args, "output_report_file", None):
+                _write_cli_output_file(Path(args.output_report_file), str(payload.get("summary_text", "")))
+            print("Context patch-apply")
+            print(f"- status: {payload['status']}")
+            print(f"- apply_mode: {payload.get('apply_mode', '')}")
+            print(f"- patch_mode: {payload.get('patch_mode', '')}")
+            print(f"- source_label: {payload.get('source_label', '')}")
+            print(f"- applied_path_count: {len(payload.get('applied_paths') or [])}")
+            print(f"- removed_path_count: {len(payload.get('removed_paths_applied') or [])}")
+            print("Applied paths:")
+            for item in payload.get("applied_paths", []):
+                print(f"- {item}")
+            if payload.get("removed_paths_applied"):
+                print("Removed paths:")
+                for item in payload.get("removed_paths_applied", []):
+                    print(f"- {item}")
+            print("Next:")
+            for step in payload.get("next_steps", []):
+                print(f"- {step}")
+        return EXIT_OK
 
     package_file = Path(str(getattr(args, "package_file", "") or "")).expanduser()
     if not str(package_file).strip():
@@ -4672,6 +4727,14 @@ def _build_parser() -> argparse.ArgumentParser:
     context_patch_parser.add_argument("--output-file", dest="output_file", help="Write the patch output to a file")
     context_patch_parser.add_argument("--output-dir", dest="output_dir", help="Directory where the context patch bundle should be written")
     context_patch_parser.add_argument("--json", action="store_true", help="Print context patch as JSON")
+    context_patch_apply_parser = context_subparsers.add_parser("patch-apply", help="Replay one context patch bundle into a safe output target")
+    context_patch_apply_parser.add_argument("--patch-file", dest="patch_file", required=True, help="Path to a context patch manifest JSON file produced by context patch")
+    context_patch_apply_parser.add_argument("--source-package-file", dest="source_package_file", help="Optional original context manifest JSON file; required for directory patch replay unless already recorded in the patch manifest")
+    context_patch_apply_parser.add_argument("--output-file", dest="output_file", help="Target file path for text or single-file patch replay")
+    context_patch_apply_parser.add_argument("--output-dir", dest="output_dir", help="Target directory root for directory patch replay or inferred file output")
+    context_patch_apply_parser.add_argument("--emit-summary", action="store_true", help="Print only a compact context patch-apply summary")
+    context_patch_apply_parser.add_argument("--output-report-file", dest="output_report_file", help="Write the patch-apply report to a file")
+    context_patch_apply_parser.add_argument("--json", action="store_true", help="Print context patch-apply as JSON")
 
     website_parser = subparsers.add_parser("website", help="Evaluate and validate static presentation-style website requests")
     website_subparsers = website_parser.add_subparsers(dest="website_command")

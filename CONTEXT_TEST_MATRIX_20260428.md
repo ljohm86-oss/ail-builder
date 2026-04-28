@@ -10,6 +10,7 @@ This matrix is designed to confirm four things:
 2. restore remains exact
 3. apply-check catches structural drift without blocking aligned edits
 4. bundle and patch exports are stable enough for cross-tool collaboration
+5. patch replay can rebuild edited output into a safe target without mutating the original source tree
 
 ## Test Environment Notes
 
@@ -290,6 +291,32 @@ Check:
 - `change_counts.added_paths >= 0`
 - `change_counts.removed_paths >= 0`
 
+### D8. Directory patch replay
+
+```bash
+python3 -m cli context patch-apply --patch-file /absolute/path/to/context-patch/patch_manifest.json --source-package-file /absolute/path/to/context-bundle/context_manifest.json --output-dir /absolute/path/to/replayed-project --json
+```
+
+Expected:
+
+- `entrypoint = context-patch-apply`
+- `apply_mode = directory_restore_plus_overlay`
+- changed files are replayed into the rebuilt output tree
+- added files appear in the rebuilt output tree
+- removed files are absent from the rebuilt output tree
+
+### T6. Text patch replay
+
+```bash
+python3 -m cli context patch-apply --patch-file /absolute/path/to/context-patch/patch_manifest.json --output-file /absolute/path/to/replayed.txt --json
+```
+
+Expected:
+
+- `entrypoint = context-patch-apply`
+- `apply_mode = text_snapshot_replay`
+- replayed output exactly matches the edited text used to create the patch
+
 ## Bundle / Patch Summary Tests
 
 ### B1. Bundle compact summary
@@ -372,6 +399,7 @@ python3 -m cli context apply-check --package-file /absolute/path/to/context-bund
 python3 -m cli context bundle --preset website --input-dir /absolute/path/to/project --zip --output-dir /absolute/path/to/context-bundle --emit-summary
 python3 -m cli context patch --package-file /absolute/path/to/context-bundle/context_manifest.json --input-dir /absolute/path/to/edited-project --json
 python3 -m cli context patch --package-file /absolute/path/to/context-bundle/context_manifest.json --input-dir /absolute/path/to/edited-project --zip --emit-summary
+python3 -m cli context patch-apply --patch-file /absolute/path/to/context-patch/patch_manifest.json --source-package-file /absolute/path/to/context-bundle/context_manifest.json --output-dir /absolute/path/to/replayed-project --json
 ```
 
 ## Current Maturity Judgment

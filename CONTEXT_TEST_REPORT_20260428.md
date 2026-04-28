@@ -145,8 +145,9 @@ At this point the `context` line supports a coherent operator workflow:
 2. `context inspect`
 3. `context apply-check`
 4. `context patch`
-5. `context restore`
-6. `context bundle`
+5. `context patch-apply`
+6. `context restore`
+7. `context bundle`
 
 That is enough to support:
 
@@ -181,16 +182,18 @@ The strongest accurate claim is:
 
 - it materially reduces context-window pressure and structural drift risk while preserving exact machine restore paths
 
-## Recommended Next Step
+## Follow-on Note
 
-The most natural next feature after this test pass is:
+The next natural gap identified during this test pass was controlled patch replay.
 
-- `context patch apply`
+That gap has since been addressed by:
 
-Reason:
+- `context patch-apply`
 
-- `compress`, `inspect`, `apply-check`, `patch`, and `restore` are now all present
-- the next gap is replaying a patch bundle back onto a target tree in a controlled way
+The remaining follow-on work should therefore focus on:
+
+- deeper validation around replay edge cases
+- cautious future work such as merge-aware or policy-aware patch application
 
 ## Final Judgment
 

@@ -323,6 +323,7 @@ def build_context_bundle_payload(
 def build_context_patch_payload(
     *,
     package_payload: dict[str, Any],
+    source_package_file: Path | None,
     inline_text: str | None,
     text_file: Path | None,
     input_file: Path | None,
@@ -382,6 +383,7 @@ def build_context_patch_payload(
         "bundle_created_at": _utc_now(),
         "preset_id": package_payload.get("preset_id", "generic"),
         "preset_label": package_payload.get("preset_label", CONTEXT_PRESETS["generic"]["label"]),
+        "source_package_file": str(source_package_file.resolve()) if source_package_file is not None else "",
         "compression_mode": original_mode,
         "source_kind": package_payload.get("source_kind", ""),
         "source_label": package_payload.get("source_label", ""),
@@ -414,6 +416,107 @@ def build_context_patch_payload(
     payload["file_count"] = len(files)
     _write_json(files["patch_manifest_json"], payload)
     return payload
+
+
+def apply_context_patch_payload(
+    *,
+    patch_payload: dict[str, Any],
+    source_package_payload: dict[str, Any] | None,
+    output_dir: Path | None,
+    output_file: Path | None,
+) -> dict[str, Any]:
+    patch_mode = str(patch_payload.get("patch_mode") or "")
+    files = patch_payload.get("files") or {}
+    source_label = str(patch_payload.get("source_label") or "context")
+    status = "ok"
+
+    if patch_mode == "text_unified_diff":
+        snapshot_path = Path(str(files.get("candidate_snapshot_file") or "")).expanduser()
+        if not snapshot_path.exists():
+            raise ValueError("context patch-apply could not find candidate_snapshot_file in the patch bundle")
+        if output_file is not None:
+            target_path = _resolve_output_target_file(output_file)
+        elif output_dir is not None:
+            target_path = output_dir.expanduser().resolve() / source_label
+        else:
+            raise ValueError("context patch-apply requires --output-file or --output-dir")
+        text = snapshot_path.read_text(encoding="utf-8")
+        _write_text(target_path, text)
+        payload = {
+            "status": status,
+            "entrypoint": "context-patch-apply",
+            "apply_mode": "text_snapshot_replay",
+            "patch_mode": patch_mode,
+            "source_label": source_label,
+            "applied_paths": [str(target_path.resolve())],
+            "removed_paths_applied": [],
+            "next_steps": [f"open {target_path.resolve()}"],
+        }
+        payload["summary_text"] = _build_context_patch_apply_summary_text(payload)
+        return payload
+
+    if patch_mode in {"file_unified_diff", "file_binary_replace"}:
+        snapshot_path = Path(str(files.get("candidate_snapshot_file") or "")).expanduser()
+        if not snapshot_path.exists():
+            raise ValueError("context patch-apply could not find candidate_snapshot_file in the patch bundle")
+        if output_file is not None:
+            target_path = _resolve_output_target_file(output_file)
+        elif output_dir is not None:
+            target_path = output_dir.expanduser().resolve() / snapshot_path.name
+        else:
+            raise ValueError("context patch-apply requires --output-file or --output-dir")
+        _write_bytes_file(target_path, snapshot_path.read_bytes())
+        payload = {
+            "status": status,
+            "entrypoint": "context-patch-apply",
+            "apply_mode": "file_snapshot_replay",
+            "patch_mode": patch_mode,
+            "source_label": source_label,
+            "applied_paths": [str(target_path.resolve())],
+            "removed_paths_applied": [],
+            "next_steps": [f"open {target_path.resolve()}"],
+        }
+        payload["summary_text"] = _build_context_patch_apply_summary_text(payload)
+        return payload
+
+    if patch_mode == "directory_structural_patch":
+        if output_dir is None:
+            raise ValueError("context patch-apply requires --output-dir when replaying a directory patch")
+        if source_package_payload is None:
+            raise ValueError("context patch-apply requires --source-package-file for directory patch replay")
+        _restore_summary, _ = restore_context_from_package(source_package_payload, output_dir=output_dir)
+        applied_root = Path(str((_restore_summary.get("restored_paths") or [""])[0])).expanduser().resolve()
+        snapshot_root = Path(str(files.get("candidate_snapshot_root") or "")).expanduser()
+        if snapshot_root.exists():
+            for item in sorted(snapshot_root.rglob("*")):
+                if item.is_dir():
+                    continue
+                rel_path = item.relative_to(snapshot_root)
+                _write_bytes_file(applied_root / rel_path, item.read_bytes())
+        removed_paths = [str(item) for item in (patch_payload.get("removed_paths") or []) if str(item).strip()]
+        removed_applied: list[str] = []
+        for rel_path in removed_paths:
+            target = applied_root / rel_path
+            if target.exists():
+                if target.is_dir():
+                    shutil.rmtree(target)
+                else:
+                    target.unlink()
+                removed_applied.append(str(target))
+        payload = {
+            "status": status,
+            "entrypoint": "context-patch-apply",
+            "apply_mode": "directory_restore_plus_overlay",
+            "patch_mode": patch_mode,
+            "source_label": source_label,
+            "applied_paths": [str(applied_root)],
+            "removed_paths_applied": removed_applied,
+            "next_steps": [f"open {applied_root}"],
+        }
+        payload["summary_text"] = _build_context_patch_apply_summary_text(payload)
+        return payload
+
+    raise ValueError(f"Unsupported context patch apply mode: {patch_mode}")
 
 
 def build_context_apply_check_payload(
@@ -868,6 +971,24 @@ def _build_context_patch_summary_text(payload: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+def _build_context_patch_apply_summary_text(payload: dict[str, Any]) -> str:
+    lines = [
+        f"status: {payload.get('status', '')}",
+        f"apply_mode: {payload.get('apply_mode', '')}",
+        f"patch_mode: {payload.get('patch_mode', '')}",
+        f"source_label: {payload.get('source_label', '')}",
+        f"applied_path_count: {len(payload.get('applied_paths') or [])}",
+        f"removed_path_count: {len(payload.get('removed_paths_applied') or [])}",
+    ]
+    applied_paths = payload.get("applied_paths") or []
+    if applied_paths:
+        lines.append(f"first_applied_path: {applied_paths[0]}")
+    removed_paths = payload.get("removed_paths_applied") or []
+    if removed_paths:
+        lines.append(f"first_removed_path: {removed_paths[0]}")
+    return "\n".join(lines)
+
+
 def _encode_restore_blob(payload: dict[str, Any]) -> dict[str, Any]:
     raw = json.dumps(payload, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
     compressed = zlib.compress(raw, level=9)
@@ -1256,6 +1377,13 @@ def _resolve_restore_file_path(*, output_dir: Path | None, output_file: Path | N
     if output_dir is None:
         raise ValueError("context restore requires --output-file or --output-dir when restoring a file package")
     return output_dir.expanduser().resolve() / suggested_name
+
+
+def _resolve_output_target_file(path: Path) -> Path:
+    target = path.expanduser()
+    if not target.is_absolute():
+        target = (Path.cwd() / target).resolve()
+    return target
 
 
 def _restore_file_blob(target_path: Path, decoded: dict[str, Any]) -> None:

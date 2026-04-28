@@ -72,6 +72,9 @@ ok_context_bundle_emit_summary_txt=false
 ok_context_patch_text_json=false
 ok_context_patch_directory_json=false
 ok_context_patch_emit_summary_txt=false
+ok_context_patch_apply_text_json=false
+ok_context_patch_apply_directory_json=false
+ok_context_patch_apply_emit_summary_txt=false
 ok_website_assets_json=false
 ok_website_assets_experimental_dynamic_json=false
 ok_website_assets_pack_json=false
@@ -2217,6 +2220,58 @@ grep -q "^patch_mode: directory_structural_patch$" "$context_patch_emit_summary_
 grep -q "^zip_enabled: True$" "$context_patch_emit_summary_txt"
 grep -q "^patch_root: " "$context_patch_emit_summary_txt"
 ok_context_patch_emit_summary_txt=true
+
+context_patch_apply_text_json="$TMP_ROOT/context_patch_apply_text.json"
+context_patch_apply_text_output="$TMP_ROOT/context_patch_apply_text_output.md"
+PYTHONPATH="$ROOT" python3 -m cli context patch-apply --patch-file "$context_patch_text_dir/patch_manifest.json" --output-file "$context_patch_apply_text_output" --json > "$context_patch_apply_text_json"
+python3 - "$context_patch_apply_text_json" "$context_patch_apply_text_output" "$TMP_ROOT/context_patch_candidate_text.md" <<'PY'
+import json, pathlib, sys
+payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
+output_path = pathlib.Path(sys.argv[2])
+candidate_path = pathlib.Path(sys.argv[3])
+assert payload['entrypoint'] == 'context-patch-apply', payload
+assert payload['status'] == 'ok', payload
+assert payload['apply_mode'] == 'text_snapshot_replay', payload
+assert output_path.read_text(encoding='utf-8') == candidate_path.read_text(encoding='utf-8')
+PY
+ok_context_patch_apply_text_json=true
+
+context_patch_directory_removed_json="$TMP_ROOT/context_patch_directory_removed.json"
+context_patch_directory_removed_dir="$TMP_ROOT/context_patch_directory_removed_dir"
+context_patch_candidate_removed_dir="$TMP_ROOT/context_patch_candidate_removed_dir"
+cp -R "$context_patch_candidate_dir/." "$context_patch_candidate_removed_dir/"
+rm -f "$context_patch_candidate_removed_dir/notes.md"
+set +e
+PYTHONPATH="$ROOT" python3 -m cli context patch --package-file "$context_directory_pkg/context_manifest.json" --input-dir "$context_patch_candidate_removed_dir" --zip --output-dir "$context_patch_directory_removed_dir" --json > "$context_patch_directory_removed_json"
+context_patch_removed_exit=$?
+set -e
+[ "$context_patch_removed_exit" -eq 3 ]
+
+context_patch_apply_directory_json="$TMP_ROOT/context_patch_apply_directory.json"
+context_patch_apply_directory_root="$TMP_ROOT/context_patch_apply_directory_root"
+PYTHONPATH="$ROOT" python3 -m cli context patch-apply --patch-file "$context_patch_directory_removed_dir/patch_manifest.json" --source-package-file "$context_directory_pkg/context_manifest.json" --output-dir "$context_patch_apply_directory_root" --json > "$context_patch_apply_directory_json"
+python3 - "$context_patch_apply_directory_json" "$context_patch_apply_directory_root" "$context_patch_candidate_removed_dir" <<'PY'
+import json, pathlib, sys
+payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
+root = pathlib.Path(sys.argv[2]) / 'context_directory_src'
+candidate_root = pathlib.Path(sys.argv[3])
+assert payload['entrypoint'] == 'context-patch-apply', payload
+assert payload['status'] == 'ok', payload
+assert payload['apply_mode'] == 'directory_restore_plus_overlay', payload
+assert root.exists(), payload
+assert (root / 'checkout.md').exists(), payload
+assert not (root / 'notes.md').exists(), payload
+assert (root / 'app.py').read_text(encoding='utf-8') == (candidate_root / 'app.py').read_text(encoding='utf-8')
+assert (root / 'checkout.md').read_text(encoding='utf-8') == (candidate_root / 'checkout.md').read_text(encoding='utf-8')
+PY
+ok_context_patch_apply_directory_json=true
+
+context_patch_apply_emit_summary_txt="$TMP_ROOT/context_patch_apply_emit_summary.txt"
+PYTHONPATH="$ROOT" python3 -m cli context patch-apply --patch-file "$context_patch_directory_removed_dir/patch_manifest.json" --source-package-file "$context_directory_pkg/context_manifest.json" --output-dir "$TMP_ROOT/context_patch_apply_emit_root" --emit-summary > "$context_patch_apply_emit_summary_txt"
+grep -q "^status: ok$" "$context_patch_apply_emit_summary_txt"
+grep -q "^apply_mode: directory_restore_plus_overlay$" "$context_patch_apply_emit_summary_txt"
+grep -q "^applied_path_count: 1$" "$context_patch_apply_emit_summary_txt"
+ok_context_patch_apply_emit_summary_txt=true
 
 website_assets_json="$TMP_ROOT/website_assets.json"
 python3 -m cli website assets --json > "$website_assets_json"
@@ -6268,6 +6323,9 @@ export CLI_SMOKE_OK_CONTEXT_BUNDLE_EMIT_SUMMARY_TXT="$ok_context_bundle_emit_sum
 export CLI_SMOKE_OK_CONTEXT_PATCH_TEXT_JSON="$ok_context_patch_text_json"
 export CLI_SMOKE_OK_CONTEXT_PATCH_DIRECTORY_JSON="$ok_context_patch_directory_json"
 export CLI_SMOKE_OK_CONTEXT_PATCH_EMIT_SUMMARY_TXT="$ok_context_patch_emit_summary_txt"
+export CLI_SMOKE_OK_CONTEXT_PATCH_APPLY_TEXT_JSON="$ok_context_patch_apply_text_json"
+export CLI_SMOKE_OK_CONTEXT_PATCH_APPLY_DIRECTORY_JSON="$ok_context_patch_apply_directory_json"
+export CLI_SMOKE_OK_CONTEXT_PATCH_APPLY_EMIT_SUMMARY_TXT="$ok_context_patch_apply_emit_summary_txt"
 export CLI_SMOKE_OK_PROJECT_HOOK_GUIDE_REPO_JSON="$ok_project_hook_guide_repo_json"
 export CLI_SMOKE_OK_PROJECT_HOOK_GUIDE_EMIT_SHELL_REPO="$ok_project_hook_guide_emit_shell_repo"
 export CLI_SMOKE_OK_PROJECT_HOOK_GUIDE_COPY_COMMAND_REPO="$ok_project_hook_guide_copy_command_repo"
@@ -6507,6 +6565,9 @@ payload = {
         'context_patch_text_json_ok': os.environ['CLI_SMOKE_OK_CONTEXT_PATCH_TEXT_JSON'] == 'true',
         'context_patch_directory_json_ok': os.environ['CLI_SMOKE_OK_CONTEXT_PATCH_DIRECTORY_JSON'] == 'true',
         'context_patch_emit_summary_txt_ok': os.environ['CLI_SMOKE_OK_CONTEXT_PATCH_EMIT_SUMMARY_TXT'] == 'true',
+        'context_patch_apply_text_json_ok': os.environ['CLI_SMOKE_OK_CONTEXT_PATCH_APPLY_TEXT_JSON'] == 'true',
+        'context_patch_apply_directory_json_ok': os.environ['CLI_SMOKE_OK_CONTEXT_PATCH_APPLY_DIRECTORY_JSON'] == 'true',
+        'context_patch_apply_emit_summary_txt_ok': os.environ['CLI_SMOKE_OK_CONTEXT_PATCH_APPLY_EMIT_SUMMARY_TXT'] == 'true',
         'website_check_json_ok': os.environ['CLI_SMOKE_OK_WEBSITE_CHECK_JSON'] == 'true',
         'website_check_out_of_scope_json_ok': os.environ['CLI_SMOKE_OK_WEBSITE_CHECK_OUT_OF_SCOPE_JSON'] == 'true',
         'website_check_experimental_dynamic_json_ok': os.environ['CLI_SMOKE_OK_WEBSITE_CHECK_EXPERIMENTAL_DYNAMIC_JSON'] == 'true',
