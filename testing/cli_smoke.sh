@@ -69,6 +69,9 @@ ok_context_bundle_json=false
 ok_context_bundle_zip_json=false
 ok_context_bundle_apply_check_json=false
 ok_context_bundle_emit_summary_txt=false
+ok_context_patch_text_json=false
+ok_context_patch_directory_json=false
+ok_context_patch_emit_summary_txt=false
 ok_website_assets_json=false
 ok_website_assets_experimental_dynamic_json=false
 ok_website_assets_pack_json=false
@@ -2143,6 +2146,77 @@ grep -q "^preset_id: website$" "$context_bundle_emit_summary_txt"
 grep -q "^zip_enabled: True$" "$context_bundle_emit_summary_txt"
 grep -q "^bundle_root: " "$context_bundle_emit_summary_txt"
 ok_context_bundle_emit_summary_txt=true
+
+cat > "$TMP_ROOT/context_patch_candidate_text.md" <<'MD'
+# Context Compression
+
+This is a long-form note about ecommerce storefront structure, writing bundles, route continuity, and review-safe compression.
+
+- preserve business logic
+- preserve framework relationships
+- reduce raw prompt bloat
+- keep restore bundles exact
+MD
+context_patch_text_json="$TMP_ROOT/context_patch_text.json"
+context_patch_text_dir="$TMP_ROOT/context_patch_text_dir"
+PYTHONPATH="$ROOT" python3 -m cli context patch --package-file "$TMP_ROOT/context_text_apply_bundle/context_manifest.json" --text-file "$TMP_ROOT/context_patch_candidate_text.md" --output-dir "$context_patch_text_dir" --json > "$context_patch_text_json"
+python3 - "$context_patch_text_json" <<'PY'
+import json, os, sys
+payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
+assert payload['entrypoint'] == 'context-patch', payload
+assert payload['status'] == 'ok', payload
+assert payload['patch_mode'] == 'text_unified_diff', payload
+assert payload['apply_check_passed'] is True, payload
+assert payload['change_counts']['text_patch_files'] == 1, payload
+assert payload['change_counts']['added_lines'] >= 1, payload
+assert os.path.exists(payload['files']['patch_diff']), payload
+assert os.path.exists(payload['files']['candidate_snapshot_file']), payload
+assert os.path.exists(payload['files']['apply_check_json']), payload
+PY
+ok_context_patch_text_json=true
+
+context_patch_candidate_dir="$TMP_ROOT/context_patch_candidate_dir"
+mkdir -p "$context_patch_candidate_dir"
+cp -R "$context_directory_src/." "$context_patch_candidate_dir/"
+cat > "$context_patch_candidate_dir/app.py" <<'PYCODE'
+from cart import sync_checkout
+
+def route():
+    sync_checkout()
+    return "website route plus checkout sync"
+PYCODE
+cat > "$context_patch_candidate_dir/checkout.md" <<'MD'
+# Checkout
+
+- preserve transaction continuity
+- expose payment note
+MD
+context_patch_directory_json="$TMP_ROOT/context_patch_directory.json"
+context_patch_directory_dir="$TMP_ROOT/context_patch_directory_dir"
+PYTHONPATH="$ROOT" python3 -m cli context patch --package-file "$context_directory_pkg/context_manifest.json" --input-dir "$context_patch_candidate_dir" --zip --output-dir "$context_patch_directory_dir" --json > "$context_patch_directory_json"
+python3 - "$context_patch_directory_json" <<'PY'
+import json, os, sys
+payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
+assert payload['entrypoint'] == 'context-patch', payload
+assert payload['status'] == 'ok', payload
+assert payload['patch_mode'] == 'directory_structural_patch', payload
+assert payload['apply_check_passed'] is True, payload
+assert payload['change_counts']['changed_paths'] >= 1, payload
+assert payload['change_counts']['added_paths'] >= 1, payload
+assert os.path.exists(payload['files']['patch_preview_diff']), payload
+assert os.path.exists(payload['files']['candidate_snapshot_root']), payload
+assert os.path.exists(payload['archive_path']), payload
+PY
+ok_context_patch_directory_json=true
+
+context_patch_emit_summary_txt="$TMP_ROOT/context_patch_emit_summary.txt"
+context_patch_emit_summary_dir="$TMP_ROOT/context_patch_emit_summary_dir"
+PYTHONPATH="$ROOT" python3 -m cli context patch --package-file "$context_directory_pkg/context_manifest.json" --input-dir "$context_patch_candidate_dir" --zip --output-dir "$context_patch_emit_summary_dir" --emit-summary > "$context_patch_emit_summary_txt"
+grep -q "^status: ok$" "$context_patch_emit_summary_txt"
+grep -q "^patch_mode: directory_structural_patch$" "$context_patch_emit_summary_txt"
+grep -q "^zip_enabled: True$" "$context_patch_emit_summary_txt"
+grep -q "^patch_root: " "$context_patch_emit_summary_txt"
+ok_context_patch_emit_summary_txt=true
 
 website_assets_json="$TMP_ROOT/website_assets.json"
 python3 -m cli website assets --json > "$website_assets_json"
@@ -6191,6 +6265,9 @@ export CLI_SMOKE_OK_CONTEXT_BUNDLE_JSON="$ok_context_bundle_json"
 export CLI_SMOKE_OK_CONTEXT_BUNDLE_ZIP_JSON="$ok_context_bundle_zip_json"
 export CLI_SMOKE_OK_CONTEXT_BUNDLE_APPLY_CHECK_JSON="$ok_context_bundle_apply_check_json"
 export CLI_SMOKE_OK_CONTEXT_BUNDLE_EMIT_SUMMARY_TXT="$ok_context_bundle_emit_summary_txt"
+export CLI_SMOKE_OK_CONTEXT_PATCH_TEXT_JSON="$ok_context_patch_text_json"
+export CLI_SMOKE_OK_CONTEXT_PATCH_DIRECTORY_JSON="$ok_context_patch_directory_json"
+export CLI_SMOKE_OK_CONTEXT_PATCH_EMIT_SUMMARY_TXT="$ok_context_patch_emit_summary_txt"
 export CLI_SMOKE_OK_PROJECT_HOOK_GUIDE_REPO_JSON="$ok_project_hook_guide_repo_json"
 export CLI_SMOKE_OK_PROJECT_HOOK_GUIDE_EMIT_SHELL_REPO="$ok_project_hook_guide_emit_shell_repo"
 export CLI_SMOKE_OK_PROJECT_HOOK_GUIDE_COPY_COMMAND_REPO="$ok_project_hook_guide_copy_command_repo"
@@ -6427,6 +6504,9 @@ payload = {
         'context_bundle_zip_json_ok': os.environ['CLI_SMOKE_OK_CONTEXT_BUNDLE_ZIP_JSON'] == 'true',
         'context_bundle_apply_check_json_ok': os.environ['CLI_SMOKE_OK_CONTEXT_BUNDLE_APPLY_CHECK_JSON'] == 'true',
         'context_bundle_emit_summary_txt_ok': os.environ['CLI_SMOKE_OK_CONTEXT_BUNDLE_EMIT_SUMMARY_TXT'] == 'true',
+        'context_patch_text_json_ok': os.environ['CLI_SMOKE_OK_CONTEXT_PATCH_TEXT_JSON'] == 'true',
+        'context_patch_directory_json_ok': os.environ['CLI_SMOKE_OK_CONTEXT_PATCH_DIRECTORY_JSON'] == 'true',
+        'context_patch_emit_summary_txt_ok': os.environ['CLI_SMOKE_OK_CONTEXT_PATCH_EMIT_SUMMARY_TXT'] == 'true',
         'website_check_json_ok': os.environ['CLI_SMOKE_OK_WEBSITE_CHECK_JSON'] == 'true',
         'website_check_out_of_scope_json_ok': os.environ['CLI_SMOKE_OK_WEBSITE_CHECK_OUT_OF_SCOPE_JSON'] == 'true',
         'website_check_experimental_dynamic_json_ok': os.environ['CLI_SMOKE_OK_WEBSITE_CHECK_EXPERIMENTAL_DYNAMIC_JSON'] == 'true',

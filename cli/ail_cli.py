@@ -20,6 +20,7 @@ from .context_compression import (
     build_context_apply_check_payload,
     build_context_bundle_payload,
     build_context_compress_payload,
+    build_context_patch_payload,
     build_context_preset_payload,
     inspect_context_package,
     load_context_package,
@@ -157,8 +158,8 @@ def cmd_generate(args: argparse.Namespace) -> int:
 
 
 def cmd_context(args: argparse.Namespace) -> int:
-    if getattr(args, "context_command", None) not in {"compress", "restore", "inspect", "apply-check", "preset", "bundle"}:
-        return _emit_command_error(args, EXIT_USAGE, "invalid_usage", "supported context subcommands: compress, restore, inspect, apply-check, preset, bundle")
+    if getattr(args, "context_command", None) not in {"compress", "restore", "inspect", "apply-check", "preset", "bundle", "patch"}:
+        return _emit_command_error(args, EXIT_USAGE, "invalid_usage", "supported context subcommands: compress, restore, inspect, apply-check, preset, bundle, patch")
 
     if getattr(args, "context_command", None) == "preset":
         try:
@@ -284,6 +285,66 @@ def cmd_context(args: argparse.Namespace) -> int:
             print(f"- file_count: {payload.get('file_count', 0)}")
             if payload.get("archive_path"):
                 print(f"- archive_path: {payload.get('archive_path', '')}")
+            print("Files:")
+            for label, path in (payload.get("files") or {}).items():
+                print(f"- {label}: {path}")
+            print("Next:")
+            for step in payload.get("next_steps", []):
+                print(f"- {step}")
+        return exit_code
+
+    if getattr(args, "context_command", None) == "patch":
+        package_file = Path(str(getattr(args, "package_file", "") or "")).expanduser()
+        if not str(package_file).strip():
+            return _emit_command_error(args, EXIT_USAGE, "invalid_usage", "context patch requires --package-file")
+        inline_text = str(getattr(args, "context_text", "") or "").strip()
+        text_file = Path(args.text_file).expanduser() if getattr(args, "text_file", None) else None
+        input_file = Path(args.input_file).expanduser() if getattr(args, "input_file", None) else None
+        input_dir = Path(args.input_dir).expanduser() if getattr(args, "input_dir", None) else None
+        output_dir = Path(args.output_dir).expanduser() if getattr(args, "output_dir", None) else None
+        try:
+            package_payload = load_context_package(package_file)
+            payload = build_context_patch_payload(
+                package_payload=package_payload,
+                inline_text=inline_text if inline_text else None,
+                text_file=text_file,
+                input_file=input_file,
+                input_dir=input_dir,
+                output_dir=output_dir,
+                make_zip=bool(getattr(args, "zip_bundle", False)),
+            )
+        except ValueError as exc:
+            return _emit_command_error(args, EXIT_USAGE, "invalid_usage", str(exc))
+        output_file = getattr(args, "output_file", None)
+        exit_code = EXIT_OK if bool(payload.get("apply_check_passed")) else EXIT_VALIDATION
+        if getattr(args, "emit_summary", False):
+            if output_file:
+                _write_cli_output_file(Path(output_file), str(payload.get("summary_text", "")))
+            sys.stdout.write(str(payload.get("summary_text", "")))
+            return exit_code
+        if args.json:
+            if output_file:
+                _write_cli_output_file(Path(output_file), payload, as_json=True)
+            _print_json_payload(payload)
+        else:
+            if output_file:
+                _write_cli_output_file(Path(output_file), str(payload.get("summary_text", "")))
+            print("Context patch")
+            print(f"- status: {payload['status']}")
+            print(f"- patch_mode: {payload.get('patch_mode', '')}")
+            print(f"- preset_id: {payload.get('preset_id', '')}")
+            print(f"- compression_mode: {payload.get('compression_mode', '')}")
+            print(f"- source_kind: {payload.get('source_kind', '')}")
+            print(f"- source_label: {payload.get('source_label', '')}")
+            print(f"- candidate_source_kind: {payload.get('candidate_source_kind', '')}")
+            print(f"- candidate_source_label: {payload.get('candidate_source_label', '')}")
+            print(f"- patch_root: {payload.get('patch_root', '')}")
+            print(f"- zip_enabled: {payload.get('zip_enabled', False)}")
+            print(f"- apply_check_passed: {payload.get('apply_check_passed', False)}")
+            print(f"- file_count: {payload.get('file_count', 0)}")
+            print("Change counts:")
+            for label, value in (payload.get("change_counts") or {}).items():
+                print(f"- {label}: {value}")
             print("Files:")
             for label, path in (payload.get("files") or {}).items():
                 print(f"- {label}: {path}")
@@ -4600,6 +4661,17 @@ def _build_parser() -> argparse.ArgumentParser:
     context_bundle_parser.add_argument("--output-file", dest="output_file", help="Write the bundle output to a file")
     context_bundle_parser.add_argument("--output-dir", dest="output_dir", help="Directory where the context bundle should be written")
     context_bundle_parser.add_argument("--json", action="store_true", help="Print context bundle as JSON")
+    context_patch_parser = context_subparsers.add_parser("patch", help="Export a patch bundle that compares one edited candidate against the original context bundle")
+    context_patch_parser.add_argument("--package-file", dest="package_file", required=True, help="Path to a context manifest JSON file produced by context compress")
+    context_patch_parser.add_argument("--text", dest="context_text", help="Inline edited text to diff against the original bundle")
+    context_patch_parser.add_argument("--text-file", dest="text_file", help="Read edited text from a file")
+    context_patch_parser.add_argument("--input-file", dest="input_file", help="Diff one edited file against the original context bundle")
+    context_patch_parser.add_argument("--input-dir", dest="input_dir", help="Diff one edited directory tree against the original context bundle")
+    context_patch_parser.add_argument("--zip", dest="zip_bundle", action="store_true", help="Also create a zip archive next to the patch directory")
+    context_patch_parser.add_argument("--emit-summary", action="store_true", help="Print only a compact context patch summary")
+    context_patch_parser.add_argument("--output-file", dest="output_file", help="Write the patch output to a file")
+    context_patch_parser.add_argument("--output-dir", dest="output_dir", help="Directory where the context patch bundle should be written")
+    context_patch_parser.add_argument("--json", action="store_true", help="Print context patch as JSON")
 
     website_parser = subparsers.add_parser("website", help="Evaluate and validate static presentation-style website requests")
     website_subparsers = website_parser.add_subparsers(dest="website_command")

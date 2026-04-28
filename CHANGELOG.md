@@ -70,8 +70,9 @@ This changelog is intentionally lightweight for now. The repository already has 
 - added `context apply-check`, so edited text, files, or directory trees can now be checked against the original compressed skeleton boundary before handoff
 - added `context preset` plus `context compress --preset`, so operators can choose a declared compression emphasis such as `generic`, `codebase`, `writing`, `website`, or `ecommerce` without changing restore accuracy
 - added `context bundle`, so compression, inspection, optional apply-check results, and optional zip packaging can now be exported as one formal context handoff artifact set
+- added `context patch`, so edited text, files, or project trees can now be compared against the original bundle and exported as one diff-plus-snapshot patch handoff package
 - added `/Users/carwynmac/ai-cl/CONTEXT_COMPRESSION_SPEC_20260428.md` to document the new context-compression bundle shape, restore strategy, and MCP skeleton positioning
-- added smoke coverage for text, code, and directory context compression, exact directory restore, context bundle inspection, context apply-check drift/pass cases, preset catalog selection, and context bundle export/zip/apply-check cases
+- added smoke coverage for text, code, and directory context compression, exact directory restore, context bundle inspection, context apply-check drift/pass cases, preset catalog selection, context bundle export/zip/apply-check cases, and context patch export cases for text and directory candidates
 
 ## 2026-04-19
 

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import base64
+import difflib
 import hashlib
 import json
 import os
@@ -317,6 +318,102 @@ def build_context_bundle_payload(
     bundle_manifest["summary_text"] = _build_context_bundle_summary_text(bundle_manifest)
     _write_json(files["bundle_manifest_json"], bundle_manifest)
     return bundle_manifest
+
+
+def build_context_patch_payload(
+    *,
+    package_payload: dict[str, Any],
+    inline_text: str | None,
+    text_file: Path | None,
+    input_file: Path | None,
+    input_dir: Path | None,
+    output_dir: Path | None,
+    make_zip: bool,
+) -> dict[str, Any]:
+    candidate = _resolve_context_input_source(
+        inline_text=inline_text,
+        text_file=text_file,
+        input_file=input_file,
+        input_dir=input_dir,
+        command_label="context patch",
+    )
+    original_mode = str(package_payload.get("compression_mode") or "")
+    candidate_mode = str(candidate.get("compression_mode") or "")
+    if original_mode != candidate_mode:
+        raise ValueError(
+            f"context patch requires a candidate input that matches the original bundle mode `{original_mode}`; "
+            f"received `{candidate_mode}` instead"
+        )
+
+    apply_check_payload = build_context_apply_check_payload(
+        package_payload=package_payload,
+        inline_text=inline_text,
+        text_file=text_file,
+        input_file=input_file,
+        input_dir=input_dir,
+    )
+    patch_root = _resolve_context_patch_dir(
+        source_label=str(package_payload.get("source_label") or "context"),
+        output_dir=output_dir,
+    )
+    patch_root.mkdir(parents=True, exist_ok=True)
+
+    patch_result = _build_context_patch_artifacts(
+        package_payload=package_payload,
+        candidate=candidate,
+        patch_root=patch_root,
+    )
+
+    files: dict[str, Path] = {
+        **patch_result["files"],
+        "apply_check_json": patch_root / "apply_check.json",
+        "apply_check_summary_txt": patch_root / "apply_check_summary.txt",
+        "patch_manifest_json": patch_root / "patch_manifest.json",
+        "patch_summary_txt": patch_root / "patch_summary.txt",
+        "readme_file": patch_root / "README.txt",
+    }
+    _write_json(files["apply_check_json"], apply_check_payload)
+    _write_text_file(files["apply_check_summary_txt"], str(apply_check_payload.get("summary_text", "")))
+
+    payload = {
+        "status": "ok" if bool(apply_check_payload.get("apply_check_passed")) else "warning",
+        "entrypoint": "context-patch",
+        "manifest_version": "context_patch.v1",
+        "bundle_created_at": _utc_now(),
+        "preset_id": package_payload.get("preset_id", "generic"),
+        "preset_label": package_payload.get("preset_label", CONTEXT_PRESETS["generic"]["label"]),
+        "compression_mode": original_mode,
+        "source_kind": package_payload.get("source_kind", ""),
+        "source_label": package_payload.get("source_label", ""),
+        "candidate_source_kind": candidate.get("source_kind", ""),
+        "candidate_source_label": candidate.get("source_label", ""),
+        "patch_mode": patch_result["patch_mode"],
+        "patch_root": str(patch_root),
+        "zip_enabled": make_zip,
+        "apply_check_passed": bool(apply_check_payload.get("apply_check_passed")),
+        "change_counts": patch_result["change_counts"],
+        "changed_paths": patch_result.get("changed_paths", []),
+        "added_paths": patch_result.get("added_paths", []),
+        "removed_paths": patch_result.get("removed_paths", []),
+        "files": {label: str(path) for label, path in files.items()},
+        "apply_check": apply_check_payload,
+        "next_steps": [
+            f"open {files['patch_summary_txt']}",
+            f"open {files['apply_check_summary_txt']}",
+            "review the diff artifacts before handing the edited candidate to another AI or IDE",
+        ],
+    }
+    if make_zip:
+        archive_path = shutil.make_archive(str(patch_root), "zip", root_dir=patch_root.parent, base_dir=patch_root.name)
+        payload["archive_path"] = str(Path(archive_path).resolve())
+        payload["next_steps"].insert(0, f"share {payload['archive_path']}")
+    payload["file_count"] = len(files)
+    payload["summary_text"] = _build_context_patch_summary_text(payload)
+    _write_text_file(files["patch_summary_txt"], str(payload.get("summary_text", "")))
+    _write_text_file(files["readme_file"], _build_context_patch_readme_text(payload, files))
+    payload["file_count"] = len(files)
+    _write_json(files["patch_manifest_json"], payload)
+    return payload
 
 
 def build_context_apply_check_payload(
@@ -734,6 +831,43 @@ def _build_context_bundle_summary_text(payload: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+def _build_context_patch_summary_text(payload: dict[str, Any]) -> str:
+    counts = payload.get("change_counts") or {}
+    lines = [
+        f"status: {payload.get('status', '')}",
+        f"patch_mode: {payload.get('patch_mode', '')}",
+        f"preset_id: {payload.get('preset_id', '')}",
+        f"compression_mode: {payload.get('compression_mode', '')}",
+        f"source_kind: {payload.get('source_kind', '')}",
+        f"source_label: {payload.get('source_label', '')}",
+        f"candidate_source_kind: {payload.get('candidate_source_kind', '')}",
+        f"candidate_source_label: {payload.get('candidate_source_label', '')}",
+        f"patch_root: {payload.get('patch_root', '')}",
+        f"zip_enabled: {payload.get('zip_enabled', False)}",
+        f"apply_check_passed: {payload.get('apply_check_passed', False)}",
+        f"file_count: {payload.get('file_count', 0)}",
+    ]
+    for key in [
+        "changed_paths",
+        "added_paths",
+        "removed_paths",
+        "unchanged_paths",
+        "text_patch_files",
+        "binary_snapshot_files",
+        "added_lines",
+        "removed_lines",
+    ]:
+        if key in counts:
+            lines.append(f"{key}: {counts.get(key, 0)}")
+    if payload.get("archive_path"):
+        lines.append(f"archive_path: {payload.get('archive_path', '')}")
+    files = payload.get("files") or {}
+    for label in ["patch_summary_txt", "apply_check_summary_txt", "patch_preview_diff", "patch_diff", "patches_root", "candidate_snapshot_root"]:
+        if files.get(label):
+            lines.append(f"{label}: {files.get(label, '')}")
+    return "\n".join(lines)
+
+
 def _encode_restore_blob(payload: dict[str, Any]) -> dict[str, Any]:
     raw = json.dumps(payload, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
     compressed = zlib.compress(raw, level=9)
@@ -1144,6 +1278,317 @@ def _restore_directory_blob(restore_root: Path, decoded: dict[str, Any]) -> None
         target_path.symlink_to(str(item.get("link_target") or ""))
 
 
+def _build_context_patch_artifacts(
+    *,
+    package_payload: dict[str, Any],
+    candidate: dict[str, Any],
+    patch_root: Path,
+) -> dict[str, Any]:
+    original_decoded = _decode_restore_blob(package_payload.get("restore_package") or {})
+    candidate_restore = candidate.get("restore_blob") or {}
+    mode = str(package_payload.get("compression_mode") or "")
+    if mode == "text":
+        return _build_text_patch_artifacts(
+            original_decoded=original_decoded,
+            candidate_restore=candidate_restore,
+            patch_root=patch_root,
+            source_label=str(package_payload.get("source_label") or "context.txt"),
+            candidate_label=str(candidate.get("source_label") or "candidate.txt"),
+        )
+    if mode == "file":
+        return _build_file_patch_artifacts(
+            original_decoded=original_decoded,
+            candidate_restore=candidate_restore,
+            patch_root=patch_root,
+            source_label=str(package_payload.get("source_label") or "context-file"),
+        )
+    if mode == "directory":
+        return _build_directory_patch_artifacts(
+            original_decoded=original_decoded,
+            candidate_restore=candidate_restore,
+            patch_root=patch_root,
+        )
+    raise ValueError(f"Unsupported context patch mode: {mode}")
+
+
+def _build_text_patch_artifacts(
+    *,
+    original_decoded: dict[str, Any],
+    candidate_restore: dict[str, Any],
+    patch_root: Path,
+    source_label: str,
+    candidate_label: str,
+) -> dict[str, Any]:
+    original_text = str(original_decoded.get("text") or "")
+    candidate_text = str(candidate_restore.get("text") or "")
+    diff_lines = list(
+        difflib.unified_diff(
+            original_text.splitlines(),
+            candidate_text.splitlines(),
+            fromfile=f"original/{source_label}",
+            tofile=f"candidate/{candidate_label}",
+            lineterm="",
+        )
+    )
+    diff_text = "\n".join(diff_lines).rstrip() + ("\n" if diff_lines else "")
+    if not diff_text:
+        diff_text = "# No textual changes detected.\n"
+    added_lines, removed_lines = _diff_line_counts(diff_lines)
+    files = {
+        "patch_diff": patch_root / "patch.diff",
+        "candidate_snapshot_file": patch_root / "candidate_snapshot.txt",
+    }
+    _write_text_file(files["patch_diff"], diff_text)
+    _write_text_file(files["candidate_snapshot_file"], candidate_text)
+    changed = original_text != candidate_text
+    return {
+        "patch_mode": "text_unified_diff",
+        "files": files,
+        "change_counts": {
+            "changed_paths": 1 if changed else 0,
+            "added_paths": 0,
+            "removed_paths": 0,
+            "unchanged_paths": 0 if changed else 1,
+            "text_patch_files": 1,
+            "binary_snapshot_files": 0,
+            "added_lines": added_lines,
+            "removed_lines": removed_lines,
+        },
+        "changed_paths": [candidate_label] if changed else [],
+        "added_paths": [],
+        "removed_paths": [],
+    }
+
+
+def _build_file_patch_artifacts(
+    *,
+    original_decoded: dict[str, Any],
+    candidate_restore: dict[str, Any],
+    patch_root: Path,
+    source_label: str,
+) -> dict[str, Any]:
+    file_name = str(candidate_restore.get("file_name") or original_decoded.get("file_name") or source_label)
+    original_bytes = base64.b64decode(str(original_decoded.get("content_b64") or "").encode("ascii"))
+    candidate_bytes = base64.b64decode(str(candidate_restore.get("content_b64") or "").encode("ascii"))
+    snapshot_root = patch_root / "candidate_snapshot"
+    snapshot_file = snapshot_root / file_name
+    _write_bytes_file(snapshot_file, candidate_bytes)
+
+    is_text = _looks_like_text(Path(file_name), original_bytes) and _looks_like_text(Path(file_name), candidate_bytes)
+    files: dict[str, Path] = {"candidate_snapshot_file": snapshot_file}
+    added_lines = 0
+    removed_lines = 0
+    patch_mode = "file_binary_replace"
+    if is_text:
+        original_text = original_bytes.decode("utf-8")
+        candidate_text = candidate_bytes.decode("utf-8")
+        diff_lines = list(
+            difflib.unified_diff(
+                original_text.splitlines(),
+                candidate_text.splitlines(),
+                fromfile=f"original/{file_name}",
+                tofile=f"candidate/{file_name}",
+                lineterm="",
+            )
+        )
+        diff_text = "\n".join(diff_lines).rstrip() + ("\n" if diff_lines else "")
+        if not diff_text:
+            diff_text = "# No textual changes detected.\n"
+        added_lines, removed_lines = _diff_line_counts(diff_lines)
+        files["patch_diff"] = patch_root / "patch.diff"
+        _write_text_file(files["patch_diff"], diff_text)
+        patch_mode = "file_unified_diff"
+    else:
+        files["binary_change_note"] = patch_root / "binary_change_note.txt"
+        note_lines = [
+            "Binary replacement patch",
+            "",
+            f"source_label: {source_label}",
+            f"file_name: {file_name}",
+            f"original_sha256: {original_decoded.get('sha256', '')}",
+            f"candidate_sha256: {candidate_restore.get('sha256', '')}",
+            "",
+            "Use the candidate snapshot file as the replacement payload.",
+        ]
+        _write_text_file(files["binary_change_note"], "\n".join(note_lines) + "\n")
+
+    changed = original_bytes != candidate_bytes
+    return {
+        "patch_mode": patch_mode,
+        "files": files,
+        "change_counts": {
+            "changed_paths": 1 if changed else 0,
+            "added_paths": 0,
+            "removed_paths": 0,
+            "unchanged_paths": 0 if changed else 1,
+            "text_patch_files": 1 if is_text else 0,
+            "binary_snapshot_files": 0 if is_text else 1,
+            "added_lines": added_lines,
+            "removed_lines": removed_lines,
+        },
+        "changed_paths": [file_name] if changed else [],
+        "added_paths": [],
+        "removed_paths": [],
+    }
+
+
+def _build_directory_patch_artifacts(
+    *,
+    original_decoded: dict[str, Any],
+    candidate_restore: dict[str, Any],
+    patch_root: Path,
+) -> dict[str, Any]:
+    original_files = {str(item.get("relative_path") or ""): base64.b64decode(str(item.get("content_b64") or "").encode("ascii")) for item in (original_decoded.get("files") or [])}
+    candidate_files = {str(item.get("relative_path") or ""): base64.b64decode(str(item.get("content_b64") or "").encode("ascii")) for item in (candidate_restore.get("files") or [])}
+    original_paths = set(path for path in original_files.keys() if path)
+    candidate_paths = set(path for path in candidate_files.keys() if path)
+    added_paths = sorted(candidate_paths - original_paths)
+    removed_paths = sorted(original_paths - candidate_paths)
+    common_paths = sorted(original_paths & candidate_paths)
+    changed_paths = sorted(path for path in common_paths if original_files[path] != candidate_files[path])
+    unchanged_paths = sorted(path for path in common_paths if original_files[path] == candidate_files[path])
+
+    patches_root = patch_root / "patches"
+    candidate_snapshot_root = patch_root / "candidate_snapshot"
+    patch_preview_diff = patch_root / "patch_preview.diff"
+    binary_notes_root = patch_root / "binary_notes"
+    preview_chunks: list[str] = []
+    text_patch_files = 0
+    binary_snapshot_files = 0
+    added_lines_total = 0
+    removed_lines_total = 0
+
+    def _write_candidate_snapshot(rel_path: str, data: bytes) -> None:
+        _write_bytes_file(candidate_snapshot_root / rel_path, data)
+
+    for rel_path in sorted(set(added_paths + changed_paths)):
+        _write_candidate_snapshot(rel_path, candidate_files[rel_path])
+
+    for rel_path in sorted(set(added_paths + removed_paths + changed_paths)):
+        original_bytes = original_files.get(rel_path)
+        candidate_bytes = candidate_files.get(rel_path)
+        original_is_text = original_bytes is not None and _looks_like_text(Path(rel_path), original_bytes)
+        candidate_is_text = candidate_bytes is not None and _looks_like_text(Path(rel_path), candidate_bytes)
+        if original_is_text or candidate_is_text:
+            original_text = original_bytes.decode("utf-8") if original_is_text and original_bytes is not None else ""
+            candidate_text = candidate_bytes.decode("utf-8") if candidate_is_text and candidate_bytes is not None else ""
+            diff_lines = list(
+                difflib.unified_diff(
+                    original_text.splitlines(),
+                    candidate_text.splitlines(),
+                    fromfile=f"original/{rel_path}",
+                    tofile=f"candidate/{rel_path}",
+                    lineterm="",
+                )
+            )
+            diff_text = "\n".join(diff_lines).rstrip() + ("\n" if diff_lines else "")
+            if not diff_text:
+                diff_text = "# No textual changes detected.\n"
+            patch_file = patches_root / f"{rel_path}.diff"
+            _write_text_file(patch_file, diff_text)
+            text_patch_files += 1
+            added_lines, removed_lines = _diff_line_counts(diff_lines)
+            added_lines_total += added_lines
+            removed_lines_total += removed_lines
+            if len(preview_chunks) < 5:
+                preview_chunks.append(diff_text.rstrip())
+        else:
+            note_file = binary_notes_root / f"{rel_path}.txt"
+            _write_text_file(
+                note_file,
+                "\n".join(
+                    [
+                        "Binary file patch note",
+                        "",
+                        f"relative_path: {rel_path}",
+                        f"original_present: {original_bytes is not None}",
+                        f"candidate_present: {candidate_bytes is not None}",
+                        f"original_sha256: {_sha256_bytes(original_bytes) if original_bytes is not None else ''}",
+                        f"candidate_sha256: {_sha256_bytes(candidate_bytes) if candidate_bytes is not None else ''}",
+                    ]
+                )
+                + "\n",
+            )
+            if candidate_bytes is not None:
+                binary_snapshot_files += 1
+
+    preview_text = "\n\n".join(chunk for chunk in preview_chunks if chunk).rstrip() + ("\n" if preview_chunks else "")
+    if not preview_text:
+        preview_text = "# No textual diff preview available.\n"
+    _write_text_file(patch_preview_diff, preview_text)
+
+    files = {
+        "patch_preview_diff": patch_preview_diff,
+        "patches_root": patches_root,
+        "candidate_snapshot_root": candidate_snapshot_root,
+    }
+    if binary_notes_root.exists():
+        files["binary_notes_root"] = binary_notes_root
+    return {
+        "patch_mode": "directory_structural_patch",
+        "files": files,
+        "change_counts": {
+            "changed_paths": len(changed_paths),
+            "added_paths": len(added_paths),
+            "removed_paths": len(removed_paths),
+            "unchanged_paths": len(unchanged_paths),
+            "text_patch_files": text_patch_files,
+            "binary_snapshot_files": binary_snapshot_files,
+            "added_lines": added_lines_total,
+            "removed_lines": removed_lines_total,
+        },
+        "changed_paths": changed_paths,
+        "added_paths": added_paths,
+        "removed_paths": removed_paths,
+    }
+
+
+def _build_context_patch_readme_text(payload: dict[str, Any], files: dict[str, Path]) -> str:
+    return "\n".join(
+        [
+            "AIL Builder Context Patch Bundle",
+            "",
+            f"manifest_version: {payload.get('manifest_version', 'context_patch.v1')}",
+            f"bundle_created_at: {payload.get('bundle_created_at', '')}",
+            f"preset_id: {payload.get('preset_id', 'generic')}",
+            f"compression_mode: {payload.get('compression_mode', '')}",
+            f"source_kind: {payload.get('source_kind', '')}",
+            f"source_label: {payload.get('source_label', '')}",
+            f"candidate_source_kind: {payload.get('candidate_source_kind', '')}",
+            f"candidate_source_label: {payload.get('candidate_source_label', '')}",
+            f"patch_mode: {payload.get('patch_mode', '')}",
+            f"apply_check_passed: {payload.get('apply_check_passed', False)}",
+            "",
+            "Files:",
+            "- patch_manifest.json: full machine-readable patch bundle",
+            "- patch_summary.txt: compact patch summary",
+            "- apply_check.json: structural continuity validation against the original bundle",
+            "- apply_check_summary.txt: compact apply-check summary",
+            "- patch diff or patch preview files: human-readable change surface",
+            "- candidate snapshot files: exact edited payloads for changed or added content",
+            "- README.txt: this usage note",
+            "",
+            "Suggested flow:",
+            f"1. inspect {files['patch_summary_txt']} first",
+            f"2. inspect {files['apply_check_summary_txt']} before handing the patch to another model or IDE",
+            "3. use the candidate snapshot or diff files when you need to manually apply the edited surface",
+        ]
+    ) + "\n"
+
+
+def _diff_line_counts(diff_lines: list[str]) -> tuple[int, int]:
+    added = 0
+    removed = 0
+    for line in diff_lines:
+        if line.startswith(("+++", "---", "@@")):
+            continue
+        if line.startswith("+"):
+            added += 1
+        elif line.startswith("-"):
+            removed += 1
+    return added, removed
+
+
 def _write_text(path: Path, text: str) -> None:
     target = path.expanduser()
     if not target.is_absolute():
@@ -1172,6 +1617,14 @@ def _context_bundle_root() -> Path:
     return (Path.cwd() / ".workspace_ail" / "context_bundles").resolve()
 
 
+def _write_bytes_file(path: Path, data: bytes) -> None:
+    target = path.expanduser()
+    if not target.is_absolute():
+        target = (Path.cwd() / target).resolve()
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_bytes(data)
+
+
 def _resolve_context_bundle_dir(*, source_label: str, output_dir: Path | None) -> Path:
     if output_dir is not None:
         path = output_dir.expanduser()
@@ -1180,6 +1633,20 @@ def _resolve_context_bundle_dir(*, source_label: str, output_dir: Path | None) -
     slug = _slugify_context_label(source_label)
     stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
     return _context_bundle_root() / f"{slug}-{stamp}"
+
+
+def _context_patch_root() -> Path:
+    return (Path.cwd() / ".workspace_ail" / "context_patches").resolve()
+
+
+def _resolve_context_patch_dir(*, source_label: str, output_dir: Path | None) -> Path:
+    if output_dir is not None:
+        path = output_dir.expanduser()
+        return path if path.is_absolute() else (Path.cwd() / path).resolve()
+    _context_patch_root().mkdir(parents=True, exist_ok=True)
+    slug = _slugify_context_label(source_label)
+    stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+    return _context_patch_root() / f"{slug}-{stamp}"
 
 
 def _slugify_context_label(value: str) -> str:

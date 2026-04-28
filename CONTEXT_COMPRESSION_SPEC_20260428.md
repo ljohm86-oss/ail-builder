@@ -52,6 +52,13 @@ PYTHONPATH="$PWD" python3 -m cli context bundle --preset website --input-dir /ab
 PYTHONPATH="$PWD" python3 -m cli context bundle --preset writing --text-file /absolute/path/to/long-text.md --candidate-text-file /absolute/path/to/edited-text.md --emit-summary
 ```
 
+### Patch
+
+```bash
+PYTHONPATH="$PWD" python3 -m cli context patch --package-file /absolute/path/to/context-bundle/context_manifest.json --input-dir /absolute/path/to/edited-project --zip --output-dir /absolute/path/to/context-patch --json
+PYTHONPATH="$PWD" python3 -m cli context patch --package-file /absolute/path/to/context-bundle/context_manifest.json --text-file /absolute/path/to/edited-text.md --emit-summary
+```
+
 ## Presets
 
 Current presets:
@@ -82,6 +89,16 @@ When `context bundle` is run, it writes the same base package plus:
 - optional `apply_check.json`
 - optional `apply_check_summary.txt`
 - optional zip archive next to the bundle directory
+
+When `context patch` is run, it writes:
+
+- `patch_manifest.json`
+- `patch_summary.txt`
+- `apply_check.json`
+- `apply_check_summary.txt`
+- one diff or patch-preview artifact
+- one candidate snapshot file or directory
+- optional zip archive next to the patch directory
 
 ## Skeleton Language
 
@@ -177,6 +194,23 @@ It is useful for:
 - attaching an apply-check result when an edited candidate already exists
 - preserving one stable artifact set for testing, collaboration, and rollback
 
+## Patch Positioning
+
+`context patch` is the operator-facing delta surface for one edited candidate.
+
+It combines:
+
+- structural continuity validation from `context apply-check`
+- one human-readable diff or patch preview
+- one exact candidate snapshot for changed payloads
+- optional zip packaging for handoff
+
+It is useful for:
+
+- reviewing what changed after another AI worked from the compressed skeleton
+- handing a compact delta package to another AI, IDE, or teammate
+- preserving edited payloads without losing the original restore bundle
+
 ## Recommended Workflow
 
 1. feed the raw long context into `context compress`
@@ -200,3 +234,6 @@ The current smoke coverage locks in:
 - bundle zip export coverage
 - bundle apply-check export coverage
 - bundle summary output coverage
+- patch export coverage for text candidates
+- patch export coverage for directory candidates
+- patch summary output coverage
