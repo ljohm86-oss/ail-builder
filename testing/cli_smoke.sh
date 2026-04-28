@@ -42,6 +42,9 @@ ok_writing_review_story_json=false
 ok_writing_review_emit_summary_txt=false
 ok_writing_review_output_file_summary=false
 ok_writing_review_output_file_json=false
+ok_writing_apply_check_copy_json=false
+ok_writing_apply_check_drift_json=false
+ok_writing_apply_check_emit_summary_txt=false
 ok_writing_bundle_json=false
 ok_writing_bundle_zip_json=false
 ok_writing_bundle_copy_archive_path_json=false
@@ -1766,6 +1769,40 @@ assert payload['status'] == 'ok', payload
 assert payload['summary_text'], payload
 PY
 ok_writing_review_output_file_json=true
+
+writing_apply_check_copy_json="$TMP_ROOT/writing_apply_check_copy.json"
+PYTHONPATH="$ROOT" python3 -m cli writing apply-check '写一个企业产品宣传文案，包含首页主标题、卖点和 CTA。' --text 'Help operators cut reporting time in half. The workflow is faster, clearer, and easier to roll out across the team. Request pricing today.' --json > "$writing_apply_check_copy_json"
+python3 - "$writing_apply_check_copy_json" <<'PY'
+import json, sys
+payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
+assert payload['entrypoint'] == 'writing-apply-check', payload
+assert payload['status'] == 'ok', payload
+assert payload['apply_check_mode'] == 'external_draft_alignment_gate', payload
+assert payload['apply_check_passed'] is True, payload
+assert payload['alignment_band'] in {'workable', 'strong'}, payload
+assert payload['source_commands']['writing_apply_check'].endswith("python3 -m cli writing apply-check '写一个企业产品宣传文案，包含首页主标题、卖点和 CTA。' --text-file /absolute/path/to/draft.txt --json"), payload
+PY
+ok_writing_apply_check_copy_json=true
+
+writing_apply_check_drift_json="$TMP_ROOT/writing_apply_check_drift.json"
+PYTHONPATH="$ROOT" python3 -m cli writing apply-check '写一本非虚构商业书目录和章节目标，帮助创业者搭建销售系统。' --text 'The moonlight fell over the ruined tower as the prince drew his blade.' --json > "$writing_apply_check_drift_json"
+python3 - "$writing_apply_check_drift_json" <<'PY'
+import json, sys
+payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
+assert payload['entrypoint'] == 'writing-apply-check', payload
+assert payload['status'] == 'warning', payload
+assert payload['apply_check_passed'] is False, payload
+assert payload['drift_findings'], payload
+assert payload['summary_text'], payload
+PY
+ok_writing_apply_check_drift_json=true
+
+writing_apply_check_emit_summary_txt="$TMP_ROOT/writing_apply_check_emit_summary.txt"
+PYTHONPATH="$ROOT" python3 -m cli writing apply-check '写一个企业产品宣传文案，包含首页主标题、卖点和 CTA。' --text 'Help operators cut reporting time in half. Request pricing today.' --emit-summary > "$writing_apply_check_emit_summary_txt"
+grep -q "^status: " "$writing_apply_check_emit_summary_txt"
+grep -q "^apply_check_passed: " "$writing_apply_check_emit_summary_txt"
+grep -q "^alignment_score: " "$writing_apply_check_emit_summary_txt"
+ok_writing_apply_check_emit_summary_txt=true
 
 writing_bundle_json="$TMP_ROOT/writing_bundle.json"
 writing_bundle_dir="$TMP_ROOT/writing_bundle_dir"
@@ -5892,6 +5929,9 @@ export CLI_SMOKE_OK_WRITING_REVIEW_STORY_JSON="$ok_writing_review_story_json"
 export CLI_SMOKE_OK_WRITING_REVIEW_EMIT_SUMMARY_TXT="$ok_writing_review_emit_summary_txt"
 export CLI_SMOKE_OK_WRITING_REVIEW_OUTPUT_FILE_SUMMARY="$ok_writing_review_output_file_summary"
 export CLI_SMOKE_OK_WRITING_REVIEW_OUTPUT_FILE_JSON="$ok_writing_review_output_file_json"
+export CLI_SMOKE_OK_WRITING_APPLY_CHECK_COPY_JSON="$ok_writing_apply_check_copy_json"
+export CLI_SMOKE_OK_WRITING_APPLY_CHECK_DRIFT_JSON="$ok_writing_apply_check_drift_json"
+export CLI_SMOKE_OK_WRITING_APPLY_CHECK_EMIT_SUMMARY_TXT="$ok_writing_apply_check_emit_summary_txt"
 export CLI_SMOKE_OK_WRITING_BUNDLE_JSON="$ok_writing_bundle_json"
 export CLI_SMOKE_OK_WRITING_BUNDLE_ZIP_JSON="$ok_writing_bundle_zip_json"
 export CLI_SMOKE_OK_WRITING_BUNDLE_COPY_ARCHIVE_PATH_JSON="$ok_writing_bundle_copy_archive_path_json"
@@ -6110,6 +6150,9 @@ payload = {
         'writing_review_emit_summary_txt_ok': os.environ['CLI_SMOKE_OK_WRITING_REVIEW_EMIT_SUMMARY_TXT'] == 'true',
         'writing_review_output_file_summary_ok': os.environ['CLI_SMOKE_OK_WRITING_REVIEW_OUTPUT_FILE_SUMMARY'] == 'true',
         'writing_review_output_file_json_ok': os.environ['CLI_SMOKE_OK_WRITING_REVIEW_OUTPUT_FILE_JSON'] == 'true',
+        'writing_apply_check_copy_json_ok': os.environ['CLI_SMOKE_OK_WRITING_APPLY_CHECK_COPY_JSON'] == 'true',
+        'writing_apply_check_drift_json_ok': os.environ['CLI_SMOKE_OK_WRITING_APPLY_CHECK_DRIFT_JSON'] == 'true',
+        'writing_apply_check_emit_summary_txt_ok': os.environ['CLI_SMOKE_OK_WRITING_APPLY_CHECK_EMIT_SUMMARY_TXT'] == 'true',
         'writing_bundle_json_ok': os.environ['CLI_SMOKE_OK_WRITING_BUNDLE_JSON'] == 'true',
         'writing_bundle_zip_json_ok': os.environ['CLI_SMOKE_OK_WRITING_BUNDLE_ZIP_JSON'] == 'true',
         'writing_bundle_copy_archive_path_json_ok': os.environ['CLI_SMOKE_OK_WRITING_BUNDLE_COPY_ARCHIVE_PATH_JSON'] == 'true',

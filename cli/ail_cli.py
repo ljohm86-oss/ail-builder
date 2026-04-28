@@ -382,8 +382,8 @@ def cmd_writing(args: argparse.Namespace) -> int:
                 print(f"- {step}")
         return exit_code
 
-    if getattr(args, "writing_command", None) not in {"check", "intent", "scaffold", "brief", "expand", "review", "bundle"}:
-        return _emit_command_error(args, EXIT_USAGE, "invalid_usage", "supported writing subcommands: check, packs, scaffold, brief, expand, review, bundle, intent")
+    if getattr(args, "writing_command", None) not in {"check", "intent", "scaffold", "brief", "expand", "review", "apply-check", "bundle"}:
+        return _emit_command_error(args, EXIT_USAGE, "invalid_usage", "supported writing subcommands: check, packs, scaffold, brief, expand, review, apply-check, bundle, intent")
 
     if getattr(args, "writing_command", None) == "check":
         requirement = _read_requirement(args)
@@ -561,6 +561,48 @@ def cmd_writing(args: argparse.Namespace) -> int:
             if payload.get("next_pass_prompt"):
                 print("Next pass prompt:")
                 print(payload["next_pass_prompt"][:1200].rstrip())
+            print("Next:")
+            for step in payload["next_steps"]:
+                print(f"- {step}")
+        return exit_code
+
+    if getattr(args, "writing_command", None) == "apply-check":
+        requirement = _read_requirement(args)
+        if not requirement:
+            return _emit_command_error(args, EXIT_USAGE, "invalid_usage", "writing apply-check requires a non-empty requirement")
+        draft_text = _read_review_text(args)
+        if not draft_text:
+            return _emit_command_error(args, EXIT_USAGE, "invalid_usage", "writing apply-check requires draft text via --text, --text-file, or stdin")
+        payload, exit_code = _build_writing_apply_check_payload(requirement=requirement, draft_text=draft_text)
+        output_file = getattr(args, "output_file", None)
+        if getattr(args, "emit_summary", False):
+            if output_file:
+                _write_cli_output_file(Path(output_file), str(payload.get("summary_text", "")))
+            sys.stdout.write(str(payload.get("summary_text", "")))
+            return exit_code
+        if args.json:
+            if output_file:
+                _write_cli_output_file(Path(output_file), payload, as_json=True)
+            _print_json_payload(payload)
+        else:
+            if output_file:
+                _write_cli_output_file(Path(output_file), str(payload.get("summary_text", "")))
+            print("Writing apply-check")
+            print(f"- status: {payload['status']}")
+            print(f"- writing_pack: {payload['writing_pack']}")
+            print(f"- expected_profile: {payload.get('expected_profile', '')}")
+            print(f"- apply_check_mode: {payload.get('apply_check_mode', '')}")
+            print(f"- apply_check_passed: {payload.get('apply_check_passed', False)}")
+            print(f"- alignment_score: {payload.get('alignment_score', 0)}")
+            print(f"- alignment_band: {payload.get('alignment_band', '')}")
+            if payload.get("drift_findings"):
+                print("Drift findings:")
+                for item in payload.get("drift_findings", []):
+                    print(f"- {item}")
+            if payload.get("revision_targets"):
+                print("Revision targets:")
+                for item in payload.get("revision_targets", []):
+                    print(f"- {item}")
             print("Next:")
             for step in payload["next_steps"]:
                 print(f"- {step}")
@@ -4305,6 +4347,14 @@ def _build_parser() -> argparse.ArgumentParser:
     writing_review_parser.add_argument("--emit-summary", action="store_true", help="Print only a compact review summary")
     writing_review_parser.add_argument("--output-file", dest="output_file", help="Write the review output to a file")
     writing_review_parser.add_argument("--json", action="store_true", help="Print writing review as JSON")
+    writing_apply_check_parser = writing_subparsers.add_parser("apply-check", help="Validate that an external writing pass still stays inside the current scaffold boundary")
+    writing_apply_check_parser.add_argument("requirement", nargs="?", help="Writing requirement text")
+    writing_apply_check_parser.add_argument("--from-file", dest="from_file", help="Read requirement text from a file")
+    writing_apply_check_parser.add_argument("--text", dest="review_text", help="Draft text to validate against the current scaffold")
+    writing_apply_check_parser.add_argument("--text-file", dest="review_text_file", help="Read draft text from a file")
+    writing_apply_check_parser.add_argument("--emit-summary", action="store_true", help="Print only a compact apply-check summary")
+    writing_apply_check_parser.add_argument("--output-file", dest="output_file", help="Write the apply-check output to a file")
+    writing_apply_check_parser.add_argument("--json", action="store_true", help="Print writing apply-check as JSON")
     writing_bundle_parser = writing_subparsers.add_parser("bundle", help="Export one writing bundle with check, scaffold, brief, expand, and review outputs")
     writing_bundle_parser.add_argument("requirement", nargs="?", help="Writing requirement text")
     writing_bundle_parser.add_argument("--from-file", dest="from_file", help="Read requirement text from a file")
@@ -5939,6 +5989,27 @@ def _build_writing_review_summary_text(payload: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+def _build_writing_apply_check_summary_text(payload: dict[str, Any]) -> str:
+    lines = [
+        f"status: {payload.get('status', '')}",
+        f"writing_pack: {payload.get('writing_pack', '')}",
+        f"expected_profile: {payload.get('expected_profile', '')}",
+        f"apply_check_mode: {payload.get('apply_check_mode', '')}",
+        f"apply_check_passed: {payload.get('apply_check_passed', False)}",
+        f"alignment_score: {payload.get('alignment_score', 0)}",
+        f"alignment_band: {payload.get('alignment_band', '')}",
+        f"draft_char_count: {payload.get('draft_char_count', 0)}",
+        f"draft_paragraph_count: {payload.get('draft_paragraph_count', 0)}",
+        f"drift_count: {len(payload.get('drift_findings') or [])}",
+        f"revision_target_count: {len(payload.get('revision_targets') or [])}",
+    ]
+    if payload.get("revision_targets"):
+        lines.append(f"first_revision_target: {(payload.get('revision_targets') or [''])[0]}")
+    elif payload.get("drift_findings"):
+        lines.append(f"first_drift_finding: {(payload.get('drift_findings') or [''])[0]}")
+    return "\n".join(lines)
+
+
 def _build_writing_review_payload(*, requirement: str, draft_text: str) -> tuple[dict[str, Any], int]:
     scaffold_payload, exit_code = _build_writing_scaffold_payload(requirement=requirement)
     if scaffold_payload.get("status") != "ok":
@@ -5994,6 +6065,57 @@ def _build_writing_review_payload(*, requirement: str, draft_text: str) -> tuple
     }
     payload["summary_text"] = _build_writing_review_summary_text(payload)
     return payload, EXIT_OK
+
+
+def _build_writing_apply_check_payload(*, requirement: str, draft_text: str) -> tuple[dict[str, Any], int]:
+    review_payload, review_exit = _build_writing_review_payload(requirement=requirement, draft_text=draft_text)
+    if review_payload.get("status") != "ok":
+        payload = {
+            **review_payload,
+            "entrypoint": "writing-apply-check",
+            "apply_check_mode": "unavailable",
+            "apply_check_passed": False,
+            "message": "Writing apply-check could not validate the draft because the requirement is outside the current scaffold-ready writing surface.",
+        }
+        payload["summary_text"] = _build_writing_apply_check_summary_text(payload)
+        return payload, max(review_exit, EXIT_VALIDATION)
+
+    drift_findings = list(review_payload.get("drift_findings") or [])
+    alignment_band = str(review_payload.get("alignment_band") or "")
+    apply_check_passed = bool(alignment_band in {"workable", "strong"} and not drift_findings)
+    status = "ok" if apply_check_passed else "warning"
+    message = (
+        "The draft still looks aligned to the current scaffold boundary."
+        if apply_check_passed
+        else "The draft drifted far enough from the scaffold that it should be revised before handoff or bundling."
+    )
+    payload = {
+        **review_payload,
+        "status": status,
+        "entrypoint": "writing-apply-check",
+        "apply_check_mode": "external_draft_alignment_gate",
+        "apply_check_passed": apply_check_passed,
+        "message": message,
+        "source_commands": {
+            "writing_check": f"PYTHONPATH={REPO_ROOT_STR} python3 -m cli writing check {shlex.quote(requirement)} --json",
+            "writing_scaffold": f"PYTHONPATH={REPO_ROOT_STR} python3 -m cli writing scaffold {shlex.quote(requirement)} --json",
+            "writing_review": f"PYTHONPATH={REPO_ROOT_STR} python3 -m cli writing review {shlex.quote(requirement)} --text-file /absolute/path/to/draft.txt --json",
+            "writing_apply_check": f"PYTHONPATH={REPO_ROOT_STR} python3 -m cli writing apply-check {shlex.quote(requirement)} --text-file /absolute/path/to/draft.txt --json",
+        },
+        "next_steps": (
+            [
+                f"run PYTHONPATH={REPO_ROOT_STR} python3 -m cli writing bundle {shlex.quote(requirement)} --deep --json"
+            ]
+            if apply_check_passed
+            else [
+                "revise the drift findings before reusing this draft",
+                "use the next_pass_prompt for the next repair pass",
+                f"run PYTHONPATH={REPO_ROOT_STR} python3 -m cli writing apply-check {shlex.quote(requirement)} --text-file /absolute/path/to/revised-draft.txt --json",
+            ]
+        ),
+    }
+    payload["summary_text"] = _build_writing_apply_check_summary_text(payload)
+    return payload, (EXIT_OK if apply_check_passed else EXIT_VALIDATION)
 
 
 def _build_writing_bundle_summary_text(payload: dict[str, Any]) -> str:
