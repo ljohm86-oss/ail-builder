@@ -48,6 +48,12 @@ git -c http.version=HTTP/1.1 push origin main
 
 This repository has already seen one environment where normal HTTPS access worked in browsers and Python, but Git transport only became reliable after switching to `HTTP/1.1`.
 
+Important diagnostic note:
+
+- being able to sign in to GitHub in a browser does not prove that `git push` will use the same healthy path
+- browsers, Python HTTPS clients, `curl`, and `git` may succeed or fail independently on the same machine
+- if browser login works but `git push` still hangs, treat it as a transport-layer problem first, not automatically as an auth or permission problem
+
 ## 2. Optional: Create A Virtual Environment
 
 ```bash
