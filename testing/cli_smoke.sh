@@ -2362,6 +2362,23 @@ assert policy['allow_roots'] == ['docs'], policy
 PY
 ok_context_patch_policy_template_file=true
 
+context_patch_sample_policy_json="$TMP_ROOT/context_patch_sample_policy.json"
+PYTHONPATH="$ROOT" python3 -m cli context patch-apply --sample-policy strict --emit-policy-template --json > "$context_patch_sample_policy_json"
+python3 - "$context_patch_sample_policy_json" <<'PY'
+import json, sys
+payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
+policy = payload['policy_template']
+assert payload['sample_policy'] == 'strict', payload
+assert policy['policy_mode'] == 'strict', policy
+assert policy['require_apply_check_passed'] is True, policy
+assert policy['block_removals'] is True, policy
+assert policy['block_additions'] is True, policy
+assert policy['max_changed_paths'] == 8, policy
+assert policy['allow_roots'] == ['src', 'docs'], policy
+assert policy['forbid_roots'] == ['src/generated', 'secrets'], policy
+PY
+ok_context_patch_sample_policy_json=true
+
 website_assets_json="$TMP_ROOT/website_assets.json"
 python3 -m cli website assets --json > "$website_assets_json"
 python3 - "$website_assets_json" <<'PY'

@@ -65,6 +65,7 @@ PYTHONPATH="$PWD" python3 -m cli context patch --package-file /absolute/path/to/
 PYTHONPATH="$PWD" python3 -m cli context patch-apply --patch-file /absolute/path/to/context-patch/patch_manifest.json --source-package-file /absolute/path/to/context-bundle/context_manifest.json --output-dir /absolute/path/to/replayed-project --json
 PYTHONPATH="$PWD" python3 -m cli context patch-apply --patch-file /absolute/path/to/context-patch/patch_manifest.json --output-file /absolute/path/to/replayed.txt --emit-summary
 PYTHONPATH="$PWD" python3 -m cli context patch-apply --patch-file /absolute/path/to/context-patch/patch_manifest.json --source-package-file /absolute/path/to/context-bundle/context_manifest.json --policy-mode safe --output-dir /absolute/path/to/replayed-project --emit-summary
+PYTHONPATH="$PWD" python3 -m cli context patch-apply --sample-policy strict --emit-policy-template
 PYTHONPATH="$PWD" python3 -m cli context patch-apply --policy-mode strict --allow-root src --forbid-root src/generated --emit-policy-template
 PYTHONPATH="$PWD" python3 -m cli context patch-apply --policy-mode safe --allow-root docs --write-policy-template /absolute/path/to/context-policy.json
 ```
@@ -123,6 +124,7 @@ It now also supports optional replay policies.
 - `--policy-mode open` keeps the default permissive replay
 - `--policy-mode safe` requires a passing apply-check result and blocks removed paths
 - `--policy-mode strict` also blocks added paths and caps the touched path count
+- `--sample-policy safe|strict` starts from one reusable project-oriented sample before other overrides are applied
 - `--policy-file` can refine those defaults with explicit JSON settings
 - `--allow-root` and `--forbid-root` let operators constrain replay to relative path prefixes
 

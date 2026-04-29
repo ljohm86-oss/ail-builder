@@ -16,6 +16,26 @@ If you only need a generated starter JSON, you can also ask the CLI to emit one 
 PYTHONPATH="$PWD" python3 -m cli context patch-apply --policy-mode strict --allow-root src --forbid-root src/generated --emit-policy-template
 ```
 
+If you want a more opinionated starter without spelling out roots first, use:
+
+```bash
+PYTHONPATH="$PWD" python3 -m cli context patch-apply --sample-policy strict --emit-policy-template
+```
+
+Current built-in sample shapes:
+
+- `safe`
+  - `policy_mode = safe`
+  - `max_changed_paths = 12`
+  - `allow_roots = ["src", "docs"]`
+  - `forbid_roots = ["src/generated", "secrets"]`
+
+- `strict`
+  - `policy_mode = strict`
+  - `max_changed_paths = 8`
+  - `allow_roots = ["src", "docs"]`
+  - `forbid_roots = ["src/generated", "secrets"]`
+
 Or write the resolved JSON directly:
 
 ```bash

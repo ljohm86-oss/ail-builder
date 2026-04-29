@@ -387,6 +387,7 @@ def cmd_context(args: argparse.Namespace) -> int:
             try:
                 payload = build_context_patch_policy_template_payload(
                     policy_mode=getattr(args, "policy_mode", None),
+                    sample_policy=getattr(args, "sample_policy", None),
                     policy_file=policy_file,
                     allow_roots=list(getattr(args, "allow_roots", None) or []),
                     forbid_roots=list(getattr(args, "forbid_roots", None) or []),
@@ -423,6 +424,7 @@ def cmd_context(args: argparse.Namespace) -> int:
                 output_dir=output_dir,
                 output_file=output_file,
                 policy_mode=getattr(args, "policy_mode", None),
+                sample_policy=getattr(args, "sample_policy", None),
                 policy_file=policy_file,
                 allow_roots=list(getattr(args, "allow_roots", None) or []),
                 forbid_roots=list(getattr(args, "forbid_roots", None) or []),
@@ -4816,6 +4818,7 @@ def _build_parser() -> argparse.ArgumentParser:
     context_patch_apply_parser.add_argument("--output-file", dest="output_file", help="Target file path for text or single-file patch replay")
     context_patch_apply_parser.add_argument("--output-dir", dest="output_dir", help="Target directory root for directory patch replay or inferred file output")
     context_patch_apply_parser.add_argument("--policy-mode", choices=["open", "safe", "strict"], default="open", help="Patch replay policy preset")
+    context_patch_apply_parser.add_argument("--sample-policy", choices=["safe", "strict"], help="Start from one built-in reusable sample policy before applying any other overrides")
     context_patch_apply_parser.add_argument("--policy-file", dest="policy_file", help="Optional JSON policy file to refine patch replay restrictions")
     context_patch_apply_parser.add_argument("--allow-root", dest="allow_roots", action="append", help="Allow replay only under one relative path prefix; repeatable")
     context_patch_apply_parser.add_argument("--forbid-root", dest="forbid_roots", action="append", help="Forbid replay under one relative path prefix; repeatable")

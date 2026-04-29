@@ -76,6 +76,7 @@ This changelog is intentionally lightweight for now. The repository already has 
 - added `/Users/carwynmac/ai-cl/examples/context_patch_policy.safe.json` and `/Users/carwynmac/ai-cl/CONTEXT_PATCH_POLICY_TEMPLATE_20260429.md` so operators now have one reusable JSON policy example plus a clear merge/override explanation for `context patch-apply`
 - added `context patch-apply --emit-policy-template`, so operators can now print the resolved replay policy as reusable JSON without first preparing a patch bundle
 - added `context patch-apply --write-policy-template`, so operators can now save the resolved replay policy JSON directly to disk without needing shell redirection
+- added `context patch-apply --sample-policy`, so operators can now start from one built-in `safe` or `strict` project-oriented sample before layering additional replay restrictions
 - added formal `context` metrics on `compress` and `inspect`, including source characters, skeleton characters, heuristic token estimates, token direction, and estimated size ratios
 - expanded `context` metrics so `compress`, `inspect`, and `bundle` can now prefer tokenizer-backed counts via optional `tiktoken` support while still falling back cleanly to heuristic estimates
 - added `/Users/carwynmac/ai-cl/CONTEXT_TEST_MATRIX_20260428.md` so context compression, restore, inspect, apply-check, bundle, and patch regressions can be run against one stable matrix

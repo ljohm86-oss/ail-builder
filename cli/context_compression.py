@@ -62,6 +62,26 @@ PATCH_POLICY_MODES: dict[str, dict[str, Any]] = {
         "forbid_roots": [],
     },
 }
+PATCH_POLICY_SAMPLES: dict[str, dict[str, Any]] = {
+    "safe": {
+        "policy_mode": "safe",
+        "require_apply_check_passed": True,
+        "block_removals": True,
+        "block_additions": False,
+        "max_changed_paths": 12,
+        "allow_roots": ["src", "docs"],
+        "forbid_roots": ["src/generated", "secrets"],
+    },
+    "strict": {
+        "policy_mode": "strict",
+        "require_apply_check_passed": True,
+        "block_removals": True,
+        "block_additions": True,
+        "max_changed_paths": 8,
+        "allow_roots": ["src", "docs"],
+        "forbid_roots": ["src/generated", "secrets"],
+    },
+}
 
 ALIGNMENT_STRONG_THRESHOLD = 82
 ALIGNMENT_WORKABLE_THRESHOLD = 64
@@ -474,6 +494,7 @@ def apply_context_patch_payload(
     output_dir: Path | None,
     output_file: Path | None,
     policy_mode: str | None = None,
+    sample_policy: str | None = None,
     policy_file: Path | None = None,
     allow_roots: list[str] | None = None,
     forbid_roots: list[str] | None = None,
@@ -488,6 +509,7 @@ def apply_context_patch_payload(
     status = "ok"
     policy = _resolve_patch_apply_policy(
         policy_mode=policy_mode,
+        sample_policy=sample_policy,
         policy_file=policy_file,
         allow_roots=allow_roots,
         forbid_roots=forbid_roots,
@@ -1758,6 +1780,7 @@ def _decode_restore_content_b64(content_b64: Any) -> bytes:
 def _resolve_patch_apply_policy(
     *,
     policy_mode: str | None,
+    sample_policy: str | None,
     policy_file: Path | None,
     allow_roots: list[str] | None,
     forbid_roots: list[str] | None,
@@ -1766,11 +1789,18 @@ def _resolve_patch_apply_policy(
     require_apply_check_passed: bool,
     max_changed_paths: int | None,
 ) -> dict[str, Any]:
-    normalized_mode = str(policy_mode or "open").strip().lower() or "open"
-    if normalized_mode not in PATCH_POLICY_MODES:
-        supported = ", ".join(sorted(PATCH_POLICY_MODES.keys()))
-        raise ValueError(f"Unsupported context patch-apply policy mode `{normalized_mode}`. Supported modes: {supported}")
-    policy = dict(PATCH_POLICY_MODES[normalized_mode])
+    normalized_sample = str(sample_policy or "").strip().lower()
+    if normalized_sample:
+        if normalized_sample not in PATCH_POLICY_SAMPLES:
+            supported = ", ".join(sorted(PATCH_POLICY_SAMPLES.keys()))
+            raise ValueError(f"Unsupported context patch-apply sample policy `{normalized_sample}`. Supported samples: {supported}")
+        policy = dict(PATCH_POLICY_SAMPLES[normalized_sample])
+    else:
+        normalized_mode = str(policy_mode or "open").strip().lower() or "open"
+        if normalized_mode not in PATCH_POLICY_MODES:
+            supported = ", ".join(sorted(PATCH_POLICY_MODES.keys()))
+            raise ValueError(f"Unsupported context patch-apply policy mode `{normalized_mode}`. Supported modes: {supported}")
+        policy = dict(PATCH_POLICY_MODES[normalized_mode])
     if policy_file is not None:
         loaded = json.loads(policy_file.expanduser().read_text(encoding="utf-8"))
         if not isinstance(loaded, dict):
@@ -1806,6 +1836,7 @@ def _resolve_patch_apply_policy(
 def build_context_patch_policy_template_payload(
     *,
     policy_mode: str | None,
+    sample_policy: str | None,
     policy_file: Path | None,
     allow_roots: list[str] | None,
     forbid_roots: list[str] | None,
@@ -1816,6 +1847,7 @@ def build_context_patch_policy_template_payload(
 ) -> dict[str, Any]:
     policy = _resolve_patch_apply_policy(
         policy_mode=policy_mode,
+        sample_policy=sample_policy,
         policy_file=policy_file,
         allow_roots=allow_roots,
         forbid_roots=forbid_roots,
@@ -1827,6 +1859,7 @@ def build_context_patch_policy_template_payload(
     return {
         "status": "ok",
         "entrypoint": "context-patch-apply-policy-template",
+        "sample_policy": str(sample_policy or "").strip().lower() or None,
         "policy_mode": str(policy.get("policy_mode") or "open"),
         "policy_template": policy,
         "summary_text": json.dumps(policy, ensure_ascii=False, indent=2),
