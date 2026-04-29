@@ -65,6 +65,23 @@ If PowerShell does not have `pip` on PATH yet, use:
 py -3 -m pip install -e .
 ```
 
+If you want tokenizer-backed `context` metrics instead of the heuristic fallback, install `tiktoken` into the same Python environment that runs `py -3 -m cli`:
+
+```powershell
+py -3 -m pip install tiktoken
+```
+
+If you prefer the optional extra instead:
+
+```powershell
+py -3 -m pip install ".[context-metrics]"
+```
+
+Important Windows note:
+
+- use `py -3 -m pip ...` instead of plain `pip ...` when possible
+- this avoids installing `tiktoken` into a different Python environment than the one that actually runs the CLI
+
 ## 4. Sanity-Check The CLI
 
 ```bash
