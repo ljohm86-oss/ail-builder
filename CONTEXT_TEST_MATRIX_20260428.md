@@ -319,6 +319,21 @@ Expected:
 - added files appear in the rebuilt output tree
 - removed files are absent from the rebuilt output tree
 
+### D9. Policy-aware directory patch replay
+
+```bash
+python3 -m cli context patch-apply --patch-file /absolute/path/to/context-patch/patch_manifest.json --source-package-file /absolute/path/to/context-bundle/context_manifest.json --policy-mode safe --output-dir /absolute/path/to/replayed-project --json
+```
+
+Expected when the patch removes files:
+
+- process exits with validation status
+- `status = warning`
+- `apply_mode = policy_blocked`
+- `policy_mode = safe`
+- `policy_passed = false`
+- `policy_findings` explains why replay was blocked
+
 ### T6. Text patch replay
 
 ```bash
@@ -330,6 +345,19 @@ Expected:
 - `entrypoint = context-patch-apply`
 - `apply_mode = text_snapshot_replay`
 - replayed output exactly matches the edited text used to create the patch
+
+### T7. Policy-aware text patch replay
+
+```bash
+python3 -m cli context patch-apply --patch-file /absolute/path/to/context-patch/patch_manifest.json --policy-mode safe --output-file /absolute/path/to/replayed.txt --json
+```
+
+Expected:
+
+- `status = ok`
+- `policy_mode = safe`
+- `policy_passed = true`
+- replayed output still matches the edited text used to create the patch
 
 ## Bundle / Patch Summary Tests
 

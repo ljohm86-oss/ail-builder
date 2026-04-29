@@ -2246,6 +2246,21 @@ assert output_path.read_text(encoding='utf-8') == candidate_path.read_text(encod
 PY
 ok_context_patch_apply_text_json=true
 
+context_patch_apply_text_safe_json="$TMP_ROOT/context_patch_apply_text_safe.json"
+context_patch_apply_text_safe_output="$TMP_ROOT/context_patch_apply_text_safe_output.md"
+PYTHONPATH="$ROOT" python3 -m cli context patch-apply --patch-file "$context_patch_text_dir/patch_manifest.json" --policy-mode safe --output-file "$context_patch_apply_text_safe_output" --json > "$context_patch_apply_text_safe_json"
+python3 - "$context_patch_apply_text_safe_json" "$context_patch_apply_text_safe_output" "$TMP_ROOT/context_patch_candidate_text.md" <<'PY'
+import json, pathlib, sys
+payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
+output_path = pathlib.Path(sys.argv[2])
+candidate_path = pathlib.Path(sys.argv[3])
+assert payload['status'] == 'ok', payload
+assert payload['policy_mode'] == 'safe', payload
+assert payload['policy_passed'] is True, payload
+assert output_path.read_text(encoding='utf-8') == candidate_path.read_text(encoding='utf-8')
+PY
+ok_context_patch_apply_text_safe_json=true
+
 context_patch_directory_removed_json="$TMP_ROOT/context_patch_directory_removed.json"
 context_patch_directory_removed_dir="$TMP_ROOT/context_patch_directory_removed_dir"
 context_patch_candidate_removed_dir="$TMP_ROOT/context_patch_candidate_removed_dir"
@@ -2276,12 +2291,45 @@ assert (root / 'checkout.md').read_text(encoding='utf-8') == (candidate_root / '
 PY
 ok_context_patch_apply_directory_json=true
 
+context_patch_apply_safe_block_json="$TMP_ROOT/context_patch_apply_safe_block.json"
+set +e
+PYTHONPATH="$ROOT" python3 -m cli context patch-apply --patch-file "$context_patch_directory_removed_dir/patch_manifest.json" --source-package-file "$context_directory_pkg/context_manifest.json" --policy-mode safe --output-dir "$TMP_ROOT/context_patch_apply_safe_block_root" --json > "$context_patch_apply_safe_block_json"
+context_patch_apply_safe_block_exit=$?
+set -e
+[ "$context_patch_apply_safe_block_exit" -eq 3 ]
+python3 - "$context_patch_apply_safe_block_json" <<'PY'
+import json, sys
+payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
+assert payload['status'] == 'warning', payload
+assert payload['apply_mode'] == 'policy_blocked', payload
+assert payload['policy_mode'] == 'safe', payload
+assert payload['policy_passed'] is False, payload
+assert payload['policy_findings'], payload
+assert any('remov' in item.lower() for item in payload['policy_findings']), payload
+PY
+ok_context_patch_apply_safe_block_json=true
+
 context_patch_apply_emit_summary_txt="$TMP_ROOT/context_patch_apply_emit_summary.txt"
 PYTHONPATH="$ROOT" python3 -m cli context patch-apply --patch-file "$context_patch_directory_removed_dir/patch_manifest.json" --source-package-file "$context_directory_pkg/context_manifest.json" --output-dir "$TMP_ROOT/context_patch_apply_emit_root" --emit-summary > "$context_patch_apply_emit_summary_txt"
 grep -q "^status: ok$" "$context_patch_apply_emit_summary_txt"
 grep -q "^apply_mode: directory_restore_plus_overlay$" "$context_patch_apply_emit_summary_txt"
+grep -q "^policy_mode: open$" "$context_patch_apply_emit_summary_txt"
+grep -q "^policy_passed: True$" "$context_patch_apply_emit_summary_txt"
 grep -q "^applied_path_count: 1$" "$context_patch_apply_emit_summary_txt"
 ok_context_patch_apply_emit_summary_txt=true
+
+context_patch_apply_safe_summary_txt="$TMP_ROOT/context_patch_apply_safe_summary.txt"
+set +e
+PYTHONPATH="$ROOT" python3 -m cli context patch-apply --patch-file "$context_patch_directory_removed_dir/patch_manifest.json" --source-package-file "$context_directory_pkg/context_manifest.json" --policy-mode safe --output-dir "$TMP_ROOT/context_patch_apply_safe_summary_root" --emit-summary > "$context_patch_apply_safe_summary_txt"
+context_patch_apply_safe_summary_exit=$?
+set -e
+[ "$context_patch_apply_safe_summary_exit" -eq 3 ]
+grep -q "^status: warning$" "$context_patch_apply_safe_summary_txt"
+grep -q "^apply_mode: policy_blocked$" "$context_patch_apply_safe_summary_txt"
+grep -q "^policy_mode: safe$" "$context_patch_apply_safe_summary_txt"
+grep -q "^policy_passed: False$" "$context_patch_apply_safe_summary_txt"
+grep -q "^policy_finding_count: " "$context_patch_apply_safe_summary_txt"
+ok_context_patch_apply_safe_summary_txt=true
 
 website_assets_json="$TMP_ROOT/website_assets.json"
 python3 -m cli website assets --json > "$website_assets_json"

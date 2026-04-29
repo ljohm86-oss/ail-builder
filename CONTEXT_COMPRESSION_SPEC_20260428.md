@@ -64,6 +64,7 @@ PYTHONPATH="$PWD" python3 -m cli context patch --package-file /absolute/path/to/
 ```bash
 PYTHONPATH="$PWD" python3 -m cli context patch-apply --patch-file /absolute/path/to/context-patch/patch_manifest.json --source-package-file /absolute/path/to/context-bundle/context_manifest.json --output-dir /absolute/path/to/replayed-project --json
 PYTHONPATH="$PWD" python3 -m cli context patch-apply --patch-file /absolute/path/to/context-patch/patch_manifest.json --output-file /absolute/path/to/replayed.txt --emit-summary
+PYTHONPATH="$PWD" python3 -m cli context patch-apply --patch-file /absolute/path/to/context-patch/patch_manifest.json --source-package-file /absolute/path/to/context-bundle/context_manifest.json --policy-mode safe --output-dir /absolute/path/to/replayed-project --emit-summary
 ```
 
 ## Presets
@@ -114,6 +115,23 @@ For now it is intentionally conservative:
 - text patch -> writes the candidate snapshot back to one file path
 - file patch -> writes the candidate snapshot back to one file path
 - directory patch -> restores the original source package into a fresh output root, overlays changed and added files, and removes paths recorded in the patch manifest
+
+It now also supports optional replay policies.
+
+- `--policy-mode open` keeps the default permissive replay
+- `--policy-mode safe` requires a passing apply-check result and blocks removed paths
+- `--policy-mode strict` also blocks added paths and caps the touched path count
+- `--policy-file` can refine those defaults with explicit JSON settings
+- `--allow-root` and `--forbid-root` let operators constrain replay to relative path prefixes
+
+When a replay is blocked by policy, `context patch-apply` returns:
+
+- `status = warning`
+- `apply_mode = policy_blocked`
+- `policy_passed = false`
+- `policy_findings`
+
+and exits with the validation status instead of mutating the output target.
 
 ## Skeleton Language
 

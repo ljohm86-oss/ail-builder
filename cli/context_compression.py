@@ -33,6 +33,35 @@ STOPWORDS = {
     "以及", "可以", "这个", "那个", "需要", "进行", "通过", "作为", "用于", "项目", "内容",
 }
 TOKENIZER_BACKENDS = {"auto", "heuristic", "tiktoken"}
+PATCH_POLICY_MODES: dict[str, dict[str, Any]] = {
+    "open": {
+        "policy_mode": "open",
+        "require_apply_check_passed": False,
+        "block_removals": False,
+        "block_additions": False,
+        "max_changed_paths": None,
+        "allow_roots": [],
+        "forbid_roots": [],
+    },
+    "safe": {
+        "policy_mode": "safe",
+        "require_apply_check_passed": True,
+        "block_removals": True,
+        "block_additions": False,
+        "max_changed_paths": None,
+        "allow_roots": [],
+        "forbid_roots": [],
+    },
+    "strict": {
+        "policy_mode": "strict",
+        "require_apply_check_passed": True,
+        "block_removals": True,
+        "block_additions": True,
+        "max_changed_paths": 12,
+        "allow_roots": [],
+        "forbid_roots": [],
+    },
+}
 
 ALIGNMENT_STRONG_THRESHOLD = 82
 ALIGNMENT_WORKABLE_THRESHOLD = 64
@@ -444,11 +473,52 @@ def apply_context_patch_payload(
     source_package_payload: dict[str, Any] | None,
     output_dir: Path | None,
     output_file: Path | None,
+    policy_mode: str | None = None,
+    policy_file: Path | None = None,
+    allow_roots: list[str] | None = None,
+    forbid_roots: list[str] | None = None,
+    block_removals: bool = False,
+    block_additions: bool = False,
+    require_apply_check_passed: bool = False,
+    max_changed_paths: int | None = None,
 ) -> dict[str, Any]:
     patch_mode = str(patch_payload.get("patch_mode") or "")
     files = patch_payload.get("files") or {}
     source_label = str(patch_payload.get("source_label") or "context")
     status = "ok"
+    policy = _resolve_patch_apply_policy(
+        policy_mode=policy_mode,
+        policy_file=policy_file,
+        allow_roots=allow_roots,
+        forbid_roots=forbid_roots,
+        block_removals=block_removals,
+        block_additions=block_additions,
+        require_apply_check_passed=require_apply_check_passed,
+        max_changed_paths=max_changed_paths,
+    )
+    policy_review = _evaluate_patch_apply_policy(patch_payload=patch_payload, policy=policy)
+    if not policy_review["passed"]:
+        payload = {
+            "status": "warning",
+            "entrypoint": "context-patch-apply",
+            "apply_mode": "policy_blocked",
+            "patch_mode": patch_mode,
+            "source_label": source_label,
+            "applied_paths": [],
+            "removed_paths_applied": [],
+            "policy_mode": policy_review["policy_mode"],
+            "policy_passed": False,
+            "policy_findings": policy_review["findings"],
+            "policy_affected_paths": policy_review["affected_paths"],
+            "policy": policy_review["policy_payload"],
+            "next_steps": [
+                "inspect the policy findings before replaying this patch",
+                "relax the patch-apply policy or narrow the candidate patch surface",
+                "re-run context patch if you need a patch bundle with a smaller or safer change set",
+            ],
+        }
+        payload["summary_text"] = _build_context_patch_apply_summary_text(payload)
+        return payload
 
     if patch_mode == "text_unified_diff":
         snapshot_path = Path(str(files.get("candidate_snapshot_file") or "")).expanduser()
@@ -470,6 +540,11 @@ def apply_context_patch_payload(
             "source_label": source_label,
             "applied_paths": [str(target_path.resolve())],
             "removed_paths_applied": [],
+            "policy_mode": policy_review["policy_mode"],
+            "policy_passed": True,
+            "policy_findings": [],
+            "policy_affected_paths": policy_review["affected_paths"],
+            "policy": policy_review["policy_payload"],
             "next_steps": [f"open {target_path.resolve()}"],
         }
         payload["summary_text"] = _build_context_patch_apply_summary_text(payload)
@@ -494,6 +569,11 @@ def apply_context_patch_payload(
             "source_label": source_label,
             "applied_paths": [str(target_path.resolve())],
             "removed_paths_applied": [],
+            "policy_mode": policy_review["policy_mode"],
+            "policy_passed": True,
+            "policy_findings": [],
+            "policy_affected_paths": policy_review["affected_paths"],
+            "policy": policy_review["policy_payload"],
             "next_steps": [f"open {target_path.resolve()}"],
         }
         payload["summary_text"] = _build_context_patch_apply_summary_text(payload)
@@ -531,6 +611,11 @@ def apply_context_patch_payload(
             "source_label": source_label,
             "applied_paths": [str(applied_root)],
             "removed_paths_applied": removed_applied,
+            "policy_mode": policy_review["policy_mode"],
+            "policy_passed": True,
+            "policy_findings": [],
+            "policy_affected_paths": policy_review["affected_paths"],
+            "policy": policy_review["policy_payload"],
             "next_steps": [f"open {applied_root}"],
         }
         payload["summary_text"] = _build_context_patch_apply_summary_text(payload)
@@ -1033,6 +1118,8 @@ def _build_context_patch_apply_summary_text(payload: dict[str, Any]) -> str:
         f"apply_mode: {payload.get('apply_mode', '')}",
         f"patch_mode: {payload.get('patch_mode', '')}",
         f"source_label: {payload.get('source_label', '')}",
+        f"policy_mode: {payload.get('policy_mode', '')}",
+        f"policy_passed: {payload.get('policy_passed', True)}",
         f"applied_path_count: {len(payload.get('applied_paths') or [])}",
         f"removed_path_count: {len(payload.get('removed_paths_applied') or [])}",
     ]
@@ -1042,6 +1129,10 @@ def _build_context_patch_apply_summary_text(payload: dict[str, Any]) -> str:
     removed_paths = payload.get("removed_paths_applied") or []
     if removed_paths:
         lines.append(f"first_removed_path: {removed_paths[0]}")
+    policy_findings = payload.get("policy_findings") or []
+    if policy_findings:
+        lines.append(f"policy_finding_count: {len(policy_findings)}")
+        lines.append(f"first_policy_finding: {policy_findings[0]}")
     return "\n".join(lines)
 
 
@@ -1662,6 +1753,111 @@ def _decode_restore_content_b64(content_b64: Any) -> bytes:
     if not encoded:
         return b""
     return base64.b64decode(encoded.encode("ascii"))
+
+
+def _resolve_patch_apply_policy(
+    *,
+    policy_mode: str | None,
+    policy_file: Path | None,
+    allow_roots: list[str] | None,
+    forbid_roots: list[str] | None,
+    block_removals: bool,
+    block_additions: bool,
+    require_apply_check_passed: bool,
+    max_changed_paths: int | None,
+) -> dict[str, Any]:
+    normalized_mode = str(policy_mode or "open").strip().lower() or "open"
+    if normalized_mode not in PATCH_POLICY_MODES:
+        supported = ", ".join(sorted(PATCH_POLICY_MODES.keys()))
+        raise ValueError(f"Unsupported context patch-apply policy mode `{normalized_mode}`. Supported modes: {supported}")
+    policy = dict(PATCH_POLICY_MODES[normalized_mode])
+    if policy_file is not None:
+        loaded = json.loads(policy_file.expanduser().read_text(encoding="utf-8"))
+        if not isinstance(loaded, dict):
+            raise ValueError("context patch-apply policy file must contain one JSON object")
+        for key in ["require_apply_check_passed", "block_removals", "block_additions", "max_changed_paths"]:
+            if key in loaded:
+                policy[key] = loaded[key]
+        for key in ["allow_roots", "forbid_roots"]:
+            if key in loaded:
+                value = loaded.get(key) or []
+                if not isinstance(value, list):
+                    raise ValueError(f"context patch-apply policy field `{key}` must be a JSON array")
+                policy[key] = [str(item) for item in value if str(item).strip()]
+    if allow_roots:
+        policy["allow_roots"] = [str(item) for item in allow_roots if str(item).strip()]
+    if forbid_roots:
+        policy["forbid_roots"] = [str(item) for item in forbid_roots if str(item).strip()]
+    if block_removals:
+        policy["block_removals"] = True
+    if block_additions:
+        policy["block_additions"] = True
+    if require_apply_check_passed:
+        policy["require_apply_check_passed"] = True
+    if max_changed_paths is not None:
+        if int(max_changed_paths) < 0:
+            raise ValueError("context patch-apply --max-changed-paths must be zero or greater")
+        policy["max_changed_paths"] = int(max_changed_paths)
+    policy["allow_roots"] = [_normalize_patch_relpath(item) for item in (policy.get("allow_roots") or []) if _normalize_patch_relpath(item)]
+    policy["forbid_roots"] = [_normalize_patch_relpath(item) for item in (policy.get("forbid_roots") or []) if _normalize_patch_relpath(item)]
+    return policy
+
+
+def _evaluate_patch_apply_policy(*, patch_payload: dict[str, Any], policy: dict[str, Any]) -> dict[str, Any]:
+    changed_paths = [_normalize_patch_relpath(item) for item in (patch_payload.get("changed_paths") or []) if _normalize_patch_relpath(item)]
+    added_paths = [_normalize_patch_relpath(item) for item in (patch_payload.get("added_paths") or []) if _normalize_patch_relpath(item)]
+    removed_paths = [_normalize_patch_relpath(item) for item in (patch_payload.get("removed_paths") or []) if _normalize_patch_relpath(item)]
+    affected_paths = sorted(set(changed_paths + added_paths + removed_paths))
+    findings: list[str] = []
+    if policy.get("require_apply_check_passed") and not bool(patch_payload.get("apply_check_passed")):
+        findings.append("Patch policy requires a passing apply-check result before replay.")
+    if policy.get("block_removals") and removed_paths:
+        findings.append("Patch policy blocks removed paths during replay.")
+    if policy.get("block_additions") and added_paths:
+        findings.append("Patch policy blocks added paths during replay.")
+    max_changed = policy.get("max_changed_paths")
+    if max_changed not in (None, "") and len(affected_paths) > int(max_changed):
+        findings.append(f"Patch policy allows at most {int(max_changed)} affected paths, but this patch touches {len(affected_paths)}.")
+    allow_roots = policy.get("allow_roots") or []
+    if allow_roots:
+        disallowed = [path for path in affected_paths if not any(_path_matches_policy_root(path, root) for root in allow_roots)]
+        if disallowed:
+            findings.append(f"Patch policy only allows these roots: {', '.join(allow_roots)}.")
+    forbid_roots = policy.get("forbid_roots") or []
+    if forbid_roots:
+        blocked = [path for path in affected_paths if any(_path_matches_policy_root(path, root) for root in forbid_roots)]
+        if blocked:
+            findings.append(f"Patch policy forbids these roots: {', '.join(forbid_roots)}.")
+    return {
+        "passed": not findings,
+        "findings": findings,
+        "affected_paths": affected_paths,
+        "policy_mode": str(policy.get("policy_mode") or "open"),
+        "policy_payload": {
+            "policy_mode": str(policy.get("policy_mode") or "open"),
+            "require_apply_check_passed": bool(policy.get("require_apply_check_passed")),
+            "block_removals": bool(policy.get("block_removals")),
+            "block_additions": bool(policy.get("block_additions")),
+            "max_changed_paths": policy.get("max_changed_paths"),
+            "allow_roots": list(allow_roots),
+            "forbid_roots": list(forbid_roots),
+        },
+    }
+
+
+def _normalize_patch_relpath(path: str) -> str:
+    normalized = str(path or "").strip().replace("\\", "/")
+    normalized = re.sub(r"^\./+", "", normalized)
+    normalized = normalized.lstrip("/")
+    return normalized.rstrip("/")
+
+
+def _path_matches_policy_root(path: str, root: str) -> bool:
+    normalized_path = _normalize_patch_relpath(path)
+    normalized_root = _normalize_patch_relpath(root)
+    if not normalized_root:
+        return False
+    return normalized_path == normalized_root or normalized_path.startswith(f"{normalized_root}/")
 
 
 def _int_metric(value: Any, *, fallback: Any = 0) -> int:

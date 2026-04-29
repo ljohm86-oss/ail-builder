@@ -72,6 +72,7 @@ This changelog is intentionally lightweight for now. The repository already has 
 - added `context bundle`, so compression, inspection, optional apply-check results, and optional zip packaging can now be exported as one formal context handoff artifact set
 - added `context patch`, so edited text, files, or project trees can now be compared against the original bundle and exported as one diff-plus-snapshot patch handoff package
 - added `context patch-apply`, so text, file, and directory patch bundles can now be replayed into a safe output target without mutating the original working tree in place
+- expanded `context patch-apply` with optional policy-aware replay controls, including `open`, `safe`, and `strict` modes plus custom allow/forbid path roots and changed-path caps
 - added formal `context` metrics on `compress` and `inspect`, including source characters, skeleton characters, heuristic token estimates, token direction, and estimated size ratios
 - expanded `context` metrics so `compress`, `inspect`, and `bundle` can now prefer tokenizer-backed counts via optional `tiktoken` support while still falling back cleanly to heuristic estimates
 - added `/Users/carwynmac/ai-cl/CONTEXT_TEST_MATRIX_20260428.md` so context compression, restore, inspect, apply-check, bundle, and patch regressions can be run against one stable matrix
