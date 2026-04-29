@@ -16,6 +16,12 @@ If you only need a generated starter JSON, you can also ask the CLI to emit one 
 PYTHONPATH="$PWD" python3 -m cli context patch-apply --policy-mode strict --allow-root src --forbid-root src/generated --emit-policy-template
 ```
 
+Or write the resolved JSON directly:
+
+```bash
+PYTHONPATH="$PWD" python3 -m cli context patch-apply --policy-mode safe --allow-root docs --write-policy-template /absolute/path/to/context-policy.json
+```
+
 ## Recommended Starter File
 
 Example template:

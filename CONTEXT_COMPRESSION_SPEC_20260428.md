@@ -66,6 +66,7 @@ PYTHONPATH="$PWD" python3 -m cli context patch-apply --patch-file /absolute/path
 PYTHONPATH="$PWD" python3 -m cli context patch-apply --patch-file /absolute/path/to/context-patch/patch_manifest.json --output-file /absolute/path/to/replayed.txt --emit-summary
 PYTHONPATH="$PWD" python3 -m cli context patch-apply --patch-file /absolute/path/to/context-patch/patch_manifest.json --source-package-file /absolute/path/to/context-bundle/context_manifest.json --policy-mode safe --output-dir /absolute/path/to/replayed-project --emit-summary
 PYTHONPATH="$PWD" python3 -m cli context patch-apply --policy-mode strict --allow-root src --forbid-root src/generated --emit-policy-template
+PYTHONPATH="$PWD" python3 -m cli context patch-apply --policy-mode safe --allow-root docs --write-policy-template /absolute/path/to/context-policy.json
 ```
 
 ## Presets
@@ -142,6 +143,7 @@ and exits with the validation status instead of mutating the output target.
 If you want a reusable starter JSON without replaying any patch at all, use:
 
 - `--emit-policy-template`
+- or `--write-policy-template /absolute/path/to/context-policy.json`
 
 That mode resolves the current preset plus CLI overrides and prints the final JSON policy body you can save for later reuse.
 

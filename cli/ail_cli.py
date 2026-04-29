@@ -376,12 +376,14 @@ def cmd_context(args: argparse.Namespace) -> int:
         output_file = Path(args.output_file).expanduser() if getattr(args, "output_file", None) else None
         output_dir = Path(args.output_dir).expanduser() if getattr(args, "output_dir", None) else None
         policy_file = Path(args.policy_file).expanduser() if getattr(args, "policy_file", None) else None
+        write_policy_template_path = Path(args.write_policy_template).expanduser() if getattr(args, "write_policy_template", None) else None
         report_path = None
         if getattr(args, "output_report_file", None):
             report_path = Path(args.output_report_file).expanduser()
         elif getattr(args, "emit_policy_template", False) and output_file is not None:
             report_path = output_file
-        if getattr(args, "emit_policy_template", False):
+        emit_policy_template = bool(getattr(args, "emit_policy_template", False) or write_policy_template_path is not None)
+        if emit_policy_template:
             try:
                 payload = build_context_patch_policy_template_payload(
                     policy_mode=getattr(args, "policy_mode", None),
@@ -395,6 +397,8 @@ def cmd_context(args: argparse.Namespace) -> int:
                 )
             except ValueError as exc:
                 return _emit_command_error(args, EXIT_USAGE, "invalid_usage", str(exc))
+            if write_policy_template_path is not None:
+                _write_cli_output_file(write_policy_template_path, payload.get("policy_template") or {}, as_json=True)
             if args.json:
                 if report_path is not None:
                     _write_cli_output_file(report_path, payload, as_json=True)
@@ -4820,6 +4824,7 @@ def _build_parser() -> argparse.ArgumentParser:
     context_patch_apply_parser.add_argument("--require-apply-check-pass", dest="require_apply_check_passed", action="store_true", help="Block replay unless the patch bundle recorded a passing apply-check result")
     context_patch_apply_parser.add_argument("--max-changed-paths", dest="max_changed_paths", type=int, help="Block replay when the patch touches more than this many changed, added, or removed paths")
     context_patch_apply_parser.add_argument("--emit-policy-template", action="store_true", help="Print the resolved patch replay policy as reusable JSON and exit")
+    context_patch_apply_parser.add_argument("--write-policy-template", dest="write_policy_template", help="Write the resolved patch replay policy JSON to a file and exit")
     context_patch_apply_parser.add_argument("--emit-summary", action="store_true", help="Print only a compact context patch-apply summary")
     context_patch_apply_parser.add_argument("--output-report-file", dest="output_report_file", help="Write the patch-apply report to a file")
     context_patch_apply_parser.add_argument("--json", action="store_true", help="Print context patch-apply as JSON")

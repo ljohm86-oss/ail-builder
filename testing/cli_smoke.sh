@@ -2349,6 +2349,19 @@ assert policy['forbid_roots'] == ['src/generated'], policy
 PY
 ok_context_patch_policy_template_json=true
 
+context_patch_policy_template_file="$TMP_ROOT/context_patch_policy_template_file.json"
+PYTHONPATH="$ROOT" python3 -m cli context patch-apply --policy-mode safe --allow-root docs --write-policy-template "$context_patch_policy_template_file" --json > /dev/null
+python3 - "$context_patch_policy_template_file" <<'PY'
+import json, sys
+policy = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
+assert policy['policy_mode'] == 'safe', policy
+assert policy['require_apply_check_passed'] is True, policy
+assert policy['block_removals'] is True, policy
+assert policy['block_additions'] is False, policy
+assert policy['allow_roots'] == ['docs'], policy
+PY
+ok_context_patch_policy_template_file=true
+
 website_assets_json="$TMP_ROOT/website_assets.json"
 python3 -m cli website assets --json > "$website_assets_json"
 python3 - "$website_assets_json" <<'PY'
