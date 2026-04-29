@@ -63,6 +63,7 @@ PYTHONPATH="$PWD" python3 -m cli context patch --package-file /absolute/path/to/
 
 ```bash
 PYTHONPATH="$PWD" python3 -m cli context patch-apply --patch-file /absolute/path/to/context-patch/patch_manifest.json --source-package-file /absolute/path/to/context-bundle/context_manifest.json --output-dir /absolute/path/to/replayed-project --json
+PYTHONPATH="$PWD" python3 -m cli context patch-apply --patch-file /absolute/path/to/context-patch/patch_manifest.json --source-package-file /absolute/path/to/context-bundle/context_manifest.json --merge-mode reject-conflicts --output-dir /absolute/path/to/replayed-project --emit-summary
 PYTHONPATH="$PWD" python3 -m cli context patch-apply --patch-file /absolute/path/to/context-patch/patch_manifest.json --output-file /absolute/path/to/replayed.txt --emit-summary
 PYTHONPATH="$PWD" python3 -m cli context patch-apply --patch-file /absolute/path/to/context-patch/patch_manifest.json --source-package-file /absolute/path/to/context-bundle/context_manifest.json --policy-mode safe --output-dir /absolute/path/to/replayed-project --emit-summary
 PYTHONPATH="$PWD" python3 -m cli context patch-apply --sample-policy strict --emit-policy-template
@@ -127,6 +128,20 @@ It now also supports optional replay policies.
 - `--sample-policy safe|strict` starts from one reusable project-oriented sample before other overrides are applied
 - `--policy-file` can refine those defaults with explicit JSON settings
 - `--allow-root` and `--forbid-root` let operators constrain replay to relative path prefixes
+
+It also supports one merge-aware replay gate:
+
+- `--merge-mode overwrite`
+  - current default behavior
+  - replays directly into the chosen output target
+
+- `--merge-mode reject-conflicts`
+  - compares the current output target against the original source-package base
+  - blocks replay if the target already diverged on one path the patch needs to touch
+  - returns:
+    - `status = warning`
+    - `apply_mode = merge_conflict_blocked`
+    - `merge_conflicts`
 
 Formal example policy files now live at:
 

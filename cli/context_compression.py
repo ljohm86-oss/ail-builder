@@ -33,6 +33,7 @@ STOPWORDS = {
     "以及", "可以", "这个", "那个", "需要", "进行", "通过", "作为", "用于", "项目", "内容",
 }
 TOKENIZER_BACKENDS = {"auto", "heuristic", "tiktoken"}
+PATCH_APPLY_MERGE_MODES = {"overwrite", "reject-conflicts"}
 PATCH_POLICY_MODES: dict[str, dict[str, Any]] = {
     "open": {
         "policy_mode": "open",
@@ -493,6 +494,7 @@ def apply_context_patch_payload(
     source_package_payload: dict[str, Any] | None,
     output_dir: Path | None,
     output_file: Path | None,
+    merge_mode: str = "overwrite",
     policy_mode: str | None = None,
     sample_policy: str | None = None,
     policy_file: Path | None = None,
@@ -507,6 +509,10 @@ def apply_context_patch_payload(
     files = patch_payload.get("files") or {}
     source_label = str(patch_payload.get("source_label") or "context")
     status = "ok"
+    merge_mode = str(merge_mode or "overwrite").strip().lower() or "overwrite"
+    if merge_mode not in PATCH_APPLY_MERGE_MODES:
+        supported = ", ".join(sorted(PATCH_APPLY_MERGE_MODES))
+        raise ValueError(f"Unsupported context patch-apply merge mode `{merge_mode}`. Supported modes: {supported}")
     policy = _resolve_patch_apply_policy(
         policy_mode=policy_mode,
         sample_policy=sample_policy,
@@ -542,6 +548,42 @@ def apply_context_patch_payload(
         payload["summary_text"] = _build_context_patch_apply_summary_text(payload)
         return payload
 
+    merge_review = _evaluate_patch_apply_merge(
+        patch_payload=patch_payload,
+        source_package_payload=source_package_payload,
+        patch_mode=patch_mode,
+        source_label=source_label,
+        output_dir=output_dir,
+        output_file=output_file,
+        merge_mode=merge_mode,
+    )
+    if not merge_review["passed"]:
+        payload = {
+            "status": "warning",
+            "entrypoint": "context-patch-apply",
+            "apply_mode": "merge_conflict_blocked",
+            "patch_mode": patch_mode,
+            "source_label": source_label,
+            "applied_paths": [],
+            "removed_paths_applied": [],
+            "merge_mode": merge_mode,
+            "merge_check_passed": False,
+            "merge_conflicts": merge_review["conflicts"],
+            "merge_conflict_count": len(merge_review["conflicts"]),
+            "policy_mode": policy_review["policy_mode"],
+            "policy_passed": True,
+            "policy_findings": [],
+            "policy_affected_paths": policy_review["affected_paths"],
+            "policy": policy_review["policy_payload"],
+            "next_steps": [
+                "inspect the merge conflicts before replaying this patch",
+                "re-run patch-apply with --merge-mode overwrite if you intentionally want to replace the current target",
+                "or replay into a fresh output path to avoid overwriting another edited target",
+            ],
+        }
+        payload["summary_text"] = _build_context_patch_apply_summary_text(payload)
+        return payload
+
     if patch_mode == "text_unified_diff":
         snapshot_path = Path(str(files.get("candidate_snapshot_file") or "")).expanduser()
         if not snapshot_path.exists():
@@ -562,6 +604,10 @@ def apply_context_patch_payload(
             "source_label": source_label,
             "applied_paths": [str(target_path.resolve())],
             "removed_paths_applied": [],
+            "merge_mode": merge_mode,
+            "merge_check_passed": True,
+            "merge_conflicts": [],
+            "merge_conflict_count": 0,
             "policy_mode": policy_review["policy_mode"],
             "policy_passed": True,
             "policy_findings": [],
@@ -591,6 +637,10 @@ def apply_context_patch_payload(
             "source_label": source_label,
             "applied_paths": [str(target_path.resolve())],
             "removed_paths_applied": [],
+            "merge_mode": merge_mode,
+            "merge_check_passed": True,
+            "merge_conflicts": [],
+            "merge_conflict_count": 0,
             "policy_mode": policy_review["policy_mode"],
             "policy_passed": True,
             "policy_findings": [],
@@ -633,6 +683,10 @@ def apply_context_patch_payload(
             "source_label": source_label,
             "applied_paths": [str(applied_root)],
             "removed_paths_applied": removed_applied,
+            "merge_mode": merge_mode,
+            "merge_check_passed": True,
+            "merge_conflicts": [],
+            "merge_conflict_count": 0,
             "policy_mode": policy_review["policy_mode"],
             "policy_passed": True,
             "policy_findings": [],
@@ -1140,6 +1194,8 @@ def _build_context_patch_apply_summary_text(payload: dict[str, Any]) -> str:
         f"apply_mode: {payload.get('apply_mode', '')}",
         f"patch_mode: {payload.get('patch_mode', '')}",
         f"source_label: {payload.get('source_label', '')}",
+        f"merge_mode: {payload.get('merge_mode', 'overwrite')}",
+        f"merge_check_passed: {payload.get('merge_check_passed', True)}",
         f"policy_mode: {payload.get('policy_mode', '')}",
         f"policy_passed: {payload.get('policy_passed', True)}",
         f"applied_path_count: {len(payload.get('applied_paths') or [])}",
@@ -1155,6 +1211,10 @@ def _build_context_patch_apply_summary_text(payload: dict[str, Any]) -> str:
     if policy_findings:
         lines.append(f"policy_finding_count: {len(policy_findings)}")
         lines.append(f"first_policy_finding: {policy_findings[0]}")
+    merge_conflicts = payload.get("merge_conflicts") or []
+    if merge_conflicts:
+        lines.append(f"merge_conflict_count: {len(merge_conflicts)}")
+        lines.append(f"first_merge_conflict: {merge_conflicts[0]}")
     return "\n".join(lines)
 
 
@@ -1868,6 +1928,79 @@ def build_context_patch_policy_template_payload(
             "pass it back through --policy-file when replaying one patch bundle",
         ],
     }
+
+
+def _evaluate_patch_apply_merge(
+    *,
+    patch_payload: dict[str, Any],
+    source_package_payload: dict[str, Any] | None,
+    patch_mode: str,
+    source_label: str,
+    output_dir: Path | None,
+    output_file: Path | None,
+    merge_mode: str,
+) -> dict[str, Any]:
+    if merge_mode == "overwrite":
+        return {"passed": True, "conflicts": []}
+    if source_package_payload is None:
+        return {
+            "passed": False,
+            "conflicts": ["Merge-aware replay requires the original source package so the current target can be compared to the original base."],
+        }
+    decoded = _decode_restore_blob(source_package_payload.get("restore_package") or {})
+    conflicts: list[str] = []
+    if patch_mode == "text_unified_diff":
+        if output_file is not None:
+            target_path = _resolve_output_target_file(output_file)
+        elif output_dir is not None:
+            target_path = output_dir.expanduser().resolve() / source_label
+        else:
+            return {"passed": False, "conflicts": ["Merge-aware text replay requires --output-file or --output-dir."]}
+        if target_path.exists():
+            current_text = target_path.read_text(encoding="utf-8")
+            base_text = str(decoded.get("text") or "")
+            if current_text != base_text:
+                conflicts.append(f"Target file already diverged from the original base: {target_path}")
+        return {"passed": not conflicts, "conflicts": conflicts}
+    if patch_mode in {"file_unified_diff", "file_binary_replace"}:
+        if output_file is not None:
+            target_path = _resolve_output_target_file(output_file)
+        elif output_dir is not None:
+            target_path = output_dir.expanduser().resolve() / str(decoded.get("file_name") or source_label)
+        else:
+            return {"passed": False, "conflicts": ["Merge-aware file replay requires --output-file or --output-dir."]}
+        if target_path.exists():
+            current_bytes = target_path.read_bytes()
+            base_bytes = _decode_restore_content_b64(decoded.get("content_b64"))
+            if current_bytes != base_bytes:
+                conflicts.append(f"Target file already diverged from the original base: {target_path}")
+        return {"passed": not conflicts, "conflicts": conflicts}
+    if patch_mode == "directory_structural_patch":
+        if output_dir is None:
+            return {"passed": False, "conflicts": ["Merge-aware directory replay requires --output-dir."]}
+        root_name = str(decoded.get("root_name") or source_label or "restored-context")
+        target_root = output_dir.expanduser().resolve() / root_name
+        if not target_root.exists():
+            return {"passed": True, "conflicts": []}
+        original_files = {str(item.get("relative_path") or ""): _decode_restore_content_b64(item.get("content_b64")) for item in (decoded.get("files") or [])}
+        changed_paths = [str(item) for item in (patch_payload.get("changed_paths") or []) if str(item).strip()]
+        added_paths = [str(item) for item in (patch_payload.get("added_paths") or []) if str(item).strip()]
+        removed_paths = [str(item) for item in (patch_payload.get("removed_paths") or []) if str(item).strip()]
+        for rel_path in changed_paths + removed_paths:
+            base_bytes = original_files.get(rel_path)
+            target_path = target_root / rel_path
+            if target_path.exists():
+                current_bytes = target_path.read_bytes()
+                if base_bytes is None or current_bytes != base_bytes:
+                    conflicts.append(f"Target path already diverged from the original base: {target_path}")
+            elif base_bytes is not None:
+                conflicts.append(f"Target path is already missing before replay: {target_path}")
+        for rel_path in added_paths:
+            target_path = target_root / rel_path
+            if target_path.exists():
+                conflicts.append(f"Target path already exists where this patch wants to add content: {target_path}")
+        return {"passed": not conflicts, "conflicts": conflicts}
+    return {"passed": True, "conflicts": []}
 
 
 def _evaluate_patch_apply_policy(*, patch_payload: dict[str, Any], policy: dict[str, Any]) -> dict[str, Any]:

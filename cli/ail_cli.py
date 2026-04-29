@@ -423,6 +423,7 @@ def cmd_context(args: argparse.Namespace) -> int:
                 source_package_payload=source_package_payload,
                 output_dir=output_dir,
                 output_file=output_file,
+                merge_mode=getattr(args, "merge_mode", "overwrite"),
                 policy_mode=getattr(args, "policy_mode", None),
                 sample_policy=getattr(args, "sample_policy", None),
                 policy_file=policy_file,
@@ -435,7 +436,7 @@ def cmd_context(args: argparse.Namespace) -> int:
             )
         except ValueError as exc:
             return _emit_command_error(args, EXIT_USAGE, "invalid_usage", str(exc))
-        exit_code = EXIT_OK if bool(payload.get("policy_passed", True)) else EXIT_VALIDATION
+        exit_code = EXIT_OK if bool(payload.get("policy_passed", True)) and bool(payload.get("merge_check_passed", True)) else EXIT_VALIDATION
         if getattr(args, "emit_summary", False):
             if report_path is not None:
                 _write_cli_output_file(report_path, str(payload.get("summary_text", "")))
@@ -453,10 +454,16 @@ def cmd_context(args: argparse.Namespace) -> int:
             print(f"- apply_mode: {payload.get('apply_mode', '')}")
             print(f"- patch_mode: {payload.get('patch_mode', '')}")
             print(f"- source_label: {payload.get('source_label', '')}")
+            print(f"- merge_mode: {payload.get('merge_mode', 'overwrite')}")
+            print(f"- merge_check_passed: {payload.get('merge_check_passed', True)}")
             print(f"- policy_mode: {payload.get('policy_mode', '')}")
             print(f"- policy_passed: {payload.get('policy_passed', True)}")
             print(f"- applied_path_count: {len(payload.get('applied_paths') or [])}")
             print(f"- removed_path_count: {len(payload.get('removed_paths_applied') or [])}")
+            if payload.get("merge_conflicts"):
+                print("Merge conflicts:")
+                for item in payload.get("merge_conflicts", []):
+                    print(f"- {item}")
             if payload.get("policy_findings"):
                 print("Policy findings:")
                 for item in payload.get("policy_findings", []):
@@ -4817,6 +4824,7 @@ def _build_parser() -> argparse.ArgumentParser:
     context_patch_apply_parser.add_argument("--source-package-file", dest="source_package_file", help="Optional original context manifest JSON file; required for directory patch replay unless already recorded in the patch manifest")
     context_patch_apply_parser.add_argument("--output-file", dest="output_file", help="Target file path for text or single-file patch replay")
     context_patch_apply_parser.add_argument("--output-dir", dest="output_dir", help="Target directory root for directory patch replay or inferred file output")
+    context_patch_apply_parser.add_argument("--merge-mode", choices=["overwrite", "reject-conflicts"], default="overwrite", help="How patch replay should behave if the target already contains diverged edits")
     context_patch_apply_parser.add_argument("--policy-mode", choices=["open", "safe", "strict"], default="open", help="Patch replay policy preset")
     context_patch_apply_parser.add_argument("--sample-policy", choices=["safe", "strict"], help="Start from one built-in reusable sample policy before applying any other overrides")
     context_patch_apply_parser.add_argument("--policy-file", dest="policy_file", help="Optional JSON policy file to refine patch replay restrictions")
