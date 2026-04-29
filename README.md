@@ -46,6 +46,13 @@ Architecture-first styling direction:
 
 Windows testers are supported too: see [`QUICKSTART_OPEN_SOURCE.md`](QUICKSTART_OPEN_SOURCE.md) for PowerShell equivalents and current cross-platform notes.
 
+Git transport note:
+
+- if `git pull` or `git push` appears to hang against GitHub on one machine, try:
+  - `git -c http.version=HTTP/1.1 pull origin main`
+  - `git -c http.version=HTTP/1.1 push origin main`
+- one tested macOS environment needed this Git-only workaround even though browser and Python HTTPS access to GitHub were healthy
+
 Recent outward-facing changes are tracked in [`CHANGELOG.md`](CHANGELOG.md).
 
 ## Current Status

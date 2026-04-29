@@ -39,6 +39,15 @@ cd ail-builder
 $env:REPO_ROOT = $PWD.Path
 ```
 
+If `git pull` or `git push` hangs against GitHub on macOS even though the network itself is up, try forcing Git to use HTTP/1.1 for that command:
+
+```bash
+git -c http.version=HTTP/1.1 pull origin main
+git -c http.version=HTTP/1.1 push origin main
+```
+
+This repository has already seen one environment where normal HTTPS access worked in browsers and Python, but Git transport only became reliable after switching to `HTTP/1.1`.
+
 ## 2. Optional: Create A Virtual Environment
 
 ```bash
