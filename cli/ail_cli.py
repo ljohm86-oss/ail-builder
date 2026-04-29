@@ -202,6 +202,8 @@ def cmd_context(args: argparse.Namespace) -> int:
                 input_dir=input_dir,
                 preset_id=getattr(args, "preset_id", None),
                 output_dir=output_dir,
+                tokenizer_backend=getattr(args, "tokenizer_backend", None),
+                tokenizer_model=getattr(args, "tokenizer_model", None),
             )
         except ValueError as exc:
             return _emit_command_error(args, EXIT_USAGE, "invalid_usage", str(exc))
@@ -231,6 +233,10 @@ def cmd_context(args: argparse.Namespace) -> int:
             if metrics:
                 print(f"- estimated_token_count_source: {metrics.get('estimated_token_count_source', 0)}")
                 print(f"- estimated_token_count_skeleton: {metrics.get('estimated_token_count_skeleton', 0)}")
+                print(f"- token_estimate_backend: {metrics.get('token_estimate_backend', '')}")
+                print(f"- token_estimate_basis: {metrics.get('token_estimate_basis', '')}")
+                if metrics.get("token_estimate_model"):
+                    print(f"- token_estimate_model: {metrics.get('token_estimate_model', '')}")
                 print(f"- estimated_token_direction: {metrics.get('estimated_token_direction', '')}")
                 print(f"- estimated_token_reduction_ratio: {metrics.get('estimated_token_reduction_ratio', 0)}")
             if payload.get("output_dir"):
@@ -263,6 +269,8 @@ def cmd_context(args: argparse.Namespace) -> int:
                 candidate_text_file=candidate_text_file,
                 candidate_input_file=candidate_input_file,
                 candidate_input_dir=candidate_input_dir,
+                tokenizer_backend=getattr(args, "tokenizer_backend", None),
+                tokenizer_model=getattr(args, "tokenizer_model", None),
             )
         except ValueError as exc:
             return _emit_command_error(args, EXIT_USAGE, "invalid_usage", str(exc))
@@ -420,7 +428,11 @@ def cmd_context(args: argparse.Namespace) -> int:
     try:
         package_payload = load_context_package(package_file)
         if getattr(args, "context_command", None) == "inspect":
-            inspect_payload = inspect_context_package(package_payload)
+            inspect_payload = inspect_context_package(
+                package_payload,
+                tokenizer_backend=getattr(args, "tokenizer_backend", None),
+                tokenizer_model=getattr(args, "tokenizer_model", None),
+            )
             output_file = getattr(args, "output_file", None)
             if getattr(args, "emit_summary", False):
                 if output_file:
@@ -447,6 +459,10 @@ def cmd_context(args: argparse.Namespace) -> int:
                 if metrics:
                     print(f"- estimated_token_count_source: {metrics.get('estimated_token_count_source', 0)}")
                     print(f"- estimated_token_count_skeleton: {metrics.get('estimated_token_count_skeleton', 0)}")
+                    print(f"- token_estimate_backend: {metrics.get('token_estimate_backend', '')}")
+                    print(f"- token_estimate_basis: {metrics.get('token_estimate_basis', '')}")
+                    if metrics.get("token_estimate_model"):
+                        print(f"- token_estimate_model: {metrics.get('token_estimate_model', '')}")
                     print(f"- estimated_token_direction: {metrics.get('estimated_token_direction', '')}")
                     print(f"- estimated_token_reduction_ratio: {metrics.get('estimated_token_reduction_ratio', 0)}")
                 source_summary = inspect_payload.get("source_summary") or {}
@@ -4686,6 +4702,8 @@ def _build_parser() -> argparse.ArgumentParser:
     context_compress_parser.add_argument("--input-file", dest="input_file", help="Compress one source file or project file")
     context_compress_parser.add_argument("--input-dir", dest="input_dir", help="Compress one project directory tree")
     context_compress_parser.add_argument("--preset", dest="preset_id", default="generic", help="Compression preset such as generic, codebase, writing, website, or ecommerce")
+    context_compress_parser.add_argument("--tokenizer-backend", dest="tokenizer_backend", default="auto", choices=["auto", "heuristic", "tiktoken"], help="Token metrics backend: auto prefers tiktoken when available, heuristic uses chars/4, tiktoken requests tokenizer-backed counts")
+    context_compress_parser.add_argument("--tokenizer-model", dest="tokenizer_model", help="Optional tokenizer model or encoding name such as cl100k_base when using tokenizer-backed metrics")
     context_compress_parser.add_argument("--emit-skeleton", action="store_true", help="Print only the MCP skeleton text")
     context_compress_parser.add_argument("--output-file", dest="output_file", help="Write the output to a file")
     context_compress_parser.add_argument("--output-dir", dest="output_dir", help="Write a full context bundle directory")
@@ -4698,6 +4716,8 @@ def _build_parser() -> argparse.ArgumentParser:
     context_restore_parser.add_argument("--json", action="store_true", help="Print context restore as JSON")
     context_inspect_parser = context_subparsers.add_parser("inspect", help="Inspect one context bundle without restoring the original content")
     context_inspect_parser.add_argument("--package-file", dest="package_file", required=True, help="Path to a context manifest JSON file produced by context compress")
+    context_inspect_parser.add_argument("--tokenizer-backend", dest="tokenizer_backend", default="auto", choices=["auto", "heuristic", "tiktoken"], help="Token metrics backend for inspect; auto reuses stored metrics unless an override is requested")
+    context_inspect_parser.add_argument("--tokenizer-model", dest="tokenizer_model", help="Optional tokenizer model or encoding name when recomputing inspect metrics")
     context_inspect_parser.add_argument("--emit-summary", action="store_true", help="Print only a compact context bundle summary")
     context_inspect_parser.add_argument("--output-file", dest="output_file", help="Write the inspect output to a file")
     context_inspect_parser.add_argument("--json", action="store_true", help="Print context inspect as JSON")
@@ -4723,6 +4743,8 @@ def _build_parser() -> argparse.ArgumentParser:
     context_bundle_parser.add_argument("--candidate-text-file", dest="candidate_text_file", help="Read optional edited text for apply-check from a file")
     context_bundle_parser.add_argument("--candidate-input-file", dest="candidate_input_file", help="Optional edited file for apply-check")
     context_bundle_parser.add_argument("--candidate-input-dir", dest="candidate_input_dir", help="Optional edited directory tree for apply-check")
+    context_bundle_parser.add_argument("--tokenizer-backend", dest="tokenizer_backend", default="auto", choices=["auto", "heuristic", "tiktoken"], help="Token metrics backend used for the bundle compression and inspect artifacts")
+    context_bundle_parser.add_argument("--tokenizer-model", dest="tokenizer_model", help="Optional tokenizer model or encoding name for bundled metrics")
     context_bundle_parser.add_argument("--zip", dest="zip_bundle", action="store_true", help="Also create a zip archive next to the bundle directory")
     context_bundle_parser.add_argument("--emit-summary", action="store_true", help="Print only a compact context bundle summary")
     context_bundle_parser.add_argument("--output-file", dest="output_file", help="Write the bundle output to a file")

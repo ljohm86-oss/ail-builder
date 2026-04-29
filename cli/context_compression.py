@@ -10,6 +10,7 @@ import shutil
 import zlib
 from collections import Counter
 from datetime import datetime, timezone
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -31,6 +32,7 @@ STOPWORDS = {
     "write", "make", "build", "using", "into", "onto", "while", "include", "包含", "一个", "我们", "你们",
     "以及", "可以", "这个", "那个", "需要", "进行", "通过", "作为", "用于", "项目", "内容",
 }
+TOKENIZER_BACKENDS = {"auto", "heuristic", "tiktoken"}
 
 ALIGNMENT_STRONG_THRESHOLD = 82
 ALIGNMENT_WORKABLE_THRESHOLD = 64
@@ -96,6 +98,8 @@ def build_context_compress_payload(
     input_dir: Path | None,
     preset_id: str | None = None,
     output_dir: Path | None = None,
+    tokenizer_backend: str | None = None,
+    tokenizer_model: str | None = None,
 ) -> dict[str, Any]:
     preset = resolve_context_preset(preset_id)
     source = _resolve_context_input_source(
@@ -108,7 +112,13 @@ def build_context_compress_payload(
 
     skeleton_text = _render_skeleton_text(source, preset=preset)
     restore_blob = _encode_restore_blob(source["restore_blob"])
-    metrics = _build_context_metrics(source["source_summary"], skeleton_text=skeleton_text)
+    metrics = _build_context_metrics(
+        source["source_summary"],
+        skeleton_text=skeleton_text,
+        source_token_text=_build_token_source_text_from_source(source),
+        tokenizer_backend=tokenizer_backend,
+        tokenizer_model=tokenizer_model,
+    )
     payload = {
         "status": "ok",
         "entrypoint": "context-compress",
@@ -236,6 +246,8 @@ def build_context_bundle_payload(
     candidate_text_file: Path | None,
     candidate_input_file: Path | None,
     candidate_input_dir: Path | None,
+    tokenizer_backend: str | None = None,
+    tokenizer_model: str | None = None,
 ) -> dict[str, Any]:
     compression_payload = build_context_compress_payload(
         inline_text=inline_text,
@@ -244,8 +256,14 @@ def build_context_bundle_payload(
         input_dir=input_dir,
         preset_id=preset_id,
         output_dir=None,
+        tokenizer_backend=tokenizer_backend,
+        tokenizer_model=tokenizer_model,
     )
-    inspect_payload = inspect_context_package(compression_payload)
+    inspect_payload = inspect_context_package(
+        compression_payload,
+        tokenizer_backend=tokenizer_backend,
+        tokenizer_model=tokenizer_model,
+    )
 
     bundle_root = _resolve_context_bundle_dir(
         source_label=str(compression_payload.get("source_label") or "context"),
@@ -617,12 +635,31 @@ def build_context_apply_check_payload(
     return payload
 
 
-def inspect_context_package(package_payload: dict[str, Any]) -> dict[str, Any]:
+def inspect_context_package(
+    package_payload: dict[str, Any],
+    *,
+    tokenizer_backend: str | None = None,
+    tokenizer_model: str | None = None,
+) -> dict[str, Any]:
     restore_package = package_payload.get("restore_package") or {}
     decoded = _decode_restore_blob(restore_package)
     restore_mode = str(decoded.get("mode") or "")
     source_summary = package_payload.get("source_summary") or {}
     tree_preview = list((source_summary.get("tree") or [])[:12])
+    requested_backend = _normalize_tokenizer_backend(tokenizer_backend)
+    stored_metrics = package_payload.get("metrics") or {}
+    use_stored_metrics = bool(stored_metrics) and requested_backend == "auto" and not (tokenizer_model or "").strip()
+    metrics = (
+        dict(stored_metrics)
+        if use_stored_metrics
+        else _build_context_metrics(
+            source_summary,
+            skeleton_text=str(package_payload.get("skeleton_text") or ""),
+            source_token_text=_build_token_source_text_from_restore_blob(decoded),
+            tokenizer_backend=tokenizer_backend,
+            tokenizer_model=tokenizer_model,
+        )
+    )
     inspect_payload = {
         "status": "ok",
         "entrypoint": "context-inspect",
@@ -642,7 +679,7 @@ def inspect_context_package(package_payload: dict[str, Any]) -> dict[str, Any]:
         "restore_raw_byte_count": int(restore_package.get("raw_byte_count", 0) or 0),
         "restore_compressed_byte_count": int(restore_package.get("compressed_byte_count", 0) or 0),
         "compression_ratio": package_payload.get("compression_ratio", 0),
-        "metrics": dict(package_payload.get("metrics") or _build_context_metrics(source_summary, skeleton_text=str(package_payload.get("skeleton_text") or ""))),
+        "metrics": metrics,
         "source_summary": source_summary,
         "tree_preview": tree_preview,
         "has_restore_package": bool(restore_package),
@@ -893,6 +930,9 @@ def _build_context_inspect_summary_text(payload: dict[str, Any]) -> str:
         "skeleton_char_count",
         "estimated_token_count_source",
         "estimated_token_count_skeleton",
+        "token_estimate_backend",
+        "token_estimate_basis",
+        "token_estimate_model",
         "estimated_token_direction",
         "estimated_token_delta_from_source",
         "estimated_token_reduction_ratio",
@@ -1378,47 +1418,250 @@ def _top_terms(text: str, *, limit: int = 8) -> list[str]:
     return [term for term, _count in counts.most_common(limit)]
 
 
-def _build_context_metrics(source_summary: dict[str, Any], *, skeleton_text: str) -> dict[str, Any]:
+def _build_context_metrics(
+    source_summary: dict[str, Any],
+    *,
+    skeleton_text: str,
+    source_token_text: str,
+    tokenizer_backend: str | None = None,
+    tokenizer_model: str | None = None,
+) -> dict[str, Any]:
     source_char_count = _int_metric(
         source_summary.get("total_chars"),
         fallback=source_summary.get("bytes") or source_summary.get("total_bytes") or 0,
     )
     skeleton_char_count = len(skeleton_text)
-    estimated_token_count_source = _estimate_token_count(source_char_count)
-    estimated_token_count_skeleton = _estimate_token_count(skeleton_char_count)
-    token_delta_from_source = estimated_token_count_skeleton - estimated_token_count_source
-    estimated_tokens_saved = max(0, estimated_token_count_source - estimated_token_count_skeleton)
-    estimated_token_ratio = (
-        round(estimated_token_count_skeleton / max(1, estimated_token_count_source), 4)
-        if estimated_token_count_source > 0
-        else 0.0
+    heuristic_token_count_source = _estimate_token_count(source_char_count)
+    heuristic_token_count_skeleton = _estimate_token_count(skeleton_char_count)
+    heuristic_metrics = _build_token_delta_metrics(heuristic_token_count_source, heuristic_token_count_skeleton)
+    primary_metrics = _resolve_primary_token_metrics(
+        source_text=source_token_text,
+        skeleton_text=skeleton_text,
+        heuristic_source_tokens=heuristic_token_count_source,
+        heuristic_skeleton_tokens=heuristic_token_count_skeleton,
+        tokenizer_backend=tokenizer_backend,
+        tokenizer_model=tokenizer_model,
     )
     char_reduction_ratio = round(skeleton_char_count / max(1, source_char_count), 4) if source_char_count > 0 else 0.0
-    if estimated_token_count_skeleton < estimated_token_count_source:
-        estimated_token_direction = "reduced"
-    elif estimated_token_count_skeleton > estimated_token_count_source:
-        estimated_token_direction = "expanded"
-    else:
-        estimated_token_direction = "flat"
-    return {
+    metrics = {
         "source_char_count": source_char_count,
         "skeleton_char_count": skeleton_char_count,
-        "estimated_token_count_source": estimated_token_count_source,
-        "estimated_token_count_skeleton": estimated_token_count_skeleton,
-        "estimated_tokens_saved": estimated_tokens_saved,
-        "estimated_token_delta_from_source": token_delta_from_source,
-        "estimated_token_reduction_ratio": estimated_token_ratio,
-        "estimated_token_size_ratio": estimated_token_ratio,
-        "estimated_token_direction": estimated_token_direction,
+        "estimated_token_count_source": primary_metrics["token_count_source"],
+        "estimated_token_count_skeleton": primary_metrics["token_count_skeleton"],
+        "estimated_tokens_saved": primary_metrics["tokens_saved"],
+        "estimated_token_delta_from_source": primary_metrics["token_delta_from_source"],
+        "estimated_token_reduction_ratio": primary_metrics["token_ratio"],
+        "estimated_token_size_ratio": primary_metrics["token_ratio"],
+        "estimated_token_direction": primary_metrics["token_direction"],
         "char_reduction_ratio": char_reduction_ratio,
-        "token_estimate_basis": "heuristic_chars_div_4",
+        "token_estimate_basis": primary_metrics["token_basis"],
+        "token_estimate_backend": primary_metrics["token_backend"],
+        "token_estimate_model": primary_metrics["token_model"],
+        "token_estimate_requested_backend": primary_metrics["requested_backend"],
+        "token_estimate_fallback_used": primary_metrics["fallback_used"],
+        "heuristic_token_count_source": heuristic_token_count_source,
+        "heuristic_token_count_skeleton": heuristic_token_count_skeleton,
+        "heuristic_tokens_saved": heuristic_metrics["tokens_saved"],
+        "heuristic_token_delta_from_source": heuristic_metrics["token_delta_from_source"],
+        "heuristic_token_reduction_ratio": heuristic_metrics["token_ratio"],
+        "heuristic_token_direction": heuristic_metrics["token_direction"],
+        "heuristic_token_basis": "heuristic_chars_div_4",
+        "tokenizer_available": primary_metrics["tokenizer_available"],
     }
+    if primary_metrics.get("tokenizer_token_count_source") is not None:
+        metrics["tokenizer_token_count_source"] = primary_metrics["tokenizer_token_count_source"]
+        metrics["tokenizer_token_count_skeleton"] = primary_metrics["tokenizer_token_count_skeleton"]
+        metrics["tokenizer_tokens_saved"] = primary_metrics["tokenizer_tokens_saved"]
+        metrics["tokenizer_token_delta_from_source"] = primary_metrics["tokenizer_token_delta_from_source"]
+        metrics["tokenizer_token_reduction_ratio"] = primary_metrics["tokenizer_token_reduction_ratio"]
+        metrics["tokenizer_token_direction"] = primary_metrics["tokenizer_token_direction"]
+        metrics["tokenizer_token_basis"] = primary_metrics["tokenizer_token_basis"]
+    if primary_metrics.get("tokenizer_error"):
+        metrics["tokenizer_error"] = primary_metrics["tokenizer_error"]
+    return metrics
 
 
 def _estimate_token_count(char_count: int) -> int:
     if char_count <= 0:
         return 0
     return max(1, (char_count + 3) // 4)
+
+
+def _build_token_delta_metrics(source_tokens: int, skeleton_tokens: int) -> dict[str, Any]:
+    token_delta_from_source = skeleton_tokens - source_tokens
+    tokens_saved = max(0, source_tokens - skeleton_tokens)
+    token_ratio = round(skeleton_tokens / max(1, source_tokens), 4) if source_tokens > 0 else 0.0
+    if skeleton_tokens < source_tokens:
+        token_direction = "reduced"
+    elif skeleton_tokens > source_tokens:
+        token_direction = "expanded"
+    else:
+        token_direction = "flat"
+    return {
+        "token_count_source": source_tokens,
+        "token_count_skeleton": skeleton_tokens,
+        "token_delta_from_source": token_delta_from_source,
+        "tokens_saved": tokens_saved,
+        "token_ratio": token_ratio,
+        "token_direction": token_direction,
+    }
+
+
+def _resolve_primary_token_metrics(
+    *,
+    source_text: str,
+    skeleton_text: str,
+    heuristic_source_tokens: int,
+    heuristic_skeleton_tokens: int,
+    tokenizer_backend: str | None,
+    tokenizer_model: str | None,
+) -> dict[str, Any]:
+    requested_backend = _normalize_tokenizer_backend(tokenizer_backend)
+    tokenizer_metrics = _compute_tiktoken_metrics(
+        source_text=source_text,
+        skeleton_text=skeleton_text,
+        tokenizer_model=tokenizer_model,
+    )
+    if requested_backend != "heuristic" and tokenizer_metrics.get("available") and tokenizer_metrics.get("token_count_source") is not None:
+        primary = _build_token_delta_metrics(
+            int(tokenizer_metrics["token_count_source"]),
+            int(tokenizer_metrics["token_count_skeleton"]),
+        )
+        return {
+            **primary,
+            "token_backend": "tiktoken",
+            "token_basis": str(tokenizer_metrics.get("token_basis") or ""),
+            "token_model": str(tokenizer_metrics.get("token_model") or ""),
+            "requested_backend": requested_backend,
+            "fallback_used": False,
+            "tokenizer_available": True,
+            "tokenizer_error": "",
+            "tokenizer_token_count_source": primary["token_count_source"],
+            "tokenizer_token_count_skeleton": primary["token_count_skeleton"],
+            "tokenizer_tokens_saved": primary["tokens_saved"],
+            "tokenizer_token_delta_from_source": primary["token_delta_from_source"],
+            "tokenizer_token_reduction_ratio": primary["token_ratio"],
+            "tokenizer_token_direction": primary["token_direction"],
+            "tokenizer_token_basis": str(tokenizer_metrics.get("token_basis") or ""),
+        }
+    heuristic = _build_token_delta_metrics(heuristic_source_tokens, heuristic_skeleton_tokens)
+    return {
+        **heuristic,
+        "token_backend": "heuristic",
+        "token_basis": "heuristic_chars_div_4",
+        "token_model": "",
+        "requested_backend": requested_backend,
+        "fallback_used": requested_backend != "heuristic",
+        "tokenizer_available": bool(tokenizer_metrics.get("available")),
+        "tokenizer_error": str(tokenizer_metrics.get("error") or ""),
+        "tokenizer_token_count_source": tokenizer_metrics.get("token_count_source"),
+        "tokenizer_token_count_skeleton": tokenizer_metrics.get("token_count_skeleton"),
+        "tokenizer_tokens_saved": tokenizer_metrics.get("tokens_saved"),
+        "tokenizer_token_delta_from_source": tokenizer_metrics.get("token_delta_from_source"),
+        "tokenizer_token_reduction_ratio": tokenizer_metrics.get("token_ratio"),
+        "tokenizer_token_direction": tokenizer_metrics.get("token_direction"),
+        "tokenizer_token_basis": str(tokenizer_metrics.get("token_basis") or ""),
+    }
+
+
+def _normalize_tokenizer_backend(tokenizer_backend: str | None) -> str:
+    normalized = str(tokenizer_backend or "auto").strip().lower() or "auto"
+    if normalized not in TOKENIZER_BACKENDS:
+        supported = ", ".join(sorted(TOKENIZER_BACKENDS))
+        raise ValueError(f"Unsupported tokenizer backend `{normalized}`. Supported backends: {supported}")
+    return normalized
+
+
+@lru_cache(maxsize=1)
+def _load_tiktoken_module() -> tuple[Any | None, str]:
+    try:
+        import tiktoken  # type: ignore
+    except Exception as exc:  # pragma: no cover - depends on host env
+        return None, f"{type(exc).__name__}: {exc}"
+    return tiktoken, ""
+
+
+@lru_cache(maxsize=16)
+def _resolve_tiktoken_encoder(tokenizer_model: str) -> tuple[Any, str]:
+    tiktoken, error = _load_tiktoken_module()
+    if tiktoken is None:
+        raise RuntimeError(error or "tiktoken unavailable")
+    model_name = tokenizer_model.strip() or "cl100k_base"
+    try:
+        encoding = tiktoken.encoding_for_model(model_name)
+        encoding_name = str(getattr(encoding, "name", model_name) or model_name)
+        return encoding, encoding_name
+    except Exception:
+        encoding = tiktoken.get_encoding(model_name)
+        return encoding, model_name
+
+
+def _compute_tiktoken_metrics(
+    *,
+    source_text: str,
+    skeleton_text: str,
+    tokenizer_model: str | None,
+) -> dict[str, Any]:
+    tiktoken, error = _load_tiktoken_module()
+    if tiktoken is None:
+        return {"available": False, "error": error}
+    requested_model = str(tokenizer_model or "").strip() or "cl100k_base"
+    try:
+        encoder, encoding_name = _resolve_tiktoken_encoder(requested_model)
+        source_tokens = len(encoder.encode(source_text or ""))
+        skeleton_tokens = len(encoder.encode(skeleton_text or ""))
+    except Exception as exc:
+        return {
+            "available": False,
+            "error": f"{type(exc).__name__}: {exc}",
+            "token_model": requested_model,
+        }
+    return {
+        "available": True,
+        "token_model": requested_model,
+        "token_basis": f"tiktoken:{encoding_name}",
+        **_build_token_delta_metrics(source_tokens, skeleton_tokens),
+    }
+
+
+def _build_token_source_text_from_source(source: dict[str, Any]) -> str:
+    return _build_token_source_text_from_restore_blob(source.get("restore_blob") or {})
+
+
+def _build_token_source_text_from_restore_blob(restore_blob: dict[str, Any]) -> str:
+    mode = str(restore_blob.get("mode") or "")
+    if mode == "text":
+        return str(restore_blob.get("text") or "")
+    if mode == "file":
+        if str(restore_blob.get("source_kind") or "") == "binary":
+            return ""
+        raw_bytes = _decode_restore_content_b64(restore_blob.get("content_b64"))
+        file_name = str(restore_blob.get("file_name") or restore_blob.get("source_label") or "context-file")
+        if raw_bytes and _looks_like_text(Path(file_name), raw_bytes):
+            try:
+                return raw_bytes.decode("utf-8")
+            except UnicodeDecodeError:
+                return ""
+        return ""
+    if mode == "directory":
+        parts: list[str] = []
+        for item in sorted(restore_blob.get("files") or [], key=lambda entry: str(entry.get("relative_path") or "")):
+            rel_path = str(item.get("relative_path") or "")
+            raw_bytes = _decode_restore_content_b64(item.get("content_b64"))
+            if raw_bytes and _looks_like_text(Path(rel_path), raw_bytes):
+                try:
+                    parts.append(raw_bytes.decode("utf-8"))
+                except UnicodeDecodeError:
+                    continue
+        return "\n\n".join(part for part in parts if part)
+    return ""
+
+
+def _decode_restore_content_b64(content_b64: Any) -> bytes:
+    encoded = str(content_b64 or "").strip()
+    if not encoded:
+        return b""
+    return base64.b64decode(encoded.encode("ascii"))
 
 
 def _int_metric(value: Any, *, fallback: Any = 0) -> int:

@@ -1932,7 +1932,7 @@ ok_writing_bundle_output_file_json=true
 
 context_compress_text_json="$TMP_ROOT/context_compress_text.json"
 context_compress_text_dir="$TMP_ROOT/context_compress_text_bundle"
-PYTHONPATH="$ROOT" python3 -m cli context compress --preset writing --text-file "$ROOT/README.md" --output-dir "$context_compress_text_dir" --json > "$context_compress_text_json"
+PYTHONPATH="$ROOT" python3 -m cli context compress --preset writing --tokenizer-backend heuristic --text-file "$ROOT/README.md" --output-dir "$context_compress_text_dir" --json > "$context_compress_text_json"
 python3 - "$context_compress_text_json" <<'PY'
 import json, os, sys
 payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
@@ -1946,6 +1946,7 @@ assert payload['metrics']['source_char_count'] > 0, payload
 assert payload['metrics']['estimated_token_count_source'] > 0, payload
 assert payload['metrics']['estimated_token_count_skeleton'] > 0, payload
 assert payload['metrics']['estimated_token_direction'] in {'reduced', 'expanded', 'flat'}, payload
+assert payload['metrics']['token_estimate_backend'] == 'heuristic', payload
 assert payload['metrics']['token_estimate_basis'] == 'heuristic_chars_div_4', payload
 assert payload['restore_package']['encoding'] == 'zlib+base64+json', payload
 for key in ['manifest_file', 'skeleton_file', 'restore_file', 'readme_file']:
@@ -2017,7 +2018,7 @@ cat > "$context_directory_src/notes.md" <<'MD'
 This bundle explains routing and hooks.
 MD
 context_compress_directory_json="$TMP_ROOT/context_compress_directory.json"
-PYTHONPATH="$ROOT" python3 -m cli context compress --preset website --input-dir "$context_directory_src" --output-dir "$context_directory_pkg" --json > "$context_compress_directory_json"
+PYTHONPATH="$ROOT" python3 -m cli context compress --preset website --tokenizer-backend heuristic --input-dir "$context_directory_src" --output-dir "$context_directory_pkg" --json > "$context_compress_directory_json"
 python3 - "$context_compress_directory_json" <<'PY'
 import json, sys
 payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
@@ -2036,7 +2037,7 @@ cmp -s "$context_directory_src/notes.md" "$context_directory_restore/context_dir
 ok_context_compress_directory_json=true
 
 context_inspect_summary_txt="$TMP_ROOT/context_inspect_summary.txt"
-PYTHONPATH="$ROOT" python3 -m cli context inspect --package-file "$context_directory_pkg/context_manifest.json" --emit-summary > "$context_inspect_summary_txt"
+PYTHONPATH="$ROOT" python3 -m cli context inspect --package-file "$context_directory_pkg/context_manifest.json" --tokenizer-backend heuristic --emit-summary > "$context_inspect_summary_txt"
 grep -q "^status: ok$" "$context_inspect_summary_txt"
 grep -q "^compression_mode: directory$" "$context_inspect_summary_txt"
 grep -q "^source_kind: mixed_project$" "$context_inspect_summary_txt"
@@ -2044,7 +2045,7 @@ grep -q "^tree_preview_count: " "$context_inspect_summary_txt"
 ok_context_inspect_summary_txt=true
 
 context_inspect_json="$TMP_ROOT/context_inspect.json"
-PYTHONPATH="$ROOT" python3 -m cli context inspect --package-file "$context_directory_pkg/context_manifest.json" --json > "$context_inspect_json"
+PYTHONPATH="$ROOT" python3 -m cli context inspect --package-file "$context_directory_pkg/context_manifest.json" --tokenizer-backend heuristic --json > "$context_inspect_json"
 python3 - "$context_inspect_json" <<'PY'
 import json, sys
 payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
@@ -2056,6 +2057,7 @@ assert payload['summary_text'], payload
 assert payload['metrics']['source_char_count'] > 0, payload
 assert payload['metrics']['estimated_token_count_source'] > 0, payload
 assert payload['metrics']['estimated_token_count_skeleton'] > 0, payload
+assert payload['metrics']['token_estimate_backend'] == 'heuristic', payload
 PY
 ok_context_inspect_json=true
 

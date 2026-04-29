@@ -148,13 +148,27 @@ Current fields:
 - `estimated_token_size_ratio`
 - `char_reduction_ratio`
 - `token_estimate_basis`
+- `token_estimate_backend`
+- `token_estimate_model`
+- `token_estimate_requested_backend`
+- `token_estimate_fallback_used`
+- `heuristic_token_count_source`
+- `heuristic_token_count_skeleton`
+- `tokenizer_available`
 
-Current token estimation basis:
+Current token estimation modes:
 
-- `heuristic_chars_div_4`
+- default fallback: `heuristic_chars_div_4`
+- optional tokenizer-backed mode: `tiktoken:<encoding>`
 
 This is intentionally approximate.
 It is useful for operator reporting and cross-run comparison, not for billing-grade token accounting.
+
+If `tiktoken` is installed, operators can request tokenizer-backed metrics with:
+
+- `context compress --tokenizer-backend tiktoken`
+- `context inspect --tokenizer-backend tiktoken`
+- `context bundle --tokenizer-backend tiktoken`
 
 Important nuance:
 

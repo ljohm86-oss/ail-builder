@@ -9,5 +9,8 @@ description = "Minimal AIL CLI v1 skeleton"
 requires-python = ">=3.10"
 license = { text = "PolyForm Noncommercial 1.0.0" }
 
+[project.optional-dependencies]
+context-metrics = ["tiktoken>=0.7"]
+
 [project.scripts]
 ail = "cli.ail_cli:main"

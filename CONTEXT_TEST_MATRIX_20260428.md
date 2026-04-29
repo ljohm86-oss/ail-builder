@@ -90,7 +90,8 @@ Check:
 - `metrics.estimated_token_count_source > 0`
 - `metrics.estimated_token_count_skeleton > 0`
 - `metrics.estimated_token_direction in {reduced, expanded, flat}`
-- `metrics.token_estimate_basis = heuristic_chars_div_4`
+- `metrics.token_estimate_backend in {heuristic, tiktoken}`
+- `metrics.token_estimate_basis is non-empty`
 
 ### T2. Restore long-form text
 
@@ -229,6 +230,7 @@ Expected:
 Note:
 
 - tiny inputs may report `estimated_token_direction = expanded`
+- if `tiktoken` is not installed, requesting `--tokenizer-backend tiktoken` should fall back cleanly or report the fallback state explicitly
 - larger repos or long-form text should usually report `reduced`
 
 ### D4. Directory apply-check aligned

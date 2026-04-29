@@ -96,11 +96,14 @@ Current machine-emitted fields include:
 - `estimated_token_direction`
 - `estimated_token_reduction_ratio`
 - `estimated_token_size_ratio`
+- `token_estimate_backend`
 - `char_reduction_ratio`
 
 Current basis:
 
 - `token_estimate_basis = heuristic_chars_div_4`
+
+If `tiktoken` is installed and explicitly requested, the same surface can now emit tokenizer-backed counts and a `tiktoken:<encoding>` basis instead.
 
 This is intentionally approximate, but it is good enough for:
 

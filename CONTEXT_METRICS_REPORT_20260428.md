@@ -41,14 +41,22 @@ The current `context` metrics surface includes:
 - `estimated_token_size_ratio`
 - `char_reduction_ratio`
 - `token_estimate_basis`
+- `token_estimate_backend`
+- `token_estimate_model`
+- `token_estimate_requested_backend`
+- `token_estimate_fallback_used`
+- `heuristic_token_count_source`
+- `heuristic_token_count_skeleton`
+- `tokenizer_available`
 
-Current estimation basis:
+Current estimation modes:
 
-- `heuristic_chars_div_4`
+- default fallback: `heuristic_chars_div_4`
+- optional tokenizer-backed mode: `tiktoken:<encoding>`
 
 This means:
 
-- token counts are estimated from character counts
+- token counts are estimated unless a tokenizer-backed mode is explicitly requested and available
 - the results are good enough for operator reporting and regression comparison
 - the results are not exact tokenizer measurements for any specific production model
 
@@ -154,9 +162,7 @@ Avoid:
 
 If deeper precision becomes important later, the next natural enhancement would be:
 
-- optional tokenizer-backed metrics for selected model families
-
-That should remain optional.
+- broader tokenizer coverage beyond the initial optional `tiktoken` path
 
 The current heuristic metrics are already appropriate for:
 
