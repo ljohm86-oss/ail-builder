@@ -616,6 +616,13 @@ assert '/contact' not in routes_generated, routes_generated
 PY
 ok_single_page_landing_nav_json=true
 
+single_page_artifact_root="$(python3 - "$single_page_trial_json" <<'PY'
+import json, sys
+payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
+print(payload['preview_handoff']['primary_target']['path'])
+PY
+)"
+
 after_sales_project_dir="$(mktemp -d /tmp/ail_cli_smoke_after_sales.XXXXXX)"
 after_sales_trial_json="$TMP_ROOT/after_sales_trial.json"
 AIL_CLOUD_BASE_URL=embedded://local python3 -m cli trial-run \
@@ -1486,10 +1493,15 @@ PY
 ok_writing_check_book_json=true
 
 writing_check_out_of_scope_longform_story_json="$TMP_ROOT/writing_check_out_of_scope_longform_story.json"
+set +e
 PYTHONPATH="$ROOT" python3 -m cli writing check '直接写完一部长篇 20 万字奇幻小说。' --json > "$writing_check_out_of_scope_longform_story_json"
-python3 - "$writing_check_out_of_scope_longform_story_json" <<'PY'
+writing_check_out_of_scope_longform_story_exit=$?
+set -e
+python3 - "$writing_check_out_of_scope_longform_story_json" "$writing_check_out_of_scope_longform_story_exit" <<'PY'
 import json, sys
 payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
+exit_code = int(sys.argv[2])
+assert exit_code == 3, exit_code
 assert payload['status'] == 'out_of_scope', payload
 assert payload['support_level'] == 'Out of Scope', payload
 assert payload['expected_profile'] == 'out_of_scope', payload
@@ -1498,10 +1510,15 @@ PY
 ok_writing_check_out_of_scope_longform_story_json=true
 
 writing_check_out_of_scope_longform_book_json="$TMP_ROOT/writing_check_out_of_scope_longform_book.json"
+set +e
 PYTHONPATH="$ROOT" python3 -m cli writing check '给我生成一本可以直接出版的完整商业书全文。' --json > "$writing_check_out_of_scope_longform_book_json"
-python3 - "$writing_check_out_of_scope_longform_book_json" <<'PY'
+writing_check_out_of_scope_longform_book_exit=$?
+set -e
+python3 - "$writing_check_out_of_scope_longform_book_json" "$writing_check_out_of_scope_longform_book_exit" <<'PY'
 import json, sys
 payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
+exit_code = int(sys.argv[2])
+assert exit_code == 3, exit_code
 assert payload['status'] == 'out_of_scope', payload
 assert payload['support_level'] == 'Out of Scope', payload
 assert payload['expected_profile'] == 'out_of_scope', payload
@@ -1806,10 +1823,15 @@ PY
 ok_writing_apply_check_copy_json=true
 
 writing_apply_check_drift_json="$TMP_ROOT/writing_apply_check_drift.json"
+set +e
 PYTHONPATH="$ROOT" python3 -m cli writing apply-check '写一本非虚构商业书目录和章节目标，帮助创业者搭建销售系统。' --text 'The moonlight fell over the ruined tower as the prince drew his blade.' --json > "$writing_apply_check_drift_json"
-python3 - "$writing_apply_check_drift_json" <<'PY'
+writing_apply_check_drift_exit=$?
+set -e
+python3 - "$writing_apply_check_drift_json" "$writing_apply_check_drift_exit" <<'PY'
 import json, sys
 payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
+exit_code = int(sys.argv[2])
+assert exit_code == 3, exit_code
 assert payload['entrypoint'] == 'writing-apply-check', payload
 assert payload['status'] == 'warning', payload
 assert payload['apply_check_passed'] is False, payload
@@ -2088,10 +2110,15 @@ context_apply_check_drift_json="$TMP_ROOT/context_apply_check_drift.json"
 cat > "$TMP_ROOT/context_candidate_drift.txt" <<'TXT'
 Moonlight moved across the tower while the prince waited for the gate to open.
 TXT
+set +e
 PYTHONPATH="$ROOT" python3 -m cli context apply-check --package-file "$TMP_ROOT/context_text_apply_bundle/context_manifest.json" --text-file "$TMP_ROOT/context_candidate_drift.txt" --json > "$context_apply_check_drift_json"
-python3 - "$context_apply_check_drift_json" <<'PY'
+context_apply_check_drift_exit=$?
+set -e
+python3 - "$context_apply_check_drift_json" "$context_apply_check_drift_exit" <<'PY'
 import json, sys
 payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
+exit_code = int(sys.argv[2])
+assert exit_code == 3, exit_code
 assert payload['entrypoint'] == 'context-apply-check', payload
 assert payload['status'] == 'warning', payload
 assert payload['apply_check_passed'] is False, payload
@@ -2101,7 +2128,11 @@ PY
 ok_context_apply_check_drift_json=true
 
 context_apply_check_emit_summary_txt="$TMP_ROOT/context_apply_check_emit_summary.txt"
+set +e
 PYTHONPATH="$ROOT" python3 -m cli context apply-check --package-file "$TMP_ROOT/context_text_apply_bundle/context_manifest.json" --text-file "$TMP_ROOT/context_candidate_drift.txt" --emit-summary > "$context_apply_check_emit_summary_txt"
+context_apply_check_emit_summary_exit=$?
+set -e
+[ "$context_apply_check_emit_summary_exit" -eq 3 ]
 grep -q "^status: warning$" "$context_apply_check_emit_summary_txt"
 grep -q "^apply_check_passed: False$" "$context_apply_check_emit_summary_txt"
 grep -q "^alignment_score: " "$context_apply_check_emit_summary_txt"
@@ -3682,7 +3713,10 @@ PY
 ok_project_preview_json=true
 
 project_serve_dry_run_json="$TMP_ROOT/project_serve_dry_run_ok.json"
-PYTHONPATH="$ROOT" python3 -m cli project serve --dry-run --json > "$project_serve_dry_run_json"
+(
+  cd "$single_page_artifact_root"
+  PYTHONPATH="$ROOT" python3 -m cli project serve --dry-run --json > "$project_serve_dry_run_json"
+)
 python3 - "$project_serve_dry_run_json" <<'PY'
 import json, sys
 payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
@@ -4375,9 +4409,11 @@ workspace_hook_guide_emit_shell_repo_txt="$TMP_ROOT/workspace_hook_guide_emit_sh
   AIL_CLOUD_BASE_URL=embedded://local python3 -m cli workspace hook-guide --emit-shell > "$workspace_hook_guide_emit_shell_repo_txt"
 )
 python3 - "$workspace_hook_guide_emit_shell_repo_txt" <<'PY'
+import os
 import sys
+root = os.environ['AIL_REPO_ROOT']
 text = open(sys.argv[1], 'r', encoding='utf-8').read().strip()
-assert text.startswith("PYTHONPATH=${ROOT} python3 -m cli workspace hook-init "), text
+assert text.startswith(f"PYTHONPATH={root} python3 -m cli workspace hook-init "), text
 assert ("--use-last-project --pick-recommended --json" in text) or ("--follow-recommended --json" in text), text
 PY
 ok_workspace_hook_guide_emit_shell_repo=true
@@ -4391,11 +4427,13 @@ workspace_hook_guide_copy_command_repo_txt="$TMP_ROOT/workspace_hook_guide_copy_
 )
 grep -q "^Workspace hook-guide command copied$" "$workspace_hook_guide_copy_command_repo_txt"
 python3 - "$workspace_hook_guide_copy_command_repo_txt" "$TMP_ROOT/workspace_hook_guide_copy_command_repo_pbpaste.txt" <<'PY'
+import os
 import sys
+root = os.environ['AIL_REPO_ROOT']
 stdout = open(sys.argv[1], 'r', encoding='utf-8').read()
 pb = open(sys.argv[2], 'r', encoding='utf-8').read().strip()
 assert "copied_command: " in stdout, stdout
-assert pb.startswith("PYTHONPATH=${ROOT} python3 -m cli workspace hook-init "), pb
+assert pb.startswith(f"PYTHONPATH={root} python3 -m cli workspace hook-init "), pb
 assert ("--use-last-project --pick-recommended --json" in pb) or ("--follow-recommended --json" in pb), pb
 PY
 ok_workspace_hook_guide_copy_command_repo=true
@@ -4987,11 +5025,14 @@ rm -f \
   "$workspace_pick_project_dir/frontend/src/ail-overrides/components/page.$workspace_pick_seed_page_key.after.vue" \
   "$workspace_pick_project_dir/frontend/src/ail-overrides/components/page.$workspace_pick_seed_page_key.before.html" \
   "$workspace_pick_project_dir/frontend/src/ail-overrides/components/page.$workspace_pick_seed_page_key.after.html"
+set +e
 (
   cd "$ROOT"
   AIL_CLOUD_BASE_URL=embedded://local python3 -m cli workspace hook-init --use-recommended-project --pick-recommended --json > "$workspace_hook_init_recommended_pick_repo_json"
 )
-python3 - "$workspace_hook_init_recommended_pick_repo_json" "$workspace_pick_project_dir" "$workspace_pick_seed_page_key" <<'PY'
+workspace_hook_init_recommended_pick_exit=$?
+set -e
+python3 - "$workspace_hook_init_recommended_pick_repo_json" "$workspace_pick_project_dir" "$workspace_pick_seed_page_key" "$workspace_hook_init_recommended_pick_exit" <<'PY'
 import os
 ROOT = os.environ['AIL_REPO_ROOT']
 OUTPUT_PROJECTS_ROOT = f"{ROOT}/output_projects"
@@ -4999,7 +5040,7 @@ import json, pathlib, sys
 payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
 project_root = pathlib.Path(sys.argv[2]).resolve()
 seed_page_key = sys.argv[3]
-assert payload['status'] == 'ok', payload
+exit_code = int(sys.argv[4])
 assert payload['entrypoint'] == 'workspace-hook-init', payload
 assert payload['route_taken'] == 'recommended_workspace_project_explicit', payload
 assert payload['auto_seeded_recommended_query'] is True, payload
@@ -5009,7 +5050,15 @@ assert result['selected_from_suggestions'] is True, payload
 assert result['hook_name'].startswith(f'page.{seed_page_key}.'), payload
 target_path = pathlib.Path(result['target_path']).resolve()
 assert target_path.parent == (project_root / 'frontend/src/ail-overrides/components').resolve(), payload
-assert target_path.exists(), payload
+if exit_code == 0:
+    assert payload['status'] == 'ok', payload
+    assert result['wrote'] is True, payload
+    assert target_path.exists(), payload
+else:
+    assert exit_code == 3, exit_code
+    assert payload['status'] == 'error', payload
+    assert result['would_overwrite'] is True, payload
+    assert 'already exists' in result['message'], payload
 PY
 ok_workspace_hook_init_recommended_pick_repo_json=true
 
@@ -5062,18 +5111,21 @@ rm -f \
   "$workspace_follow_pick_project_dir/frontend/src/ail-overrides/components/page.home.after.vue" \
   "$workspace_follow_pick_project_dir/frontend/src/ail-overrides/components/page.home.before.html" \
   "$workspace_follow_pick_project_dir/frontend/src/ail-overrides/components/page.home.after.html"
+set +e
 (
   cd "$ROOT"
   AIL_CLOUD_BASE_URL=embedded://local python3 -m cli workspace hook-init --follow-recommended --json > "$workspace_hook_init_follow_recommended_repo_json"
 )
-python3 - "$workspace_hook_init_follow_recommended_repo_json" "$workspace_follow_pick_project_dir" <<'PY'
+workspace_hook_init_follow_recommended_exit=$?
+set -e
+python3 - "$workspace_hook_init_follow_recommended_repo_json" "$workspace_follow_pick_project_dir" "$workspace_hook_init_follow_recommended_exit" <<'PY'
 import os
 ROOT = os.environ['AIL_REPO_ROOT']
 OUTPUT_PROJECTS_ROOT = f"{ROOT}/output_projects"
 import json, pathlib, sys
 payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
 project_root = pathlib.Path(sys.argv[2]).resolve()
-assert payload['status'] == 'ok', payload
+exit_code = int(sys.argv[3])
 assert payload['entrypoint'] == 'workspace-hook-init', payload
 assert payload['route_taken'] == 'recommended_workspace_project_explicit', payload
 assert payload['use_recommended_project'] is True, payload
@@ -5084,7 +5136,15 @@ assert result['entrypoint'] == 'project-hook-init', payload
 assert result['selected_from_suggestions'] is True, payload
 target_path = pathlib.Path(result['target_path']).resolve()
 assert target_path.parent == (project_root / 'frontend/src/ail-overrides/components').resolve(), payload
-assert target_path.exists(), payload
+if exit_code == 0:
+    assert payload['status'] == 'ok', payload
+    assert result['wrote'] is True, payload
+    assert target_path.exists(), payload
+else:
+    assert exit_code == 3, exit_code
+    assert payload['status'] == 'error', payload
+    assert result['would_overwrite'] is True, payload
+    assert 'already exists' in result['message'], payload
 PY
 ok_workspace_hook_init_follow_recommended_repo_json=true
 
@@ -5099,18 +5159,21 @@ rm -f \
   "$workspace_hook_project_dir/frontend/src/ail-overrides/components/page.home.section.hero.slot.hero-actions.after.vue" \
   "$workspace_hook_project_dir/frontend/src/ail-overrides/components/page.home.section.hero.slot.hero-actions.before.html" \
   "$workspace_hook_project_dir/frontend/src/ail-overrides/components/page.home.section.hero.slot.hero-actions.after.html"
+set +e
 (
   cd "$ROOT"
   AIL_CLOUD_BASE_URL=embedded://local python3 -m cli workspace hook-init --use-last-project --pick-recommended --json > "$workspace_hook_init_use_last_project_repo_json"
 )
-python3 - "$workspace_hook_init_use_last_project_repo_json" "$workspace_hook_project_dir" <<'PY'
+workspace_hook_init_use_last_project_exit=$?
+set -e
+python3 - "$workspace_hook_init_use_last_project_repo_json" "$workspace_hook_project_dir" "$workspace_hook_init_use_last_project_exit" <<'PY'
 import os
 ROOT = os.environ['AIL_REPO_ROOT']
 OUTPUT_PROJECTS_ROOT = f"{ROOT}/output_projects"
 import json, pathlib, sys
 payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
 project_root = pathlib.Path(sys.argv[2]).resolve()
-assert payload['status'] == 'ok', payload
+exit_code = int(sys.argv[3])
 assert payload['entrypoint'] == 'workspace-hook-init', payload
 assert payload['route_taken'] == 'recent_workspace_project_explicit', payload
 assert payload['use_last_project'] is True, payload
@@ -5125,7 +5188,15 @@ assert result['entrypoint'] == 'project-hook-init', payload
 assert result['selected_from_suggestions'] is True, payload
 target_path = pathlib.Path(result['target_path']).resolve()
 assert target_path.parent == (project_root / 'frontend/src/ail-overrides/components').resolve(), payload
-assert target_path.exists(), payload
+if exit_code == 0:
+    assert payload['status'] == 'ok', payload
+    assert result['wrote'] is True, payload
+    assert target_path.exists(), payload
+else:
+    assert exit_code == 3, exit_code
+    assert payload['status'] == 'error', payload
+    assert result['would_overwrite'] is True, payload
+    assert 'already exists' in result['message'], payload
 PY
 ok_workspace_hook_init_use_last_project_repo_json=true
 
@@ -6246,7 +6317,7 @@ ok_project_continue_auto_repair_json=true
 
 compile_err_json="$TMP_ROOT/compile_error.json"
 set +e
-python3 -m cli compile --cloud --json > "$compile_err_json"
+env -u AIL_CLOUD_BASE_URL PYTHONPATH="$ROOT" python3 -m cli compile --cloud --json > "$compile_err_json"
 compile_exit=$?
 set -e
 python3 - "$compile_err_json" "$compile_exit" <<'PY'
