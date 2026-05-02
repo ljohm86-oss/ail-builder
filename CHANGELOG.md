@@ -21,6 +21,7 @@ This changelog is intentionally lightweight for now. The repository already has 
 - updated context compression docs and smoke coverage to include dry-run patch replay previews
 - expanded dry-run replay coverage with one explicit preview manifest export for changed, added, removed, and predicted target paths
 - enriched dry-run preview reports with `change_counts` and `first_*` helper fields for faster operator-side inspection
+- added `surface_size` and `risk_band` to dry-run preview outputs so replay scope is easier to judge from summaries and reports
 - documented ecommerce, CMS, blog-publishing, routing, localization, managed-drift, and local-preview limitations more explicitly
 - improved managed-file drift messaging so CLI output explains it as a sync safety guard, not necessarily a website generation failure
 - changed the repository licensing posture from MIT to PolyForm Noncommercial 1.0.0 and updated public docs to describe the repo as source-available rather than OSI open source

@@ -1264,10 +1264,13 @@ def _build_context_patch_apply_summary_text(payload: dict[str, Any]) -> str:
         lines.append(f"first_removed_path: {removed_paths[0]}")
     preview_manifest = payload.get("preview_manifest") or {}
     if preview_manifest:
+        total_surface = _context_patch_preview_surface_size(preview_manifest)
         lines.append(f"changed_path_count: {len(preview_manifest.get('changed_paths') or [])}")
         lines.append(f"added_path_count: {len(preview_manifest.get('added_paths') or [])}")
         lines.append(f"preview_remove_count: {len(preview_manifest.get('remove_targets') or [])}")
         lines.append(f"preview_write_count: {len(preview_manifest.get('write_targets') or [])}")
+        lines.append(f"surface_size: {total_surface}")
+        lines.append(f"risk_band: {_context_patch_preview_risk_band(total_surface)}")
     policy_findings = payload.get("policy_findings") or []
     if policy_findings:
         lines.append(f"policy_finding_count: {len(policy_findings)}")
@@ -2150,6 +2153,7 @@ def build_context_patch_dry_run_report_payload(payload: dict[str, Any]) -> dict[
     removed_paths = list(preview_manifest.get("removed_paths") or [])
     write_targets = list(preview_manifest.get("write_targets") or [])
     remove_targets = list(preview_manifest.get("remove_targets") or [])
+    surface_size = _context_patch_preview_surface_size(preview_manifest)
     return {
         "status": payload.get("status", ""),
         "entrypoint": "context-patch-apply-dry-run-report",
@@ -2161,6 +2165,8 @@ def build_context_patch_dry_run_report_payload(payload: dict[str, Any]) -> dict[
         "merge_check_passed": bool(payload.get("merge_check_passed", True)),
         "policy_mode": payload.get("policy_mode", ""),
         "policy_passed": bool(payload.get("policy_passed", True)),
+        "surface_size": surface_size,
+        "risk_band": _context_patch_preview_risk_band(surface_size),
         "change_counts": {
             "changed_paths": len(changed_paths),
             "added_paths": len(added_paths),
@@ -2175,6 +2181,21 @@ def build_context_patch_dry_run_report_payload(payload: dict[str, Any]) -> dict[
         "first_remove_target": remove_targets[0] if remove_targets else "",
         "preview_manifest": preview_manifest,
     }
+
+
+def _context_patch_preview_surface_size(preview_manifest: dict[str, Any]) -> int:
+    changed_paths = list(preview_manifest.get("changed_paths") or [])
+    added_paths = list(preview_manifest.get("added_paths") or [])
+    removed_paths = list(preview_manifest.get("removed_paths") or [])
+    return len(set(changed_paths + added_paths + removed_paths))
+
+
+def _context_patch_preview_risk_band(surface_size: int) -> str:
+    if surface_size <= 1:
+        return "small"
+    if surface_size <= 5:
+        return "medium"
+    return "large"
 
 
 def _build_context_patch_apply_preview_manifest(

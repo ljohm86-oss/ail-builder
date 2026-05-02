@@ -344,6 +344,8 @@ Expected:
 - `dry-run-report.json` is written
 - `entrypoint = context-patch-apply-dry-run-report`
 - `change_counts` is populated
+- `surface_size` is populated
+- `risk_band` is one of `small`, `medium`, or `large`
 - `first_changed_path` / `first_added_path` / `first_removed_path` are populated when applicable
 - `first_write_target` / `first_remove_target` are populated when applicable
 - `preview_manifest.changed_paths` is populated

@@ -2401,6 +2401,8 @@ grep -q "^dry_run: True$" "$context_patch_apply_dry_run_summary_txt"
 grep -q "^applied_path_count: 1$" "$context_patch_apply_dry_run_summary_txt"
 grep -q "^changed_path_count: " "$context_patch_apply_dry_run_summary_txt"
 grep -q "^preview_write_count: " "$context_patch_apply_dry_run_summary_txt"
+grep -q "^surface_size: " "$context_patch_apply_dry_run_summary_txt"
+grep -q "^risk_band: " "$context_patch_apply_dry_run_summary_txt"
 ok_context_patch_apply_dry_run_summary_txt=true
 
 context_patch_apply_dry_run_report_json="$TMP_ROOT/context_patch_apply_dry_run_report.json"
@@ -2410,6 +2412,8 @@ import json, sys
 payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
 assert payload['entrypoint'] == 'context-patch-apply-dry-run-report', payload
 assert payload['dry_run'] is True, payload
+assert payload['surface_size'] >= 1, payload
+assert payload['risk_band'] in {'small', 'medium', 'large'}, payload
 counts = payload['change_counts']
 assert counts['changed_paths'] >= 1, counts
 assert counts['added_paths'] >= 1, counts
