@@ -425,6 +425,7 @@ def cmd_context(args: argparse.Namespace) -> int:
                 source_package_payload=source_package_payload,
                 output_dir=output_dir,
                 output_file=output_file,
+                dry_run=bool(getattr(args, "dry_run", False)),
                 merge_mode=getattr(args, "merge_mode", "overwrite"),
                 policy_mode=getattr(args, "policy_mode", None),
                 sample_policy=getattr(args, "sample_policy", None),
@@ -458,6 +459,7 @@ def cmd_context(args: argparse.Namespace) -> int:
             print(f"- apply_mode: {payload.get('apply_mode', '')}")
             print(f"- patch_mode: {payload.get('patch_mode', '')}")
             print(f"- source_label: {payload.get('source_label', '')}")
+            print(f"- dry_run: {payload.get('dry_run', False)}")
             print(f"- merge_mode: {payload.get('merge_mode', 'overwrite')}")
             print(f"- merge_check_passed: {payload.get('merge_check_passed', True)}")
             print(f"- policy_mode: {payload.get('policy_mode', '')}")
@@ -4828,6 +4830,7 @@ def _build_parser() -> argparse.ArgumentParser:
     context_patch_apply_parser.add_argument("--source-package-file", dest="source_package_file", help="Optional original context manifest JSON file; required for directory patch replay unless already recorded in the patch manifest")
     context_patch_apply_parser.add_argument("--output-file", dest="output_file", help="Target file path for text or single-file patch replay")
     context_patch_apply_parser.add_argument("--output-dir", dest="output_dir", help="Target directory root for directory patch replay or inferred file output")
+    context_patch_apply_parser.add_argument("--dry-run", action="store_true", help="Preview the replay target and affected paths without writing any files")
     context_patch_apply_parser.add_argument("--merge-mode", choices=["overwrite", "reject-conflicts"], default="overwrite", help="How patch replay should behave if the target already contains diverged edits")
     context_patch_apply_parser.add_argument("--policy-mode", choices=["open", "safe", "strict"], default="open", help="Patch replay policy preset")
     context_patch_apply_parser.add_argument("--sample-policy", choices=["safe", "strict"], help="Start from one built-in reusable sample policy before applying any other overrides")

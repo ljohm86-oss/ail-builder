@@ -494,6 +494,7 @@ def apply_context_patch_payload(
     source_package_payload: dict[str, Any] | None,
     output_dir: Path | None,
     output_file: Path | None,
+    dry_run: bool = False,
     merge_mode: str = "overwrite",
     policy_mode: str | None = None,
     sample_policy: str | None = None,
@@ -532,6 +533,7 @@ def apply_context_patch_payload(
             "apply_mode": "policy_blocked",
             "patch_mode": patch_mode,
             "source_label": source_label,
+            "dry_run": dry_run,
             "applied_paths": [],
             "removed_paths_applied": [],
             "policy_mode": policy_review["policy_mode"],
@@ -564,6 +566,7 @@ def apply_context_patch_payload(
             "apply_mode": "merge_conflict_blocked",
             "patch_mode": patch_mode,
             "source_label": source_label,
+            "dry_run": dry_run,
             "applied_paths": [],
             "removed_paths_applied": [],
             "merge_mode": merge_mode,
@@ -595,14 +598,16 @@ def apply_context_patch_payload(
             target_path = output_dir.expanduser().resolve() / source_label
         else:
             raise ValueError("context patch-apply requires --output-file or --output-dir")
-        text = snapshot_path.read_text(encoding="utf-8")
-        _write_text(target_path, text)
+        if not dry_run:
+            text = snapshot_path.read_text(encoding="utf-8")
+            _write_text(target_path, text)
         payload = {
             "status": status,
             "entrypoint": "context-patch-apply",
-            "apply_mode": "text_snapshot_replay",
+            "apply_mode": "text_snapshot_replay_preview" if dry_run else "text_snapshot_replay",
             "patch_mode": patch_mode,
             "source_label": source_label,
+            "dry_run": dry_run,
             "applied_paths": [str(target_path.resolve())],
             "removed_paths_applied": [],
             "merge_mode": merge_mode,
@@ -615,7 +620,11 @@ def apply_context_patch_payload(
             "policy_findings": [],
             "policy_affected_paths": policy_review["affected_paths"],
             "policy": policy_review["policy_payload"],
-            "next_steps": [f"open {target_path.resolve()}"],
+            "next_steps": [
+                f"re-run context patch-apply without --dry-run to write {target_path.resolve()}"
+                if dry_run
+                else f"open {target_path.resolve()}"
+            ],
         }
         payload["summary_text"] = _build_context_patch_apply_summary_text(payload)
         return payload
@@ -630,13 +639,15 @@ def apply_context_patch_payload(
             target_path = output_dir.expanduser().resolve() / snapshot_path.name
         else:
             raise ValueError("context patch-apply requires --output-file or --output-dir")
-        _write_bytes_file(target_path, snapshot_path.read_bytes())
+        if not dry_run:
+            _write_bytes_file(target_path, snapshot_path.read_bytes())
         payload = {
             "status": status,
             "entrypoint": "context-patch-apply",
-            "apply_mode": "file_snapshot_replay",
+            "apply_mode": "file_snapshot_replay_preview" if dry_run else "file_snapshot_replay",
             "patch_mode": patch_mode,
             "source_label": source_label,
+            "dry_run": dry_run,
             "applied_paths": [str(target_path.resolve())],
             "removed_paths_applied": [],
             "merge_mode": merge_mode,
@@ -649,7 +660,11 @@ def apply_context_patch_payload(
             "policy_findings": [],
             "policy_affected_paths": policy_review["affected_paths"],
             "policy": policy_review["policy_payload"],
-            "next_steps": [f"open {target_path.resolve()}"],
+            "next_steps": [
+                f"re-run context patch-apply without --dry-run to write {target_path.resolve()}"
+                if dry_run
+                else f"open {target_path.resolve()}"
+            ],
         }
         payload["summary_text"] = _build_context_patch_apply_summary_text(payload)
         return payload
@@ -659,10 +674,16 @@ def apply_context_patch_payload(
             raise ValueError("context patch-apply requires --output-dir when replaying a directory patch")
         if source_package_payload is None:
             raise ValueError("context patch-apply requires --source-package-file for directory patch replay")
-        _restore_summary, _ = restore_context_from_package(source_package_payload, output_dir=output_dir)
-        applied_root = Path(str((_restore_summary.get("restored_paths") or [""])[0])).expanduser().resolve()
+        if dry_run:
+            restore_package = source_package_payload.get("restore_package") or {}
+            decoded = _decode_restore_blob(restore_package)
+            root_name = str(decoded.get("root_name") or source_package_payload.get("source_label") or source_label or "restored-context")
+            applied_root = output_dir.expanduser().resolve() / root_name
+        else:
+            _restore_summary, _ = restore_context_from_package(source_package_payload, output_dir=output_dir)
+            applied_root = Path(str((_restore_summary.get("restored_paths") or [""])[0])).expanduser().resolve()
         snapshot_root = Path(str(files.get("candidate_snapshot_root") or "")).expanduser()
-        if snapshot_root.exists():
+        if not dry_run and snapshot_root.exists():
             for item in sorted(snapshot_root.rglob("*")):
                 if item.is_dir():
                     continue
@@ -672,6 +693,9 @@ def apply_context_patch_payload(
         removed_applied: list[str] = []
         for rel_path in removed_paths:
             target = applied_root / rel_path
+            if dry_run:
+                removed_applied.append(str(target))
+                continue
             if target.exists():
                 if target.is_dir():
                     shutil.rmtree(target)
@@ -681,9 +705,10 @@ def apply_context_patch_payload(
         payload = {
             "status": status,
             "entrypoint": "context-patch-apply",
-            "apply_mode": "directory_restore_plus_overlay",
+            "apply_mode": "directory_restore_plus_overlay_preview" if dry_run else "directory_restore_plus_overlay",
             "patch_mode": patch_mode,
             "source_label": source_label,
+            "dry_run": dry_run,
             "applied_paths": [str(applied_root)],
             "removed_paths_applied": removed_applied,
             "merge_mode": merge_mode,
@@ -696,7 +721,11 @@ def apply_context_patch_payload(
             "policy_findings": [],
             "policy_affected_paths": policy_review["affected_paths"],
             "policy": policy_review["policy_payload"],
-            "next_steps": [f"open {applied_root}"],
+            "next_steps": [
+                f"re-run context patch-apply without --dry-run to materialize {applied_root}"
+                if dry_run
+                else f"open {applied_root}"
+            ],
         }
         payload["summary_text"] = _build_context_patch_apply_summary_text(payload)
         return payload
@@ -1198,6 +1227,7 @@ def _build_context_patch_apply_summary_text(payload: dict[str, Any]) -> str:
         f"apply_mode: {payload.get('apply_mode', '')}",
         f"patch_mode: {payload.get('patch_mode', '')}",
         f"source_label: {payload.get('source_label', '')}",
+        f"dry_run: {payload.get('dry_run', False)}",
         f"merge_mode: {payload.get('merge_mode', 'overwrite')}",
         f"merge_check_passed: {payload.get('merge_check_passed', True)}",
         f"policy_mode: {payload.get('policy_mode', '')}",
@@ -2077,6 +2107,7 @@ def build_context_patch_merge_report_payload(payload: dict[str, Any]) -> dict[st
         "apply_mode": payload.get("apply_mode", ""),
         "patch_mode": payload.get("patch_mode", ""),
         "source_label": payload.get("source_label", ""),
+        "dry_run": bool(payload.get("dry_run", False)),
         "merge_mode": payload.get("merge_mode", "overwrite"),
         "merge_check_passed": bool(payload.get("merge_check_passed", True)),
         "merge_conflict_count": len(payload.get("merge_conflicts") or []),

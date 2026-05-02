@@ -319,6 +319,20 @@ Expected:
 - added files appear in the rebuilt output tree
 - removed files are absent from the rebuilt output tree
 
+### D8b. Directory patch replay dry-run
+
+```bash
+python3 -m cli context patch-apply --patch-file /absolute/path/to/context-patch/patch_manifest.json --source-package-file /absolute/path/to/context-bundle/context_manifest.json --dry-run --output-dir /absolute/path/to/replayed-project --json
+```
+
+Expected:
+
+- `entrypoint = context-patch-apply`
+- `apply_mode = directory_restore_plus_overlay_preview`
+- `dry_run = true`
+- output tree is not materialized yet
+- `applied_paths` still reports the predicted replay root
+
 ### D9. Policy-aware directory patch replay
 
 ```bash
@@ -345,6 +359,20 @@ Expected:
 - `entrypoint = context-patch-apply`
 - `apply_mode = text_snapshot_replay`
 - replayed output exactly matches the edited text used to create the patch
+
+### T6b. Text patch replay dry-run
+
+```bash
+python3 -m cli context patch-apply --patch-file /absolute/path/to/context-patch/patch_manifest.json --dry-run --output-file /absolute/path/to/replayed.txt --json
+```
+
+Expected:
+
+- `entrypoint = context-patch-apply`
+- `apply_mode = text_snapshot_replay_preview`
+- `dry_run = true`
+- target file is not written yet
+- `applied_paths` still reports the predicted replay file
 
 ### T7. Policy-aware text patch replay
 

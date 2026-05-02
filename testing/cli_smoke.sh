@@ -75,6 +75,9 @@ ok_context_patch_emit_summary_txt=false
 ok_context_patch_apply_text_json=false
 ok_context_patch_apply_directory_json=false
 ok_context_patch_apply_emit_summary_txt=false
+ok_context_patch_apply_dry_run_text_json=false
+ok_context_patch_apply_dry_run_directory_json=false
+ok_context_patch_apply_dry_run_summary_txt=false
 ok_website_assets_json=false
 ok_website_assets_experimental_dynamic_json=false
 ok_website_assets_pack_json=false
@@ -2292,6 +2295,23 @@ assert output_path.read_text(encoding='utf-8') == candidate_path.read_text(encod
 PY
 ok_context_patch_apply_text_safe_json=true
 
+context_patch_apply_dry_run_text_json="$TMP_ROOT/context_patch_apply_dry_run_text.json"
+context_patch_apply_dry_run_text_output="$TMP_ROOT/context_patch_apply_dry_run_text_output.md"
+PYTHONPATH="$ROOT" python3 -m cli context patch-apply --patch-file "$context_patch_text_dir/patch_manifest.json" --dry-run --output-file "$context_patch_apply_dry_run_text_output" --json > "$context_patch_apply_dry_run_text_json"
+python3 - "$context_patch_apply_dry_run_text_json" "$context_patch_apply_dry_run_text_output" <<'PY'
+import json, pathlib, sys
+payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
+output_path = pathlib.Path(sys.argv[2])
+assert payload['entrypoint'] == 'context-patch-apply', payload
+assert payload['status'] == 'ok', payload
+assert payload['dry_run'] is True, payload
+assert payload['apply_mode'] == 'text_snapshot_replay_preview', payload
+assert payload['applied_paths'] == [str(output_path.resolve())], payload
+assert not output_path.exists(), output_path
+assert any('--dry-run' in step for step in payload['next_steps']), payload
+PY
+ok_context_patch_apply_dry_run_text_json=true
+
 context_patch_directory_removed_json="$TMP_ROOT/context_patch_directory_removed.json"
 context_patch_directory_removed_dir="$TMP_ROOT/context_patch_directory_removed_dir"
 context_patch_candidate_removed_dir="$TMP_ROOT/context_patch_candidate_removed_dir"
@@ -2322,6 +2342,24 @@ assert (root / 'checkout.md').read_text(encoding='utf-8') == (candidate_root / '
 PY
 ok_context_patch_apply_directory_json=true
 
+context_patch_apply_dry_run_directory_json="$TMP_ROOT/context_patch_apply_dry_run_directory.json"
+context_patch_apply_dry_run_directory_root="$TMP_ROOT/context_patch_apply_dry_run_directory_root"
+PYTHONPATH="$ROOT" python3 -m cli context patch-apply --patch-file "$context_patch_directory_removed_dir/patch_manifest.json" --source-package-file "$context_directory_pkg/context_manifest.json" --dry-run --output-dir "$context_patch_apply_dry_run_directory_root" --json > "$context_patch_apply_dry_run_directory_json"
+python3 - "$context_patch_apply_dry_run_directory_json" "$context_patch_apply_dry_run_directory_root" <<'PY'
+import json, pathlib, sys
+payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
+target_root = pathlib.Path(sys.argv[2]) / 'context_directory_src'
+assert payload['entrypoint'] == 'context-patch-apply', payload
+assert payload['status'] == 'ok', payload
+assert payload['dry_run'] is True, payload
+assert payload['apply_mode'] == 'directory_restore_plus_overlay_preview', payload
+assert payload['applied_paths'] == [str(target_root.resolve())], payload
+assert payload['removed_paths_applied'], payload
+assert not target_root.exists(), target_root
+assert any('--dry-run' in step for step in payload['next_steps']), payload
+PY
+ok_context_patch_apply_dry_run_directory_json=true
+
 context_patch_apply_safe_block_json="$TMP_ROOT/context_patch_apply_safe_block.json"
 set +e
 PYTHONPATH="$ROOT" python3 -m cli context patch-apply --patch-file "$context_patch_directory_removed_dir/patch_manifest.json" --source-package-file "$context_directory_pkg/context_manifest.json" --policy-mode safe --output-dir "$TMP_ROOT/context_patch_apply_safe_block_root" --json > "$context_patch_apply_safe_block_json"
@@ -2348,6 +2386,14 @@ grep -q "^policy_mode: open$" "$context_patch_apply_emit_summary_txt"
 grep -q "^policy_passed: True$" "$context_patch_apply_emit_summary_txt"
 grep -q "^applied_path_count: 1$" "$context_patch_apply_emit_summary_txt"
 ok_context_patch_apply_emit_summary_txt=true
+
+context_patch_apply_dry_run_summary_txt="$TMP_ROOT/context_patch_apply_dry_run_summary.txt"
+PYTHONPATH="$ROOT" python3 -m cli context patch-apply --patch-file "$context_patch_directory_removed_dir/patch_manifest.json" --source-package-file "$context_directory_pkg/context_manifest.json" --dry-run --output-dir "$TMP_ROOT/context_patch_apply_dry_run_summary_root" --emit-summary > "$context_patch_apply_dry_run_summary_txt"
+grep -q "^status: ok$" "$context_patch_apply_dry_run_summary_txt"
+grep -q "^apply_mode: directory_restore_plus_overlay_preview$" "$context_patch_apply_dry_run_summary_txt"
+grep -q "^dry_run: True$" "$context_patch_apply_dry_run_summary_txt"
+grep -q "^applied_path_count: 1$" "$context_patch_apply_dry_run_summary_txt"
+ok_context_patch_apply_dry_run_summary_txt=true
 
 context_patch_apply_safe_summary_txt="$TMP_ROOT/context_patch_apply_safe_summary.txt"
 set +e
