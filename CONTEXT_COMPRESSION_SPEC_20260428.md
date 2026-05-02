@@ -119,6 +119,7 @@ When `context patch` is run, it writes:
 
 Use `--dry-run` when you want a preview of the replay target and affected paths without writing any files.
 Use `--write-dry-run-report` when you want the preview manifest exported as one structured JSON artifact.
+That report now includes both `change_counts` and `first_*` helper fields so operators can inspect the replay surface without post-processing the manifest arrays.
 
 For now it is intentionally conservative:
 

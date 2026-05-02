@@ -2410,6 +2410,17 @@ import json, sys
 payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
 assert payload['entrypoint'] == 'context-patch-apply-dry-run-report', payload
 assert payload['dry_run'] is True, payload
+counts = payload['change_counts']
+assert counts['changed_paths'] >= 1, counts
+assert counts['added_paths'] >= 1, counts
+assert counts['removed_paths'] >= 1, counts
+assert counts['write_targets'] >= 1, counts
+assert counts['remove_targets'] >= 1, counts
+assert payload['first_changed_path'], payload
+assert payload['first_added_path'], payload
+assert payload['first_removed_path'], payload
+assert payload['first_write_target'], payload
+assert payload['first_remove_target'], payload
 manifest = payload['preview_manifest']
 assert manifest['changed_paths'], manifest
 assert manifest['added_paths'], manifest

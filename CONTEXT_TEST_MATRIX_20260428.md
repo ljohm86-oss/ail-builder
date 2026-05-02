@@ -343,6 +343,9 @@ Expected:
 
 - `dry-run-report.json` is written
 - `entrypoint = context-patch-apply-dry-run-report`
+- `change_counts` is populated
+- `first_changed_path` / `first_added_path` / `first_removed_path` are populated when applicable
+- `first_write_target` / `first_remove_target` are populated when applicable
 - `preview_manifest.changed_paths` is populated
 - `preview_manifest.added_paths` is populated when the patch adds files
 - `preview_manifest.removed_paths` is populated when the patch removes files

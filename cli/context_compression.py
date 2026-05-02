@@ -2144,6 +2144,12 @@ def build_context_patch_merge_report_payload(payload: dict[str, Any]) -> dict[st
 
 
 def build_context_patch_dry_run_report_payload(payload: dict[str, Any]) -> dict[str, Any]:
+    preview_manifest = dict(payload.get("preview_manifest") or {})
+    changed_paths = list(preview_manifest.get("changed_paths") or [])
+    added_paths = list(preview_manifest.get("added_paths") or [])
+    removed_paths = list(preview_manifest.get("removed_paths") or [])
+    write_targets = list(preview_manifest.get("write_targets") or [])
+    remove_targets = list(preview_manifest.get("remove_targets") or [])
     return {
         "status": payload.get("status", ""),
         "entrypoint": "context-patch-apply-dry-run-report",
@@ -2155,7 +2161,19 @@ def build_context_patch_dry_run_report_payload(payload: dict[str, Any]) -> dict[
         "merge_check_passed": bool(payload.get("merge_check_passed", True)),
         "policy_mode": payload.get("policy_mode", ""),
         "policy_passed": bool(payload.get("policy_passed", True)),
-        "preview_manifest": dict(payload.get("preview_manifest") or {}),
+        "change_counts": {
+            "changed_paths": len(changed_paths),
+            "added_paths": len(added_paths),
+            "removed_paths": len(removed_paths),
+            "write_targets": len(write_targets),
+            "remove_targets": len(remove_targets),
+        },
+        "first_changed_path": changed_paths[0] if changed_paths else "",
+        "first_added_path": added_paths[0] if added_paths else "",
+        "first_removed_path": removed_paths[0] if removed_paths else "",
+        "first_write_target": write_targets[0] if write_targets else "",
+        "first_remove_target": remove_targets[0] if remove_targets else "",
+        "preview_manifest": preview_manifest,
     }
 
 
