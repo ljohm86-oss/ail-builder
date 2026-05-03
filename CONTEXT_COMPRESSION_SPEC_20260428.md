@@ -226,6 +226,10 @@ It is useful for operator reporting and cross-run comparison, not for billing-gr
 
 For larger directory inputs, `context compress` now keeps one internal source-token hint surface so the initial metrics pass does not need to rebuild one giant concatenated text blob before calculating token estimates.
 
+For repeatable scaling checks across repo-sized directories and long-book synthetic inputs, use:
+
+- `python3 /Users/carwynmac/ai-cl/testing/context_scale_benchmark.py --directory /Users/carwynmac/ai-cl/cli --output-json /absolute/path/to/context_scale_benchmark.json --output-md /absolute/path/to/context_scale_benchmark.md`
+
 If `tiktoken` is installed, operators can request tokenizer-backed metrics with:
 
 - `context compress --tokenizer-backend tiktoken`

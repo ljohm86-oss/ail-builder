@@ -81,6 +81,7 @@ ok_context_patch_apply_dry_run_directory_json=false
 ok_context_patch_apply_dry_run_summary_txt=false
 ok_context_patch_apply_dry_run_report_json=false
 ok_context_restore_invalid_relpath_json=false
+ok_context_scale_benchmark_json=false
 ok_website_assets_json=false
 ok_website_assets_experimental_dynamic_json=false
 ok_website_assets_pack_json=false
@@ -2118,6 +2119,21 @@ assert payload['metrics']['estimated_token_count_skeleton'] > 0, payload
 assert payload['metrics']['token_estimate_backend'] == 'heuristic', payload
 PY
 ok_context_inspect_json=true
+
+context_scale_benchmark_json="$TMP_ROOT/context_scale_benchmark.json"
+context_scale_benchmark_md="$TMP_ROOT/context_scale_benchmark.md"
+python3 "$ROOT/testing/context_scale_benchmark.py" --quick --output-json "$context_scale_benchmark_json" --output-md "$context_scale_benchmark_md" > /dev/null
+python3 - "$context_scale_benchmark_json" "$context_scale_benchmark_md" <<'PY'
+import json, os, sys
+payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
+assert payload['status'] == 'ok', payload
+assert payload['summaries']['directory_cases'], payload
+assert payload['summaries']['text_cases'], payload
+assert all(item['restore_verified'] is True for item in payload['summaries']['directory_cases']), payload
+assert all(item['restore_verified'] is True for item in payload['summaries']['text_cases']), payload
+assert os.path.exists(sys.argv[2]), sys.argv[2]
+PY
+ok_context_scale_benchmark_json=true
 
 context_apply_check_text_json="$TMP_ROOT/context_apply_check_text.json"
 cat > "$TMP_ROOT/context_candidate_good.md" <<'MD'
@@ -6678,6 +6694,7 @@ export CLI_SMOKE_OK_CONTEXT_PRESET_JSON="$ok_context_preset_json"
 export CLI_SMOKE_OK_CONTEXT_PRESET_SELECTED_JSON="$ok_context_preset_selected_json"
 export CLI_SMOKE_OK_CONTEXT_INSPECT_SUMMARY_TXT="$ok_context_inspect_summary_txt"
 export CLI_SMOKE_OK_CONTEXT_INSPECT_JSON="$ok_context_inspect_json"
+export CLI_SMOKE_OK_CONTEXT_SCALE_BENCHMARK_JSON="$ok_context_scale_benchmark_json"
 export CLI_SMOKE_OK_CONTEXT_APPLY_CHECK_TEXT_JSON="$ok_context_apply_check_text_json"
 export CLI_SMOKE_OK_CONTEXT_APPLY_CHECK_DRIFT_JSON="$ok_context_apply_check_drift_json"
 export CLI_SMOKE_OK_CONTEXT_APPLY_CHECK_EMIT_SUMMARY_TXT="$ok_context_apply_check_emit_summary_txt"
@@ -6926,6 +6943,7 @@ payload = {
         'context_preset_selected_json_ok': os.environ['CLI_SMOKE_OK_CONTEXT_PRESET_SELECTED_JSON'] == 'true',
         'context_inspect_summary_txt_ok': os.environ['CLI_SMOKE_OK_CONTEXT_INSPECT_SUMMARY_TXT'] == 'true',
         'context_inspect_json_ok': os.environ['CLI_SMOKE_OK_CONTEXT_INSPECT_JSON'] == 'true',
+        'context_scale_benchmark_json_ok': os.environ['CLI_SMOKE_OK_CONTEXT_SCALE_BENCHMARK_JSON'] == 'true',
         'context_apply_check_text_json_ok': os.environ['CLI_SMOKE_OK_CONTEXT_APPLY_CHECK_TEXT_JSON'] == 'true',
         'context_apply_check_drift_json_ok': os.environ['CLI_SMOKE_OK_CONTEXT_APPLY_CHECK_DRIFT_JSON'] == 'true',
         'context_apply_check_emit_summary_txt_ok': os.environ['CLI_SMOKE_OK_CONTEXT_APPLY_CHECK_EMIT_SUMMARY_TXT'] == 'true',

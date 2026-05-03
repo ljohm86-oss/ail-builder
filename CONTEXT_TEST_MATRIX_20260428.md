@@ -384,6 +384,21 @@ Expected:
 - `change_counts.removed_paths >= 1`
 - `changed_paths`, `added_paths`, and `removed_paths` are all populated
 
+### M1. Quick scale benchmark harness
+
+```bash
+python3 /Users/carwynmac/ai-cl/testing/context_scale_benchmark.py --quick --output-json /absolute/path/to/context_scale_benchmark.json --output-md /absolute/path/to/context_scale_benchmark.md
+```
+
+Expected:
+
+- process exits successfully
+- benchmark JSON is written
+- benchmark Markdown report is written
+- `summaries.directory_cases` is populated
+- `summaries.text_cases` is populated
+- all quick benchmark `restore_verified` fields are `true`
+
 ### D9. Policy-aware directory patch replay
 
 ```bash

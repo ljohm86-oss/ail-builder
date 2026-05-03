@@ -287,6 +287,12 @@ Policy-aware replay template:
 
 `context compress` and `context inspect` now emit formal `metrics`, including source characters, skeleton characters, token direction, and estimated size ratios. By default the CLI uses heuristic token estimates and reports that basis explicitly. If `tiktoken` is installed, you can request tokenizer-backed metrics with `--tokenizer-backend tiktoken` and an optional `--tokenizer-model` such as `cl100k_base`. On very small inputs the skeleton can be larger than the source, and the metrics surface reports that honestly instead of pretending every input always compresses. For larger directory inputs, the initial metrics pass now reuses internal source-token hints instead of rebuilding one giant concatenated text surface before it estimates token usage.
 
+Repo-scale / long-text benchmark harness:
+
+```bash
+python3 /Users/carwynmac/ai-cl/testing/context_scale_benchmark.py --directory /Users/carwynmac/ai-cl/cli --output-json /absolute/path/to/context_scale_benchmark.json --output-md /absolute/path/to/context_scale_benchmark.md
+```
+
 Optional install for tokenizer-backed metrics:
 
 ```bash

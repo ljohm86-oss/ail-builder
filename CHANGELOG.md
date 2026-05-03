@@ -15,6 +15,7 @@ This changelog is intentionally lightweight for now. The repository already has 
 - added `context patch-apply --dry-run` so replay targets can be previewed without writing files
 - added `context patch-apply --write-dry-run-report` so replay previews can be exported as one structured manifest JSON
 - added one mixed directory patch regression and one invalid-relative-path restore regression to the local `context` smoke coverage
+- added `/Users/carwynmac/ai-cl/testing/context_scale_benchmark.py`, a repeatable repo-scale and long-text context benchmark harness with JSON and Markdown outputs
 
 ### Changed
 
@@ -25,6 +26,7 @@ This changelog is intentionally lightweight for now. The repository already has 
 - added `surface_size` and `risk_band` to dry-run preview outputs so replay scope is easier to judge from summaries and reports
 - hardened directory restore and replay by rejecting absolute paths, drive-qualified paths, and `..` traversal before any files are written
 - reduced large-directory metric amplification by reusing internal source-token hints during the initial `context compress` metrics pass instead of rebuilding one giant source-text surface
+- added one quick benchmark smoke check so the scale-harness output format and restore verification stay covered by the local CLI regression path
 - documented ecommerce, CMS, blog-publishing, routing, localization, managed-drift, and local-preview limitations more explicitly
 - improved managed-file drift messaging so CLI output explains it as a sync safety guard, not necessarily a website generation failure
 - changed the repository licensing posture from MIT to PolyForm Noncommercial 1.0.0 and updated public docs to describe the repo as source-available rather than OSI open source
