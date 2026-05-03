@@ -297,6 +297,12 @@ Repo-scale / long-text benchmark harness:
 python3 /Users/carwynmac/ai-cl/testing/context_scale_benchmark.py --directory /Users/carwynmac/ai-cl/cli --output-json /absolute/path/to/context_scale_benchmark.json --output-md /absolute/path/to/context_scale_benchmark.md
 ```
 
+That harness now emits three benchmark summary groups:
+
+- `directory_cases` for full-directory compression
+- `directory_incremental_cases` for git-scoped incremental compression
+- `incremental_comparison` for full-vs-incremental token and timing ratios per backend
+
 Optional install for tokenizer-backed metrics:
 
 ```bash

@@ -6,6 +6,7 @@ import hashlib
 import json
 import os
 import platform
+import shutil
 import statistics
 import subprocess
 import sys
@@ -96,6 +97,10 @@ def _sha256_directory(root: Path) -> str:
 
 
 def _directory_snapshot_from_fs(root: Path) -> dict[str, Any]:
+    return _directory_snapshot_from_fs_ignoring(root, ignored_rel_paths=set())
+
+
+def _directory_snapshot_from_fs_ignoring(root: Path, *, ignored_rel_paths: set[str]) -> dict[str, Any]:
     files: dict[str, str] = {}
     symlinks: dict[str, str] = {}
     empty_dirs: set[str] = set()
@@ -110,6 +115,8 @@ def _directory_snapshot_from_fs(root: Path) -> dict[str, Any]:
         for filename in filenames:
             item_path = current_path / filename
             rel_path = item_path.relative_to(root).as_posix()
+            if rel_path in ignored_rel_paths:
+                continue
             if item_path.is_symlink():
                 symlinks[rel_path] = os.readlink(item_path)
             else:
@@ -123,7 +130,7 @@ def _directory_snapshot_from_fs(root: Path) -> dict[str, Any]:
 
 def _directory_snapshot_from_restore_package(restore_package: dict[str, Any]) -> dict[str, Any]:
     decoded = _decode_restore_blob(restore_package or {})
-    if str(decoded.get("mode") or "") != "directory":
+    if str(decoded.get("mode") or "") not in {"directory", "directory_incremental"}:
         raise ValueError("restore package is not a directory bundle")
     files: dict[str, str] = {}
     for item in decoded.get("files") or []:
@@ -138,6 +145,7 @@ def _directory_snapshot_from_restore_package(restore_package: dict[str, Any]) ->
         "files": files,
         "symlinks": symlinks,
         "empty_dirs": empty_dirs,
+        "removed_paths": sorted(str(item) for item in (decoded.get("removed_paths") or [])),
     }
 
 
@@ -260,6 +268,7 @@ def _summarize_case(case: dict[str, Any]) -> dict[str, Any]:
     return {
         "label": case["label"],
         "backend": case["backend"],
+        "kind": case.get("kind", ""),
         "source_chars": metrics["source_char_count"],
         "skeleton_chars": metrics["skeleton_char_count"],
         "estimated_source_tokens": metrics["estimated_token_count_source"],
@@ -272,7 +281,52 @@ def _summarize_case(case: dict[str, Any]) -> dict[str, Any]:
         "restore_ms_avg": round(statistics.mean(case["timings_ms"]["restore"]), 2),
         "restore_verified": case["restore_verified"],
         "restore_mismatch_preview": restore_details.get("mismatch_preview") or [],
+        "change_surface_count": case.get("compress", {}).get("incremental_path_count", 0),
     }
+
+
+def _build_incremental_comparison(
+    full_cases: list[dict[str, Any]],
+    incremental_cases: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    full_by_backend = {case["backend"]: _summarize_case(case) for case in full_cases}
+    incremental_by_backend = {case["backend"]: _summarize_case(case) for case in incremental_cases}
+    comparisons: list[dict[str, Any]] = []
+    for backend in sorted(set(full_by_backend) & set(incremental_by_backend)):
+        full_summary = full_by_backend[backend]
+        incremental_summary = incremental_by_backend[backend]
+        full_source_tokens = int(full_summary["estimated_source_tokens"])
+        incremental_source_tokens = int(incremental_summary["estimated_source_tokens"])
+        full_skeleton_tokens = int(full_summary["estimated_skeleton_tokens"])
+        incremental_skeleton_tokens = int(incremental_summary["estimated_skeleton_tokens"])
+        comparisons.append(
+            {
+                "backend": backend,
+                "token_backend": incremental_summary["token_backend"],
+                "change_surface_count": incremental_summary["change_surface_count"],
+                "full_source_tokens": full_source_tokens,
+                "incremental_source_tokens": incremental_source_tokens,
+                "source_token_size_ratio": round(
+                    incremental_source_tokens / full_source_tokens, 4
+                ) if full_source_tokens else 0.0,
+                "full_skeleton_tokens": full_skeleton_tokens,
+                "incremental_skeleton_tokens": incremental_skeleton_tokens,
+                "skeleton_token_size_ratio": round(
+                    incremental_skeleton_tokens / full_skeleton_tokens, 4
+                ) if full_skeleton_tokens else 0.0,
+                "full_compress_ms_avg": full_summary["compress_ms_avg"],
+                "incremental_compress_ms_avg": incremental_summary["compress_ms_avg"],
+                "compress_time_ratio": round(
+                    incremental_summary["compress_ms_avg"] / full_summary["compress_ms_avg"], 4
+                ) if full_summary["compress_ms_avg"] else 0.0,
+                "full_restore_ms_avg": full_summary["restore_ms_avg"],
+                "incremental_restore_ms_avg": incremental_summary["restore_ms_avg"],
+                "restore_time_ratio": round(
+                    incremental_summary["restore_ms_avg"] / full_summary["restore_ms_avg"], 4
+                ) if full_summary["restore_ms_avg"] else 0.0,
+            }
+        )
+    return comparisons
 
 
 def _markdown_table(headers: list[str], rows: list[list[Any]]) -> str:
@@ -298,6 +352,7 @@ def _render_markdown(report: dict[str, Any]) -> str:
         [
             item["label"],
             item["backend"],
+            item["kind"],
             item["source_chars"],
             item["skeleton_chars"],
             item["estimated_source_tokens"],
@@ -316,6 +371,7 @@ def _render_markdown(report: dict[str, Any]) -> str:
             [
                 "Case",
                 "Backend",
+                "Kind",
                 "Source chars",
                 "Skeleton chars",
                 "Source tokens",
@@ -330,11 +386,90 @@ def _render_markdown(report: dict[str, Any]) -> str:
             directory_rows,
         )
     )
+    if report["summaries"].get("directory_incremental_cases"):
+        lines.extend(["", "## Incremental Directory Cases", ""])
+        incremental_rows = [
+            [
+                item["label"],
+                item["backend"],
+                item["kind"],
+                item["change_surface_count"],
+                item["source_chars"],
+                item["skeleton_chars"],
+                item["estimated_source_tokens"],
+                item["estimated_skeleton_tokens"],
+                item["estimated_tokens_saved"],
+                item["token_ratio"],
+                item["compress_ms_avg"],
+                item["inspect_ms_avg"],
+                item["restore_ms_avg"],
+                item["restore_verified"],
+            ]
+            for item in report["summaries"]["directory_incremental_cases"]
+        ]
+        lines.append(
+            _markdown_table(
+                [
+                    "Case",
+                    "Backend",
+                    "Kind",
+                    "Change surface",
+                    "Source chars",
+                    "Skeleton chars",
+                    "Source tokens",
+                    "Skeleton tokens",
+                    "Tokens saved",
+                    "Token ratio",
+                    "Compress ms",
+                    "Inspect ms",
+                    "Restore ms",
+                    "Restore ok",
+                ],
+                incremental_rows,
+            )
+        )
+    if report["summaries"].get("incremental_comparison"):
+        lines.extend(["", "## Incremental Comparison", ""])
+        comparison_rows = [
+            [
+                item["backend"],
+                item["change_surface_count"],
+                item["full_source_tokens"],
+                item["incremental_source_tokens"],
+                item["source_token_size_ratio"],
+                item["full_skeleton_tokens"],
+                item["incremental_skeleton_tokens"],
+                item["skeleton_token_size_ratio"],
+                item["full_compress_ms_avg"],
+                item["incremental_compress_ms_avg"],
+                item["compress_time_ratio"],
+            ]
+            for item in report["summaries"]["incremental_comparison"]
+        ]
+        lines.append(
+            _markdown_table(
+                [
+                    "Backend",
+                    "Change surface",
+                    "Full source tokens",
+                    "Incremental source tokens",
+                    "Source token ratio",
+                    "Full skeleton tokens",
+                    "Incremental skeleton tokens",
+                    "Skeleton token ratio",
+                    "Full compress ms",
+                    "Incremental compress ms",
+                    "Compress ratio",
+                ],
+                comparison_rows,
+            )
+        )
     lines.extend(["", "## Long Text Cases", ""])
     text_rows = [
         [
             item["label"],
             item["backend"],
+            item["kind"],
             item["source_chars"],
             item["skeleton_chars"],
             item["estimated_source_tokens"],
@@ -353,6 +488,7 @@ def _render_markdown(report: dict[str, Any]) -> str:
             [
                 "Case",
                 "Backend",
+                "Kind",
                 "Source chars",
                 "Skeleton chars",
                 "Source tokens",
@@ -370,6 +506,9 @@ def _render_markdown(report: dict[str, Any]) -> str:
     lines.extend(["", "## Notes", ""])
     lines.append(
         "- `token_ratio` is the skeleton token footprint divided by the source token footprint; smaller is better."
+    )
+    lines.append(
+        "- `source_token_size_ratio` and `skeleton_token_size_ratio` in the incremental comparison show how much smaller the incremental surface is versus the full directory benchmark."
     )
     lines.append(
         "- `heuristic` uses `chars/4`, while `auto` and `tiktoken` prefer tokenizer-backed counts when available."
@@ -393,6 +532,55 @@ def _build_directory_fixture(root: Path) -> Path:
         encoding="utf-8",
     )
     return sample_root
+
+
+def _build_incremental_repo_fixture(source_dir: Path, workspace: Path) -> tuple[Path, dict[str, Any]]:
+    repo_root = workspace / f"{source_dir.name}_incremental_repo"
+    shutil.copytree(source_dir, repo_root)
+    subprocess.run(["git", "init", "-q"], cwd=str(repo_root), check=True)
+    subprocess.run(["git", "config", "user.email", "benchmark@example.com"], cwd=str(repo_root), check=True)
+    subprocess.run(["git", "config", "user.name", "Context Benchmark"], cwd=str(repo_root), check=True)
+    subprocess.run(["git", "add", "."], cwd=str(repo_root), check=True)
+    subprocess.run(["git", "commit", "-q", "-m", "base"], cwd=str(repo_root), check=True)
+
+    candidates = sorted(
+        path for path in repo_root.rglob("*")
+        if path.is_file() and ".git" not in path.parts and "__pycache__" not in path.parts
+    )
+    if not candidates:
+        raise RuntimeError(f"incremental benchmark fixture could not find files under {source_dir}")
+
+    changed_rel = candidates[0].relative_to(repo_root).as_posix()
+    changed_path = candidates[0]
+    changed_bytes = changed_path.read_bytes()
+    if changed_bytes:
+        changed_path.write_bytes(changed_bytes + b"\n# incremental benchmark change\n")
+    else:
+        changed_path.write_text("# incremental benchmark change\n", encoding="utf-8")
+
+    removed_rel = None
+    if len(candidates) > 1:
+        removed_rel = candidates[1].relative_to(repo_root).as_posix()
+        candidates[1].unlink()
+
+    added_rel = "benchmark_added.py"
+    added_path = repo_root / added_rel
+    added_path.write_text(
+        "def incremental_helper():\n    return 'added by context scale benchmark'\n",
+        encoding="utf-8",
+    )
+
+    expected_files = {
+        changed_rel: hashlib.sha256(changed_path.read_bytes()).hexdigest(),
+        added_rel: hashlib.sha256(added_path.read_bytes()).hexdigest(),
+    }
+    metadata = {
+        "changed_paths": [changed_rel],
+        "added_paths": [added_rel],
+        "removed_paths": [removed_rel] if removed_rel else [],
+        "expected_files": expected_files,
+    }
+    return repo_root, metadata
 
 
 def _benchmark_directory_case(
@@ -482,6 +670,110 @@ def _benchmark_directory_case(
         },
         "restore_verified": restore_details["ok"],
         "restore_details": restore_details,
+    }
+
+
+def _benchmark_incremental_directory_case(
+    *,
+    label: str,
+    repo_dir: Path,
+    backend: str,
+    tokenizer_model: str,
+    iterations: int,
+    workspace: Path,
+    fixture_metadata: dict[str, Any],
+) -> dict[str, Any]:
+    compress_times: list[float] = []
+    inspect_times: list[float] = []
+    restore_times: list[float] = []
+    compress_payload: dict[str, Any] | None = None
+    inspect_payload: dict[str, Any] | None = None
+    for idx in range(iterations):
+        out_dir = workspace / f"{label}_{backend}_incremental_bundle_{idx}"
+        compress_result = _run_cli_json(
+            [
+                "context",
+                "compress",
+                "--input-dir",
+                str(repo_dir),
+                "--incremental",
+                "--tokenizer-backend",
+                backend,
+                "--tokenizer-model",
+                tokenizer_model,
+                "--output-dir",
+                str(out_dir),
+                "--json",
+            ],
+            cwd=REPO_ROOT,
+        )
+        compress_payload = compress_result.payload
+        compress_times.append(compress_result.elapsed_ms)
+        manifest_path = out_dir / "context_manifest.json"
+        inspect_result = _run_cli_json(
+            [
+                "context",
+                "inspect",
+                "--package-file",
+                str(manifest_path),
+                "--tokenizer-backend",
+                backend,
+                "--tokenizer-model",
+                tokenizer_model,
+                "--json",
+            ],
+            cwd=REPO_ROOT,
+        )
+        inspect_payload = inspect_result.payload
+        inspect_times.append(inspect_result.elapsed_ms)
+        restore_root = workspace / f"{label}_{backend}_incremental_restore_{idx}"
+        restore_result = _run_cli_json(
+            [
+                "context",
+                "restore",
+                "--package-file",
+                str(manifest_path),
+                "--output-dir",
+                str(restore_root),
+                "--json",
+            ],
+            cwd=REPO_ROOT,
+        )
+        restore_times.append(restore_result.elapsed_ms)
+    assert compress_payload is not None and inspect_payload is not None
+    restored_root = workspace / f"{label}_{backend}_incremental_restore_{iterations - 1}" / repo_dir.name
+    restore_details = _compare_directory_snapshots(
+        _directory_snapshot_from_restore_package(compress_payload.get("restore_package") or {}),
+        _directory_snapshot_from_fs_ignoring(
+            restored_root,
+            ignored_rel_paths={".ail_incremental_manifest.json"},
+        ),
+    )
+    manifest_path = restored_root / ".ail_incremental_manifest.json"
+    incremental_manifest = json.loads(manifest_path.read_text(encoding="utf-8")) if manifest_path.exists() else {}
+    manifest_removed_paths = list(incremental_manifest.get("removed_paths") or [])
+    manifest_ok = manifest_removed_paths == list(fixture_metadata.get("removed_paths") or [])
+    return {
+        "label": label,
+        "backend": backend,
+        "kind": "directory_incremental",
+        "source_path": str(repo_dir.resolve()),
+        "compress": compress_payload,
+        "inspect": inspect_payload,
+        "timings_ms": {
+            "compress": compress_times,
+            "inspect": inspect_times,
+            "restore": restore_times,
+        },
+        "restore_verified": bool(restore_details["ok"] and manifest_ok),
+        "restore_details": {
+            **restore_details,
+            "incremental_manifest_present": manifest_path.exists(),
+            "incremental_manifest_removed_paths": manifest_removed_paths,
+            "expected_removed_paths": list(fixture_metadata.get("removed_paths") or []),
+            "incremental_manifest_ok": manifest_ok,
+        },
+        "fixture_metadata": fixture_metadata,
     }
 
 
@@ -604,6 +896,7 @@ def main() -> int:
             iterations = 1
 
         backends = _build_backends(args.backends, include_tiktoken=True)
+        incremental_repo_dir, incremental_fixture_metadata = _build_incremental_repo_fixture(directory_path, workspace)
         text_cases: list[dict[str, Any]] = []
         for target_chars in text_targets:
             text_path = workspace / f"synthetic_book_{target_chars}.md"
@@ -631,6 +924,19 @@ def main() -> int:
             )
             for backend in backends
         ]
+        directory_incremental_cases = [
+            _benchmark_incremental_directory_case(
+                label=f"{directory_path.name}_incremental",
+                repo_dir=incremental_repo_dir,
+                backend=backend,
+                tokenizer_model=args.tokenizer_model,
+                iterations=iterations,
+                workspace=workspace,
+                fixture_metadata=incremental_fixture_metadata,
+            )
+            for backend in backends
+        ]
+        incremental_comparison = _build_incremental_comparison(directory_cases, directory_incremental_cases)
 
         report = {
             "status": "ok",
@@ -642,9 +948,12 @@ def main() -> int:
             "backends": backends,
             "iterations": iterations,
             "directory_cases": directory_cases,
+            "directory_incremental_cases": directory_incremental_cases,
             "text_cases": text_cases,
             "summaries": {
                 "directory_cases": [_summarize_case(case) for case in directory_cases],
+                "directory_incremental_cases": [_summarize_case(case) for case in directory_incremental_cases],
+                "incremental_comparison": incremental_comparison,
                 "text_cases": [_summarize_case(case) for case in text_cases],
             },
         }

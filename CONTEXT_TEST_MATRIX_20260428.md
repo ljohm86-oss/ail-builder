@@ -442,6 +442,8 @@ Expected:
 - benchmark JSON is written
 - benchmark Markdown report is written
 - `summaries.directory_cases` is populated
+- `summaries.directory_incremental_cases` is populated
+- `summaries.incremental_comparison` is populated
 - `summaries.text_cases` is populated
 - all quick benchmark `restore_verified` fields are `true`
 

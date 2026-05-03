@@ -2217,8 +2217,11 @@ import json, os, sys
 payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
 assert payload['status'] == 'ok', payload
 assert payload['summaries']['directory_cases'], payload
+assert payload['summaries']['directory_incremental_cases'], payload
+assert payload['summaries']['incremental_comparison'], payload
 assert payload['summaries']['text_cases'], payload
 assert all(item['restore_verified'] is True for item in payload['summaries']['directory_cases']), payload
+assert all(item['restore_verified'] is True for item in payload['summaries']['directory_incremental_cases']), payload
 assert all(item['restore_verified'] is True for item in payload['summaries']['text_cases']), payload
 assert os.path.exists(sys.argv[2]), sys.argv[2]
 PY
