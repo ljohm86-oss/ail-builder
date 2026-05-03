@@ -345,6 +345,8 @@ def build_context_bundle_payload(
     candidate_input_dir: Path | None,
     tokenizer_backend: str | None = None,
     tokenizer_model: str | None = None,
+    incremental: bool = False,
+    base_commit: str | None = None,
 ) -> dict[str, Any]:
     compression_payload = build_context_compress_payload(
         inline_text=inline_text,
@@ -355,6 +357,8 @@ def build_context_bundle_payload(
         output_dir=None,
         tokenizer_backend=tokenizer_backend,
         tokenizer_model=tokenizer_model,
+        incremental=incremental,
+        base_commit=base_commit,
     )
     inspect_payload = inspect_context_package(
         compression_payload,
@@ -387,6 +391,8 @@ def build_context_bundle_payload(
             candidate_input_dir,
         ]
     )
+    if apply_check_requested and bool(compression_payload.get("incremental_mode")):
+        raise ValueError("context bundle does not yet support candidate apply-check inputs together with --incremental")
     apply_check_payload = None
     if apply_check_requested:
         apply_check_payload = build_context_apply_check_payload(
@@ -412,6 +418,13 @@ def build_context_bundle_payload(
         "compression_mode": compression_payload.get("compression_mode", ""),
         "source_kind": compression_payload.get("source_kind", ""),
         "source_label": compression_payload.get("source_label", ""),
+        "incremental_mode": bool(compression_payload.get("incremental_mode")),
+        "incremental_scope": compression_payload.get("incremental_scope", ""),
+        "incremental_base_commit": compression_payload.get("incremental_base_commit", ""),
+        "incremental_changed_paths": list(compression_payload.get("incremental_changed_paths") or []),
+        "incremental_added_paths": list(compression_payload.get("incremental_added_paths") or []),
+        "incremental_removed_paths": list(compression_payload.get("incremental_removed_paths") or []),
+        "incremental_path_count": int(compression_payload.get("incremental_path_count", 0) or 0),
         "bundle_root": str(bundle_root),
         "zip_enabled": make_zip,
         "apply_check_included": bool(apply_check_payload),
@@ -1614,6 +1627,14 @@ def _build_context_bundle_summary_text(payload: dict[str, Any]) -> str:
         f"apply_check_included: {payload.get('apply_check_included', False)}",
         f"file_count: {payload.get('file_count', 0)}",
     ]
+    if payload.get("incremental_mode"):
+        lines.append("incremental_mode: True")
+        lines.append(f"incremental_scope: {payload.get('incremental_scope', '')}")
+        if payload.get("incremental_base_commit"):
+            lines.append(f"incremental_base_commit: {payload.get('incremental_base_commit', '')}")
+        lines.append(f"incremental_changed_count: {len(payload.get('incremental_changed_paths') or [])}")
+        lines.append(f"incremental_added_count: {len(payload.get('incremental_added_paths') or [])}")
+        lines.append(f"incremental_removed_count: {len(payload.get('incremental_removed_paths') or [])}")
     if payload.get("archive_path"):
         lines.append(f"archive_path: {payload.get('archive_path', '')}")
     files = payload.get("files") or {}

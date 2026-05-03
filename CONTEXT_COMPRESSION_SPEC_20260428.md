@@ -21,6 +21,7 @@ PYTHONPATH="$PWD" python3 -m cli context compress --text-file /absolute/path/to/
 PYTHONPATH="$PWD" python3 -m cli context compress --input-file /absolute/path/to/app.py --emit-skeleton
 PYTHONPATH="$PWD" python3 -m cli context compress --preset website --input-dir /absolute/path/to/project --output-dir /absolute/path/to/context-bundle --json
 PYTHONPATH="$PWD" python3 -m cli context compress --input-dir /absolute/path/to/project --incremental --base-commit HEAD~1 --output-dir /absolute/path/to/context-incremental-bundle --json
+PYTHONPATH="$PWD" python3 -m cli context bundle --input-dir /absolute/path/to/project --incremental --base-commit HEAD~1 --output-dir /absolute/path/to/context-incremental-bundle --json
 ```
 
 ### Restore
@@ -106,6 +107,14 @@ This means incremental restore reconstructs:
 - an `.ail_incremental_manifest.json` file with the removed-path list
 
 It does not pretend to reconstruct the full repository tree unless the full tree was part of the incremental surface.
+
+For now, `context bundle --incremental` supports:
+
+- incremental compression
+- incremental inspect
+- exact incremental restore package export
+
+It intentionally does not yet support candidate apply-check inputs in the same call, because that path still needs a dedicated incremental comparison contract.
 
 ## Bundle Shape
 

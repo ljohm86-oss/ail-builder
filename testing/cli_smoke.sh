@@ -69,6 +69,7 @@ ok_context_apply_check_text_json=false
 ok_context_apply_check_drift_json=false
 ok_context_apply_check_emit_summary_txt=false
 ok_context_bundle_json=false
+ok_context_bundle_incremental_json=false
 ok_context_bundle_zip_json=false
 ok_context_bundle_apply_check_json=false
 ok_context_bundle_emit_summary_txt=false
@@ -2294,6 +2295,26 @@ for key in ['manifest_file', 'skeleton_file', 'restore_file', 'readme_file', 'in
     assert os.path.exists(payload['files'][key]), (key, payload)
 PY
 ok_context_bundle_json=true
+
+context_bundle_incremental_json="$TMP_ROOT/context_bundle_incremental.json"
+context_bundle_incremental_dir="$TMP_ROOT/context_bundle_incremental_dir"
+PYTHONPATH="$ROOT" python3 -m cli context bundle --input-dir "$context_incremental_repo" --incremental --output-dir "$context_bundle_incremental_dir" --json > "$context_bundle_incremental_json"
+python3 - "$context_bundle_incremental_json" <<'PY'
+import json, os, sys
+payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
+assert payload['entrypoint'] == 'context-bundle', payload
+assert payload['status'] == 'ok', payload
+assert payload['compression_mode'] == 'directory_incremental', payload
+assert payload['incremental_mode'] is True, payload
+assert payload['incremental_changed_paths'] == ['app.py'], payload
+assert payload['incremental_added_paths'] == ['new.py'], payload
+assert payload['incremental_removed_paths'] == ['notes.md'], payload
+assert payload['apply_check_included'] is False, payload
+assert 'incremental_changed_count: 1' in payload['summary_text'], payload
+for key in ['manifest_file', 'skeleton_file', 'restore_file', 'readme_file', 'inspect_json', 'inspect_summary_txt', 'bundle_manifest_json']:
+    assert os.path.exists(payload['files'][key]), (key, payload)
+PY
+ok_context_bundle_incremental_json=true
 
 context_bundle_zip_json="$TMP_ROOT/context_bundle_zip.json"
 context_bundle_zip_dir="$TMP_ROOT/context_bundle_zip_dir"
@@ -6790,6 +6811,7 @@ export CLI_SMOKE_OK_CONTEXT_APPLY_CHECK_TEXT_JSON="$ok_context_apply_check_text_
 export CLI_SMOKE_OK_CONTEXT_APPLY_CHECK_DRIFT_JSON="$ok_context_apply_check_drift_json"
 export CLI_SMOKE_OK_CONTEXT_APPLY_CHECK_EMIT_SUMMARY_TXT="$ok_context_apply_check_emit_summary_txt"
 export CLI_SMOKE_OK_CONTEXT_BUNDLE_JSON="$ok_context_bundle_json"
+export CLI_SMOKE_OK_CONTEXT_BUNDLE_INCREMENTAL_JSON="$ok_context_bundle_incremental_json"
 export CLI_SMOKE_OK_CONTEXT_BUNDLE_ZIP_JSON="$ok_context_bundle_zip_json"
 export CLI_SMOKE_OK_CONTEXT_BUNDLE_APPLY_CHECK_JSON="$ok_context_bundle_apply_check_json"
 export CLI_SMOKE_OK_CONTEXT_BUNDLE_EMIT_SUMMARY_TXT="$ok_context_bundle_emit_summary_txt"
@@ -7042,6 +7064,7 @@ payload = {
         'context_apply_check_drift_json_ok': os.environ['CLI_SMOKE_OK_CONTEXT_APPLY_CHECK_DRIFT_JSON'] == 'true',
         'context_apply_check_emit_summary_txt_ok': os.environ['CLI_SMOKE_OK_CONTEXT_APPLY_CHECK_EMIT_SUMMARY_TXT'] == 'true',
         'context_bundle_json_ok': os.environ['CLI_SMOKE_OK_CONTEXT_BUNDLE_JSON'] == 'true',
+        'context_bundle_incremental_json_ok': os.environ['CLI_SMOKE_OK_CONTEXT_BUNDLE_INCREMENTAL_JSON'] == 'true',
         'context_bundle_zip_json_ok': os.environ['CLI_SMOKE_OK_CONTEXT_BUNDLE_ZIP_JSON'] == 'true',
         'context_bundle_apply_check_json_ok': os.environ['CLI_SMOKE_OK_CONTEXT_BUNDLE_APPLY_CHECK_JSON'] == 'true',
         'context_bundle_emit_summary_txt_ok': os.environ['CLI_SMOKE_OK_CONTEXT_BUNDLE_EMIT_SUMMARY_TXT'] == 'true',

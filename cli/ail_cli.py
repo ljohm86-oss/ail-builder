@@ -284,6 +284,8 @@ def cmd_context(args: argparse.Namespace) -> int:
                 candidate_input_dir=candidate_input_dir,
                 tokenizer_backend=getattr(args, "tokenizer_backend", None),
                 tokenizer_model=getattr(args, "tokenizer_model", None),
+                incremental=bool(getattr(args, "incremental", False)),
+                base_commit=getattr(args, "base_commit", None),
             )
         except ValueError as exc:
             return _emit_command_error(args, EXIT_USAGE, "invalid_usage", str(exc))
@@ -307,6 +309,14 @@ def cmd_context(args: argparse.Namespace) -> int:
             print(f"- compression_mode: {payload.get('compression_mode', '')}")
             print(f"- source_kind: {payload.get('source_kind', '')}")
             print(f"- source_label: {payload.get('source_label', '')}")
+            if payload.get("incremental_mode"):
+                print("- incremental_mode: true")
+                print(f"- incremental_scope: {payload.get('incremental_scope', '')}")
+                if payload.get("incremental_base_commit"):
+                    print(f"- incremental_base_commit: {payload.get('incremental_base_commit', '')}")
+                print(f"- incremental_changed_count: {len(payload.get('incremental_changed_paths') or [])}")
+                print(f"- incremental_added_count: {len(payload.get('incremental_added_paths') or [])}")
+                print(f"- incremental_removed_count: {len(payload.get('incremental_removed_paths') or [])}")
             print(f"- bundle_root: {payload.get('bundle_root', '')}")
             print(f"- zip_enabled: {payload.get('zip_enabled', False)}")
             print(f"- apply_check_included: {payload.get('apply_check_included', False)}")
@@ -4819,6 +4829,8 @@ def _build_parser() -> argparse.ArgumentParser:
     context_bundle_parser.add_argument("--input-file", dest="input_file", help="Compress one source file or project file")
     context_bundle_parser.add_argument("--input-dir", dest="input_dir", help="Compress one project directory tree")
     context_bundle_parser.add_argument("--preset", dest="preset_id", default="generic", help="Compression preset such as generic, codebase, writing, website, or ecommerce")
+    context_bundle_parser.add_argument("--incremental", action="store_true", help="Bundle only the git-tracked change surface for one directory input")
+    context_bundle_parser.add_argument("--base-commit", dest="base_commit", help="Optional git base commit for incremental bundle compression")
     context_bundle_parser.add_argument("--candidate-text", dest="candidate_text", help="Optional inline edited text for apply-check")
     context_bundle_parser.add_argument("--candidate-text-file", dest="candidate_text_file", help="Read optional edited text for apply-check from a file")
     context_bundle_parser.add_argument("--candidate-input-file", dest="candidate_input_file", help="Optional edited file for apply-check")

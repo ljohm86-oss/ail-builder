@@ -260,6 +260,25 @@ Expected:
 - restore writes `.ail_incremental_manifest.json`
 - the incremental manifest includes `removed_paths`
 
+### D3d. Bundle one incremental git change surface
+
+```bash
+python3 -m cli context bundle --input-dir /absolute/path/to/project --incremental --base-commit HEAD~1 --output-dir /absolute/path/to/context-incremental-bundle --json
+```
+
+Expected:
+
+- `compression_mode = directory_incremental`
+- `incremental_mode = true`
+- `apply_check_included = false`
+- bundle files exist:
+  - `context_manifest.json`
+  - `context_skeleton.mcp`
+  - `context_restore.json`
+  - `inspect.json`
+  - `inspect_summary.txt`
+  - `bundle_manifest.json`
+
 ### D4. Directory apply-check aligned
 
 ```bash

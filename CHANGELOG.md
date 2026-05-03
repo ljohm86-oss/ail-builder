@@ -17,6 +17,7 @@ This changelog is intentionally lightweight for now. The repository already has 
 - added one mixed directory patch regression and one invalid-relative-path restore regression to the local `context` smoke coverage
 - added `/Users/carwynmac/ai-cl/testing/context_scale_benchmark.py`, a repeatable repo-scale and long-text context benchmark harness with JSON and Markdown outputs
 - added `context compress --incremental` with optional `--base-commit`, so git-backed directory inputs can now emit one MCP skeleton from the current change surface instead of re-sending the whole tree every time
+- added `context bundle --incremental`, so that same git-scoped change surface can now be exported with inspect artifacts and an exact incremental restore package in one bundle directory
 
 ### Changed
 
