@@ -207,6 +207,8 @@ def cmd_context(args: argparse.Namespace) -> int:
                 output_dir=output_dir,
                 tokenizer_backend=getattr(args, "tokenizer_backend", None),
                 tokenizer_model=getattr(args, "tokenizer_model", None),
+                incremental=bool(getattr(args, "incremental", False)),
+                base_commit=getattr(args, "base_commit", None),
             )
         except ValueError as exc:
             return _emit_command_error(args, EXIT_USAGE, "invalid_usage", str(exc))
@@ -229,6 +231,14 @@ def cmd_context(args: argparse.Namespace) -> int:
             print(f"- compression_mode: {payload.get('compression_mode', '')}")
             print(f"- source_kind: {payload.get('source_kind', '')}")
             print(f"- source_label: {payload.get('source_label', '')}")
+            if payload.get("incremental_mode"):
+                print("- incremental_mode: true")
+                print(f"- incremental_scope: {payload.get('incremental_scope', '')}")
+                if payload.get("incremental_base_commit"):
+                    print(f"- incremental_base_commit: {payload.get('incremental_base_commit', '')}")
+                print(f"- incremental_changed_count: {len(payload.get('incremental_changed_paths') or [])}")
+                print(f"- incremental_added_count: {len(payload.get('incremental_added_paths') or [])}")
+                print(f"- incremental_removed_count: {len(payload.get('incremental_removed_paths') or [])}")
             print(f"- skeleton_language: {payload.get('skeleton_language', '')}")
             print(f"- skeleton_char_count: {payload.get('skeleton_char_count', 0)}")
             print(f"- compression_ratio: {payload.get('compression_ratio', 0)}")
@@ -4770,6 +4780,8 @@ def _build_parser() -> argparse.ArgumentParser:
     context_compress_parser.add_argument("--input-file", dest="input_file", help="Compress one source file or project file")
     context_compress_parser.add_argument("--input-dir", dest="input_dir", help="Compress one project directory tree")
     context_compress_parser.add_argument("--preset", dest="preset_id", default="generic", help="Compression preset such as generic, codebase, writing, website, or ecommerce")
+    context_compress_parser.add_argument("--incremental", action="store_true", help="Compress only the git-tracked change surface for one directory input")
+    context_compress_parser.add_argument("--base-commit", dest="base_commit", help="Optional git base commit for incremental compression; defaults to the current working tree delta")
     context_compress_parser.add_argument("--tokenizer-backend", dest="tokenizer_backend", default="auto", choices=["auto", "heuristic", "tiktoken"], help="Token metrics backend: auto prefers tiktoken when available, heuristic uses chars/4, tiktoken requests tokenizer-backed counts")
     context_compress_parser.add_argument("--tokenizer-model", dest="tokenizer_model", help="Optional tokenizer model or encoding name such as cl100k_base when using tokenizer-backed metrics")
     context_compress_parser.add_argument("--emit-skeleton", action="store_true", help="Print only the MCP skeleton text")

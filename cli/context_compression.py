@@ -7,6 +7,7 @@ import json
 import os
 import re
 import shutil
+import subprocess
 import zlib
 from collections import Counter
 from datetime import datetime, timezone
@@ -150,17 +151,29 @@ def build_context_compress_payload(
     output_dir: Path | None = None,
     tokenizer_backend: str | None = None,
     tokenizer_model: str | None = None,
+    incremental: bool = False,
+    base_commit: str | None = None,
 ) -> dict[str, Any]:
     preset = resolve_context_preset(preset_id)
-    source = _resolve_context_input_source(
-        inline_text=inline_text,
-        text_file=text_file,
-        input_file=input_file,
-        input_dir=input_dir,
-        command_label="context compress",
-        tokenizer_backend=tokenizer_backend,
-        tokenizer_model=tokenizer_model,
-    )
+    if incremental:
+        if any(item for item in [inline_text.strip() if inline_text else "", text_file, input_file]) or input_dir is None:
+            raise ValueError("context compress --incremental currently requires exactly one directory input via --input-dir")
+        source = _build_incremental_directory_source(
+            input_dir,
+            base_commit=base_commit,
+            tokenizer_backend=tokenizer_backend,
+            tokenizer_model=tokenizer_model,
+        )
+    else:
+        source = _resolve_context_input_source(
+            inline_text=inline_text,
+            text_file=text_file,
+            input_file=input_file,
+            input_dir=input_dir,
+            command_label="context compress",
+            tokenizer_backend=tokenizer_backend,
+            tokenizer_model=tokenizer_model,
+        )
 
     skeleton_text = _render_skeleton_text(source, preset=preset)
     restore_blob = _encode_restore_blob(source["restore_blob"])
@@ -188,6 +201,14 @@ def build_context_compress_payload(
         "source_path": source.get("source_path", ""),
         "source_summary": source["source_summary"],
         "source_token_hints": source.get("source_token_hints") or {},
+        "incremental_mode": bool(source.get("incremental_mode")),
+        "incremental_scope": source.get("incremental_scope", ""),
+        "incremental_base_commit": source.get("incremental_base_commit", ""),
+        "incremental_git_root": source.get("incremental_git_root", ""),
+        "incremental_changed_paths": list(source.get("incremental_changed_paths") or []),
+        "incremental_added_paths": list(source.get("incremental_added_paths") or []),
+        "incremental_removed_paths": list(source.get("incremental_removed_paths") or []),
+        "incremental_path_count": int(source.get("incremental_path_count", 0) or 0),
         "skeleton_text": skeleton_text,
         "skeleton_char_count": len(skeleton_text),
         "restore_package": restore_blob,
@@ -259,6 +280,28 @@ def restore_context_from_package(
         _restore_directory_blob(restore_root, decoded)
         restore_summary["restored_paths"].append(str(restore_root))
         restore_summary["next_steps"].append(f"open {restore_root}")
+        return restore_summary, None
+
+    if mode == "directory_incremental":
+        if output_dir is None:
+            raise ValueError("context restore requires --output-dir when restoring an incremental directory package")
+        root_name = str(decoded.get("root_name") or source_label or "restored-context")
+        restore_root = output_dir.expanduser().resolve() / root_name
+        _restore_directory_blob(restore_root, decoded)
+        removed_manifest_path = restore_root / ".ail_incremental_manifest.json"
+        removed_manifest = {
+            "status": "ok",
+            "entrypoint": "context-incremental-restore-manifest",
+            "incremental_scope": str(decoded.get("incremental_scope") or ""),
+            "base_commit": str(decoded.get("base_commit") or ""),
+            "removed_paths": list(decoded.get("removed_paths") or []),
+            "removed_path_count": len(decoded.get("removed_paths") or []),
+        }
+        _write_json(removed_manifest_path, removed_manifest)
+        restore_summary["restored_paths"].append(str(restore_root))
+        restore_summary["restored_paths"].append(str(removed_manifest_path))
+        restore_summary["next_steps"].append(f"open {restore_root}")
+        restore_summary["next_steps"].append(f"open {removed_manifest_path}")
         return restore_summary, None
 
     raise ValueError(f"Unsupported restore mode: {mode}")
@@ -904,6 +947,14 @@ def inspect_context_package(
         "source_kind": package_payload.get("source_kind", decoded.get("source_kind", "")),
         "source_label": package_payload.get("source_label", decoded.get("source_label", "")),
         "source_path": package_payload.get("source_path", ""),
+        "incremental_mode": bool(package_payload.get("incremental_mode")),
+        "incremental_scope": package_payload.get("incremental_scope", ""),
+        "incremental_base_commit": package_payload.get("incremental_base_commit", ""),
+        "incremental_git_root": package_payload.get("incremental_git_root", ""),
+        "incremental_changed_paths": list(package_payload.get("incremental_changed_paths") or []),
+        "incremental_added_paths": list(package_payload.get("incremental_added_paths") or []),
+        "incremental_removed_paths": list(package_payload.get("incremental_removed_paths") or []),
+        "incremental_path_count": int(package_payload.get("incremental_path_count", 0) or 0),
         "restore_mode": restore_mode,
         "skeleton_char_count": int(package_payload.get("skeleton_char_count", 0) or 0),
         "restore_encoding": restore_package.get("encoding", ""),
@@ -1113,6 +1164,322 @@ def _build_directory_source(
     }
 
 
+def _run_git_stdout(args: list[str], *, cwd: Path) -> str:
+    proc = subprocess.run(
+        ["git", *args],
+        cwd=str(cwd),
+        capture_output=True,
+        text=True,
+    )
+    if proc.returncode != 0:
+        raise ValueError(
+            f"context incremental mode requires a working git repository.\n"
+            f"git {' '.join(args)} failed in {cwd}.\nSTDOUT:\n{proc.stdout}\nSTDERR:\n{proc.stderr}"
+        )
+    return proc.stdout
+
+
+def _git_repo_root_for(path: Path) -> Path:
+    repo_root = _run_git_stdout(["rev-parse", "--show-toplevel"], cwd=path).strip()
+    if not repo_root:
+        raise ValueError("context incremental mode could not resolve the git repository root")
+    return Path(repo_root).expanduser().resolve()
+
+
+def _parse_git_name_status_z(raw: bytes) -> tuple[set[str], set[str], set[str]]:
+    tokens = raw.split(b"\x00")
+    added: set[str] = set()
+    changed: set[str] = set()
+    removed: set[str] = set()
+    i = 0
+    while i < len(tokens):
+        if not tokens[i]:
+            i += 1
+            continue
+        status = tokens[i].decode("utf-8", errors="replace")
+        code = status[:1]
+        if code in {"R", "C"}:
+            if i + 2 >= len(tokens):
+                break
+            old_path = tokens[i + 1].decode("utf-8", errors="replace")
+            new_path = tokens[i + 2].decode("utf-8", errors="replace")
+            removed.add(old_path)
+            added.add(new_path)
+            i += 3
+            continue
+        if i + 1 >= len(tokens):
+            break
+        path = tokens[i + 1].decode("utf-8", errors="replace")
+        if code == "A":
+            added.add(path)
+        elif code == "D":
+            removed.add(path)
+        else:
+            changed.add(path)
+        i += 2
+    return added, changed, removed
+
+
+def _scope_rel_from_repo_rel(repo_rel: str, scope_rel: PurePosixPath) -> str:
+    repo_path = PurePosixPath(str(repo_rel).replace("\\", "/"))
+    if str(scope_rel) == ".":
+        return repo_path.as_posix()
+    return repo_path.relative_to(scope_rel).as_posix()
+
+
+def _collect_incremental_repo_paths(path: Path, *, base_commit: str | None) -> dict[str, Any]:
+    repo_root = _git_repo_root_for(path)
+    try:
+        scope_rel = path.resolve().relative_to(repo_root).as_posix()
+    except ValueError as exc:
+        raise ValueError("context incremental mode requires --input-dir to stay inside the git repository root") from exc
+    scope_rel_path = PurePosixPath(scope_rel if scope_rel else ".")
+    git_cwd = repo_root
+
+    added_repo: set[str] = set()
+    changed_repo: set[str] = set()
+    removed_repo: set[str] = set()
+
+    if base_commit:
+        proc = subprocess.run(
+            ["git", "diff", "--name-status", "-z", "--find-renames", base_commit, "--", scope_rel if scope_rel else "."],
+            cwd=str(git_cwd),
+            capture_output=True,
+        )
+        if proc.returncode != 0:
+            raise ValueError(
+                f"context incremental mode could not diff against base commit `{base_commit}`.\n"
+                f"STDOUT:\n{proc.stdout.decode('utf-8', errors='replace')}\n"
+                f"STDERR:\n{proc.stderr.decode('utf-8', errors='replace')}"
+            )
+        added_part, changed_part, removed_part = _parse_git_name_status_z(proc.stdout)
+        added_repo |= added_part
+        changed_repo |= changed_part
+        removed_repo |= removed_part
+        untracked = subprocess.run(
+            ["git", "ls-files", "--others", "--exclude-standard", "-z", "--", scope_rel if scope_rel else "."],
+            cwd=str(git_cwd),
+            capture_output=True,
+        )
+        if untracked.returncode == 0:
+            added_repo |= {
+                item.decode("utf-8", errors="replace")
+                for item in untracked.stdout.split(b"\x00")
+                if item
+            }
+    else:
+        for args in [
+            ["diff", "--name-status", "-z", "--cached", "--find-renames", "--", scope_rel if scope_rel else "."],
+            ["diff", "--name-status", "-z", "--find-renames", "--", scope_rel if scope_rel else "."],
+        ]:
+            proc = subprocess.run(["git", *args], cwd=str(git_cwd), capture_output=True)
+            if proc.returncode != 0:
+                raise ValueError(
+                    "context incremental mode could not read git working tree changes.\n"
+                    f"STDOUT:\n{proc.stdout.decode('utf-8', errors='replace')}\n"
+                    f"STDERR:\n{proc.stderr.decode('utf-8', errors='replace')}"
+                )
+            added_part, changed_part, removed_part = _parse_git_name_status_z(proc.stdout)
+            added_repo |= added_part
+            changed_repo |= changed_part
+            removed_repo |= removed_part
+        untracked = subprocess.run(
+            ["git", "ls-files", "--others", "--exclude-standard", "-z", "--", scope_rel if scope_rel else "."],
+            cwd=str(git_cwd),
+            capture_output=True,
+        )
+        if untracked.returncode == 0:
+            added_repo |= {
+                item.decode("utf-8", errors="replace")
+                for item in untracked.stdout.split(b"\x00")
+                if item
+            }
+
+    if str(scope_rel_path) != ".":
+        added_repo = {path for path in added_repo if PurePosixPath(path).is_relative_to(scope_rel_path)}
+        changed_repo = {path for path in changed_repo if PurePosixPath(path).is_relative_to(scope_rel_path)}
+        removed_repo = {path for path in removed_repo if PurePosixPath(path).is_relative_to(scope_rel_path)}
+
+    existing_added = {path for path in added_repo if (repo_root / Path(*PurePosixPath(path).parts)).exists()}
+    existing_changed = {path for path in changed_repo if (repo_root / Path(*PurePosixPath(path).parts)).exists()}
+    removed_only = {path for path in removed_repo if not (repo_root / Path(*PurePosixPath(path).parts)).exists()}
+
+    conflicting = (existing_added | existing_changed) & removed_only
+    if conflicting:
+        existing_changed |= conflicting
+        removed_only -= conflicting
+
+    return {
+        "repo_root": repo_root,
+        "scope_rel": scope_rel,
+        "base_commit": str(base_commit or ""),
+        "scope": "base_commit_diff" if base_commit else "working_tree",
+        "added_repo_paths": sorted(existing_added),
+        "changed_repo_paths": sorted(existing_changed - existing_added),
+        "removed_repo_paths": sorted(removed_only),
+    }
+
+
+def _build_incremental_directory_source(
+    path: Path,
+    *,
+    base_commit: str | None = None,
+    tokenizer_backend: str | None = None,
+    tokenizer_model: str | None = None,
+) -> dict[str, Any]:
+    path = path.expanduser().resolve()
+    change_set = _collect_incremental_repo_paths(path, base_commit=base_commit)
+    repo_root = change_set["repo_root"]
+    scope_rel = PurePosixPath(change_set["scope_rel"] or ".")
+    requested_backend = _normalize_tokenizer_backend(tokenizer_backend)
+    requested_model = str(tokenizer_model or "").strip() or "cl100k_base"
+    tokenizer_encoder = None
+    tokenizer_encoding_name = ""
+    tokenizer_error = ""
+    tokenizer_source_count = 0
+    if requested_backend != "heuristic":
+        try:
+            tokenizer_encoder, tokenizer_encoding_name = _resolve_tiktoken_encoder(requested_model)
+        except Exception as exc:
+            tokenizer_error = f"{type(exc).__name__}: {exc}"
+
+    files: list[dict[str, Any]] = []
+    symlinks: list[dict[str, Any]] = []
+    text_files = 0
+    code_files = 0
+    binary_files = 0
+    total_bytes = 0
+    total_chars = 0
+    skeleton_entries: list[dict[str, Any]] = []
+
+    added_paths: list[str] = []
+    changed_paths: list[str] = []
+    removed_paths = [
+        _scope_rel_from_repo_rel(repo_rel, scope_rel)
+        for repo_rel in change_set["removed_repo_paths"]
+    ]
+
+    existing_repo_paths = [
+        ("added", repo_rel) for repo_rel in change_set["added_repo_paths"]
+    ] + [
+        ("changed", repo_rel) for repo_rel in change_set["changed_repo_paths"]
+    ]
+
+    for path_kind, repo_rel in sorted(existing_repo_paths, key=lambda item: item[1]):
+        rel_path = _scope_rel_from_repo_rel(repo_rel, scope_rel)
+        item_path = repo_root / Path(*PurePosixPath(repo_rel).parts)
+        if item_path.is_symlink():
+            symlinks.append({"relative_path": rel_path, "link_target": os.readlink(item_path)})
+            skeleton_entries.append(
+                {
+                    "relative_path": rel_path,
+                    "kind": "symlink",
+                    "summary": {"target": os.readlink(item_path), "change_kind": path_kind},
+                }
+            )
+        else:
+            data = item_path.read_bytes()
+            total_bytes += len(data)
+            file_record = {
+                "relative_path": rel_path,
+                "content_b64": base64.b64encode(data).decode("ascii"),
+                "sha256": _sha256_bytes(data),
+            }
+            files.append(file_record)
+            is_text = _looks_like_text(item_path, data)
+            if is_text:
+                text = data.decode("utf-8")
+                total_chars += len(text)
+                if tokenizer_encoder is not None:
+                    tokenizer_source_count += len(tokenizer_encoder.encode(text))
+                if _is_code_path(item_path):
+                    code_files += 1
+                    summary = _code_summary(text, rel_path)
+                    kind = "code"
+                else:
+                    text_files += 1
+                    summary = _text_summary(text, label=rel_path)
+                    kind = "text"
+            else:
+                binary_files += 1
+                kind = "binary"
+                summary = {
+                    "source_kind": "binary",
+                    "label": rel_path,
+                    "bytes": len(data),
+                    "sha256": _sha256_bytes(data),
+                    "total_chars": 0,
+                    "notes": ["binary incremental payload preserved for exact restore"],
+                }
+            summary["change_kind"] = path_kind
+            skeleton_entries.append({"relative_path": rel_path, "kind": kind, "summary": summary})
+        if path_kind == "added":
+            added_paths.append(rel_path)
+        else:
+            changed_paths.append(rel_path)
+
+    source_summary = {
+        "source_kind": "directory",
+        "label": path.name,
+        "root_path": str(path),
+        "total_files": len(files) + len(symlinks),
+        "text_files": text_files,
+        "code_files": code_files,
+        "binary_files": binary_files,
+        "symlink_count": len(symlinks),
+        "empty_dir_count": 0,
+        "total_bytes": total_bytes,
+        "total_chars": total_chars,
+        "tree": [entry["relative_path"] for entry in sorted(skeleton_entries, key=lambda item: item["relative_path"])],
+        "entries": sorted(skeleton_entries, key=lambda item: item["relative_path"]),
+        "changed_file_count": len(changed_paths),
+        "added_file_count": len(added_paths),
+        "removed_path_count": len(removed_paths),
+        "incremental_path_count": len(changed_paths) + len(added_paths) + len(removed_paths),
+        "incremental_scope": change_set["scope"],
+        "base_commit": change_set["base_commit"],
+        "git_root": str(repo_root),
+    }
+    source_token_hints = {
+        "heuristic_token_count_source": _estimate_token_count(total_chars),
+        "tokenizer_requested_backend": requested_backend,
+        "tokenizer_available": tokenizer_encoder is not None,
+        "tokenizer_model": requested_model if requested_backend != "heuristic" else "",
+        "tokenizer_token_basis": f"tiktoken:{tokenizer_encoding_name}" if tokenizer_encoder is not None else "",
+        "tokenizer_token_count_source": tokenizer_source_count if tokenizer_encoder is not None else None,
+        "tokenizer_error": tokenizer_error,
+    }
+    return {
+        "compression_mode": "directory_incremental",
+        "source_kind": "mixed_project",
+        "source_label": path.name,
+        "source_path": str(path),
+        "source_summary": source_summary,
+        "source_token_hints": source_token_hints,
+        "incremental_mode": True,
+        "incremental_scope": change_set["scope"],
+        "incremental_base_commit": change_set["base_commit"],
+        "incremental_git_root": str(repo_root),
+        "incremental_changed_paths": changed_paths,
+        "incremental_added_paths": added_paths,
+        "incremental_removed_paths": removed_paths,
+        "incremental_path_count": len(changed_paths) + len(added_paths) + len(removed_paths),
+        "restore_blob": {
+            "mode": "directory_incremental",
+            "source_label": path.name,
+            "source_kind": "mixed_project",
+            "root_name": path.name,
+            "files": files,
+            "symlinks": symlinks,
+            "empty_dirs": [],
+            "removed_paths": removed_paths,
+            "incremental_scope": change_set["scope"],
+            "base_commit": change_set["base_commit"],
+            "git_root": str(repo_root),
+        },
+    }
+
+
 def _write_context_package(output_dir: Path, payload: dict[str, Any]) -> dict[str, Path]:
     output_dir = output_dir.expanduser().resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -1179,6 +1546,15 @@ def _build_context_inspect_summary_text(payload: dict[str, Any]) -> str:
     for key in ["total_files", "text_files", "code_files", "binary_files", "total_bytes", "total_chars", "paragraph_count", "lines"]:
         if key in source_summary:
             lines.append(f"{key}: {source_summary.get(key)}")
+    if payload.get("incremental_mode"):
+        lines.append(f"incremental_scope: {payload.get('incremental_scope', '')}")
+        if payload.get("incremental_base_commit"):
+            lines.append(f"incremental_base_commit: {payload.get('incremental_base_commit', '')}")
+        lines.append(f"incremental_changed_count: {len(payload.get('incremental_changed_paths') or [])}")
+        lines.append(f"incremental_added_count: {len(payload.get('incremental_added_paths') or [])}")
+        lines.append(f"incremental_removed_count: {len(payload.get('incremental_removed_paths') or [])}")
+        if payload.get("incremental_removed_paths"):
+            lines.append(f"first_incremental_removed_path: {(payload.get('incremental_removed_paths') or [''])[0]}")
     tree_preview = payload.get("tree_preview") or []
     if tree_preview:
         lines.append(f"tree_preview_count: {len(tree_preview)}")
@@ -1366,6 +1742,17 @@ def _render_skeleton_text(source: dict[str, Any], *, preset: dict[str, Any]) -> 
     lines.extend([f"  - {item}" for item in preset["focus"]])
     lines.append("CORE:")
     lines.extend(_render_core_summary_lines(source["source_summary"], indent="  "))
+    if source.get("incremental_mode"):
+        lines.append("INCREMENTAL:")
+        lines.append(f"  - scope: {source.get('incremental_scope', '')}")
+        if source.get("incremental_base_commit"):
+            lines.append(f"  - base_commit: {source.get('incremental_base_commit', '')}")
+        lines.append(f"  - changed_paths: {len(source.get('incremental_changed_paths') or [])}")
+        lines.append(f"  - added_paths: {len(source.get('incremental_added_paths') or [])}")
+        lines.append(f"  - removed_paths: {len(source.get('incremental_removed_paths') or [])}")
+        if source.get("incremental_removed_paths"):
+            lines.append("  REMOVED_PATHS:")
+            lines.extend([f"    - {item}" for item in source.get("incremental_removed_paths", [])])
     lines.append("SKELETON:")
     lines.extend(_render_structural_lines(source["source_summary"], indent="  "))
     return "\n".join(lines).rstrip() + "\n"
@@ -1418,6 +1805,7 @@ def _render_core_summary_lines(summary: dict[str, Any], *, indent: str) -> list[
     for key in [
         "label", "root_path", "source_kind", "total_files", "text_files", "code_files", "binary_files", "symlink_count",
         "empty_dir_count", "bytes", "total_bytes", "lines", "paragraph_count", "bullet_count", "heading_count", "total_chars", "sha256",
+        "changed_file_count", "added_file_count", "removed_path_count", "incremental_path_count", "incremental_scope", "base_commit",
     ]:
         if key in summary and summary[key] not in (None, "", [], {}):
             lines.append(f"{indent}- {key}: {summary[key]}")
@@ -2024,7 +2412,7 @@ def _build_token_source_text_from_restore_blob(restore_blob: dict[str, Any]) -> 
             except UnicodeDecodeError:
                 return ""
         return ""
-    if mode == "directory":
+    if mode in {"directory", "directory_incremental"}:
         parts: list[str] = []
         for item in sorted(restore_blob.get("files") or [], key=lambda entry: str(entry.get("relative_path") or "")):
             rel_path = str(item.get("relative_path") or "")

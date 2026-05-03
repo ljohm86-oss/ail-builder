@@ -20,6 +20,7 @@ PYTHONPATH="$PWD" python3 -m cli context preset website --json
 PYTHONPATH="$PWD" python3 -m cli context compress --text-file /absolute/path/to/long-text.md --json
 PYTHONPATH="$PWD" python3 -m cli context compress --input-file /absolute/path/to/app.py --emit-skeleton
 PYTHONPATH="$PWD" python3 -m cli context compress --preset website --input-dir /absolute/path/to/project --output-dir /absolute/path/to/context-bundle --json
+PYTHONPATH="$PWD" python3 -m cli context compress --input-dir /absolute/path/to/project --incremental --base-commit HEAD~1 --output-dir /absolute/path/to/context-incremental-bundle --json
 ```
 
 ### Restore
@@ -86,6 +87,25 @@ Current presets:
 
 Presets do not change restore accuracy.
 They change the declared compression emphasis and the guidance written into the MCP skeleton and bundle metadata.
+
+## Incremental Compress
+
+`context compress --incremental` currently supports one git-backed directory input via `--input-dir`.
+
+Current behavior:
+
+- reads one working-tree delta by default
+- or reads one scoped git diff when `--base-commit <sha>` is provided
+- builds the AI-facing skeleton from only the changed and added files plus one explicit removed-path list
+- writes one restore package that is exact for the incremental surface itself
+
+This means incremental restore reconstructs:
+
+- changed files
+- added files
+- an `.ail_incremental_manifest.json` file with the removed-path list
+
+It does not pretend to reconstruct the full repository tree unless the full tree was part of the incremental surface.
 
 ## Bundle Shape
 

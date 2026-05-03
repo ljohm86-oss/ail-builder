@@ -58,6 +58,9 @@ ok_context_compress_text_json=false
 ok_context_restore_text_json=false
 ok_context_compress_code_skeleton_txt=false
 ok_context_compress_directory_json=false
+ok_context_compress_incremental_json=false
+ok_context_inspect_incremental_json=false
+ok_context_restore_incremental_json=false
 ok_context_preset_json=false
 ok_context_preset_selected_json=false
 ok_context_inspect_summary_txt=false
@@ -2064,6 +2067,91 @@ PYTHONPATH="$ROOT" python3 -m cli context restore --package-file "$context_direc
 cmp -s "$context_directory_src/app.py" "$context_directory_restore/context_directory_src/app.py"
 cmp -s "$context_directory_src/notes.md" "$context_directory_restore/context_directory_src/notes.md"
 ok_context_compress_directory_json=true
+
+context_incremental_repo="$TMP_ROOT/context_incremental_repo"
+mkdir -p "$context_incremental_repo"
+git -C "$context_incremental_repo" init -q
+git -C "$context_incremental_repo" config user.email "cli-smoke@example.com"
+git -C "$context_incremental_repo" config user.name "CLI Smoke"
+cat > "$context_incremental_repo/app.py" <<'PY'
+def route():
+    return "base"
+PY
+cat > "$context_incremental_repo/notes.md" <<'MD'
+# Base Notes
+
+- keep the old note
+MD
+git -C "$context_incremental_repo" add app.py notes.md
+git -C "$context_incremental_repo" commit -q -m "base"
+rm "$context_incremental_repo/notes.md"
+cat > "$context_incremental_repo/app.py" <<'PY'
+def route():
+    return "changed"
+PY
+cat > "$context_incremental_repo/new.py" <<'PY'
+def helper():
+    return "added"
+PY
+context_incremental_pkg="$TMP_ROOT/context_incremental_pkg"
+context_compress_incremental_json="$TMP_ROOT/context_compress_incremental.json"
+PYTHONPATH="$ROOT" python3 -m cli context compress --input-dir "$context_incremental_repo" --incremental --tokenizer-backend heuristic --output-dir "$context_incremental_pkg" --json > "$context_compress_incremental_json"
+python3 - "$context_compress_incremental_json" <<'PY'
+import json, os, sys
+payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
+assert payload['entrypoint'] == 'context-compress', payload
+assert payload['status'] == 'ok', payload
+assert payload['compression_mode'] == 'directory_incremental', payload
+assert payload['incremental_mode'] is True, payload
+assert payload['incremental_scope'] == 'working_tree', payload
+assert payload['incremental_changed_paths'] == ['app.py'], payload
+assert payload['incremental_added_paths'] == ['new.py'], payload
+assert payload['incremental_removed_paths'] == ['notes.md'], payload
+assert payload['incremental_path_count'] == 3, payload
+assert payload['source_summary']['changed_file_count'] == 1, payload
+assert payload['source_summary']['added_file_count'] == 1, payload
+assert payload['source_summary']['removed_path_count'] == 1, payload
+assert payload['source_summary']['total_files'] == 2, payload
+assert payload['metrics']['estimated_token_count_source'] > 0, payload
+for key in ['manifest_file', 'skeleton_file', 'restore_file', 'readme_file']:
+    assert os.path.exists(payload['files'][key]), (key, payload)
+PY
+ok_context_compress_incremental_json=true
+
+context_inspect_incremental_json="$TMP_ROOT/context_inspect_incremental.json"
+PYTHONPATH="$ROOT" python3 -m cli context inspect --package-file "$context_incremental_pkg/context_manifest.json" --tokenizer-backend heuristic --json > "$context_inspect_incremental_json"
+python3 - "$context_inspect_incremental_json" <<'PY'
+import json, sys
+payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
+assert payload['entrypoint'] == 'context-inspect', payload
+assert payload['status'] == 'ok', payload
+assert payload['compression_mode'] == 'directory_incremental', payload
+assert payload['restore_mode'] == 'directory_incremental', payload
+assert payload['incremental_mode'] is True, payload
+assert payload['incremental_changed_paths'] == ['app.py'], payload
+assert payload['incremental_added_paths'] == ['new.py'], payload
+assert payload['incremental_removed_paths'] == ['notes.md'], payload
+assert 'incremental_removed_count: 1' in payload['summary_text'], payload
+PY
+ok_context_inspect_incremental_json=true
+
+context_incremental_restore="$TMP_ROOT/context_incremental_restore"
+context_restore_incremental_json="$TMP_ROOT/context_restore_incremental.json"
+PYTHONPATH="$ROOT" python3 -m cli context restore --package-file "$context_incremental_pkg/context_manifest.json" --output-dir "$context_incremental_restore" --json > "$context_restore_incremental_json"
+python3 - "$context_restore_incremental_json" "$context_incremental_restore" <<'PY'
+import json, os, sys
+payload = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
+root = sys.argv[2]
+assert payload['entrypoint'] == 'context-restore', payload
+assert payload['status'] == 'ok', payload
+assert payload['restore_mode'] == 'directory_incremental', payload
+assert os.path.exists(f"{root}/context_incremental_repo/app.py")
+assert os.path.exists(f"{root}/context_incremental_repo/new.py")
+assert not os.path.exists(f"{root}/context_incremental_repo/notes.md")
+manifest = json.load(open(f"{root}/context_incremental_repo/.ail_incremental_manifest.json", 'r', encoding='utf-8'))
+assert manifest['removed_paths'] == ['notes.md'], manifest
+PY
+ok_context_restore_incremental_json=true
 
 context_restore_invalid_manifest="$TMP_ROOT/context_restore_invalid_manifest.json"
 python3 - "$context_directory_pkg/context_manifest.json" "$context_restore_invalid_manifest" <<'PY'
@@ -6689,6 +6777,9 @@ export CLI_SMOKE_OK_CONTEXT_COMPRESS_TEXT_JSON="$ok_context_compress_text_json"
 export CLI_SMOKE_OK_CONTEXT_RESTORE_TEXT_JSON="$ok_context_restore_text_json"
 export CLI_SMOKE_OK_CONTEXT_COMPRESS_CODE_SKELETON_TXT="$ok_context_compress_code_skeleton_txt"
 export CLI_SMOKE_OK_CONTEXT_COMPRESS_DIRECTORY_JSON="$ok_context_compress_directory_json"
+export CLI_SMOKE_OK_CONTEXT_COMPRESS_INCREMENTAL_JSON="$ok_context_compress_incremental_json"
+export CLI_SMOKE_OK_CONTEXT_INSPECT_INCREMENTAL_JSON="$ok_context_inspect_incremental_json"
+export CLI_SMOKE_OK_CONTEXT_RESTORE_INCREMENTAL_JSON="$ok_context_restore_incremental_json"
 export CLI_SMOKE_OK_CONTEXT_RESTORE_INVALID_RELPATH_JSON="$ok_context_restore_invalid_relpath_json"
 export CLI_SMOKE_OK_CONTEXT_PRESET_JSON="$ok_context_preset_json"
 export CLI_SMOKE_OK_CONTEXT_PRESET_SELECTED_JSON="$ok_context_preset_selected_json"
@@ -6938,6 +7029,9 @@ payload = {
         'context_restore_text_json_ok': os.environ['CLI_SMOKE_OK_CONTEXT_RESTORE_TEXT_JSON'] == 'true',
         'context_compress_code_skeleton_txt_ok': os.environ['CLI_SMOKE_OK_CONTEXT_COMPRESS_CODE_SKELETON_TXT'] == 'true',
         'context_compress_directory_json_ok': os.environ['CLI_SMOKE_OK_CONTEXT_COMPRESS_DIRECTORY_JSON'] == 'true',
+        'context_compress_incremental_json_ok': os.environ['CLI_SMOKE_OK_CONTEXT_COMPRESS_INCREMENTAL_JSON'] == 'true',
+        'context_inspect_incremental_json_ok': os.environ['CLI_SMOKE_OK_CONTEXT_INSPECT_INCREMENTAL_JSON'] == 'true',
+        'context_restore_incremental_json_ok': os.environ['CLI_SMOKE_OK_CONTEXT_RESTORE_INCREMENTAL_JSON'] == 'true',
         'context_restore_invalid_relpath_json_ok': os.environ['CLI_SMOKE_OK_CONTEXT_RESTORE_INVALID_RELPATH_JSON'] == 'true',
         'context_preset_json_ok': os.environ['CLI_SMOKE_OK_CONTEXT_PRESET_JSON'] == 'true',
         'context_preset_selected_json_ok': os.environ['CLI_SMOKE_OK_CONTEXT_PRESET_SELECTED_JSON'] == 'true',

@@ -233,6 +233,33 @@ Note:
 - if `tiktoken` is not installed, requesting `--tokenizer-backend tiktoken` should fall back cleanly or report the fallback state explicitly
 - larger repos or long-form text should usually report `reduced`
 
+### D3b. Compress one incremental git change surface
+
+```bash
+python3 -m cli context compress --input-dir /absolute/path/to/project --incremental --base-commit HEAD~1 --output-dir /absolute/path/to/context-incremental-bundle --json
+```
+
+Expected:
+
+- `compression_mode = directory_incremental`
+- `incremental_mode = true`
+- `incremental_scope = base_commit_diff | working_tree`
+- `incremental_changed_paths`, `incremental_added_paths`, and `incremental_removed_paths` reflect the git delta
+- `source_summary.changed_file_count`, `source_summary.added_file_count`, and `source_summary.removed_path_count` are present
+
+### D3c. Restore one incremental git change surface
+
+```bash
+python3 -m cli context restore --package-file /absolute/path/to/context-incremental-bundle/context_manifest.json --output-dir /absolute/path/to/restore-root --json
+```
+
+Expected:
+
+- `restore_mode = directory_incremental`
+- restore writes the changed and added files into one root directory
+- restore writes `.ail_incremental_manifest.json`
+- the incremental manifest includes `removed_paths`
+
 ### D4. Directory apply-check aligned
 
 ```bash

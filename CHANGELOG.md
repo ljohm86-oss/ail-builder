@@ -16,6 +16,7 @@ This changelog is intentionally lightweight for now. The repository already has 
 - added `context patch-apply --write-dry-run-report` so replay previews can be exported as one structured manifest JSON
 - added one mixed directory patch regression and one invalid-relative-path restore regression to the local `context` smoke coverage
 - added `/Users/carwynmac/ai-cl/testing/context_scale_benchmark.py`, a repeatable repo-scale and long-text context benchmark harness with JSON and Markdown outputs
+- added `context compress --incremental` with optional `--base-commit`, so git-backed directory inputs can now emit one MCP skeleton from the current change surface instead of re-sending the whole tree every time
 
 ### Changed
 
@@ -28,6 +29,7 @@ This changelog is intentionally lightweight for now. The repository already has 
 - reduced large-directory metric amplification by reusing internal source-token hints during the initial `context compress` metrics pass instead of rebuilding one giant source-text surface
 - added one quick benchmark smoke check so the scale-harness output format and restore verification stay covered by the local CLI regression path
 - made the repo-scale benchmark's directory restore verification compare restored trees against the captured restore package snapshot instead of a live source-directory hash, which avoids cross-platform false negatives from runtime artifacts such as Python cache files
+- added incremental context smoke coverage for changed, added, and removed git paths plus one exact `.ail_incremental_manifest.json` restore check
 - documented ecommerce, CMS, blog-publishing, routing, localization, managed-drift, and local-preview limitations more explicitly
 - improved managed-file drift messaging so CLI output explains it as a sync safety guard, not necessarily a website generation failure
 - changed the repository licensing posture from MIT to PolyForm Noncommercial 1.0.0 and updated public docs to describe the repo as source-available rather than OSI open source
